@@ -12,8 +12,8 @@ class Game(models.Model):
         return self.name
     
 class Prompt(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="prompts")
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="prompts")
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -23,8 +23,9 @@ class Prompt(models.Model):
     
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    bio = models.TextField()
-    profile_picture = models.ImageField(upload_to="profile_pics/")
+    # Allow empty bio and profile pic
+    bio = models.TextField(blank=True)
+    profile_picture = models.ImageField(upload_to="profile_pics/", blank=True, null=True)
 
     def __str__(self):
         return f"Profile: {self.user.username}"
@@ -41,3 +42,27 @@ class Follow(models.Model):
                        models.CheckConstraint(condition=~Q(follower=F("following")), name="no_self_follow"),
                        ]
     
+class Vote(models.Model):
+    prompt = models.ForeignKey(Prompt, on_delete=models.CASCADE, related_name="votes")
+    # Nullable since guest can vote
+    voter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name="votes")
+    guest_session_id = models.CharField(max_length=64, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Logged in users can only vote once per prompt
+    # Guest can only vote once per prompt + per brower session
+    # Either logged in or guest (XOR)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["prompt", "voter"], condition=Q(voter__isnull=False), name="unique_prompt_vote_per_user"),
+            models.UniqueConstraint(fields=["prompt", "guest_session_id"], condition=Q(guest_session_id__isnull=False), name="unique_prompt_vote_per_session"),
+            models.CheckConstraint(condition=(Q(voter__isnull=False, guest_session_id__isnull=True) | Q(voter__isnull=True, guest_session_id__isnull=False)),
+                                   name="vote_requires_user_or_session")
+        ]
+    
+    def __str__(self):
+        if self.voter_id: 
+            who = self.voter.username
+        else:
+            who = self.guest_session_id
+        return f"{who} voted on prompt {self.prompt_id}" 
