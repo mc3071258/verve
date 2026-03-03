@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.db.models import Q, F
 
-# Use AUTH_USER_MODEL to aviod hardcoding User
+# Use standard pattern AUTH_USER_MODEL to aviod hardcoding User
 
 class Game(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -18,7 +18,7 @@ class Prompt(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        # Truncate to aviod visibility issues in admin
+        # Truncate to aviod visibility issues in admin, some prompt might be too long
         return f"{self.game.name}: {self.text[:30]}"
     
 class Profile(models.Model):
