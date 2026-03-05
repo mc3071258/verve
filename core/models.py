@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.db.models import Q, F
+from django.contrib.auth.models import User
 
 # Use standard pattern AUTH_USER_MODEL to aviod hardcoding User
 
@@ -66,3 +67,13 @@ class Vote(models.Model):
         else:
             who = self.guest_session_id
         return f"{who} voted on prompt {self.prompt_id}" 
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    picture = models.ImageField(upload_to='profile_images', blank=True)
+    bio = models.TextField(blank=True)
+    likes_recieved = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return self.user.username
