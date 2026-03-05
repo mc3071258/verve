@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from core.forms import UserForm, UserProfileForm
-
-# Create your views here.
+from django.db import transaction
 
 from django.http import HttpResponse
 
