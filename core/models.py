@@ -1,12 +1,20 @@
 from django.db import models
 from django.conf import settings
 from django.db.models import Q, F
+from django.utils.text import slugify
 
 # Use standard pattern AUTH_USER_MODEL to aviod hardcoding User
 
 class Game(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=120, unique=True, blank=True)
     description = models.TextField()
+
+    # Auto create slug field
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -56,7 +64,7 @@ class Vote(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["prompt", "voter"], condition=Q(voter__isnull=False), name="unique_prompt_vote_per_user"),
             models.UniqueConstraint(fields=["prompt", "guest_session_id"], condition=Q(guest_session_id__isnull=False), name="unique_prompt_vote_per_session"),
-            models.CheckConstraint(condition=(Q(voter__isnull=False, guest_session_id__isnull=True) | Q(voter__isnull=True, guest_session_id__isnull=False)),
+            models.CheckConstraint(condition=(Q(voter__isnull=False, guest_session_id__isnull=True) | Q(voter__isnull=True, guest_session_id__isnull=False)) & ~Q(guest_session_id="") ,
                                    name="vote_requires_user_or_session")
         ]
     
