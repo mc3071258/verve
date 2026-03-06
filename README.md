@@ -54,7 +54,12 @@ Database setup
 python manage.py migrate
 ~~~
 
-Optioanlly test
+Populate sample data (optional) 
+~~~bash
+python population_script.py
+~~~
+
+Test (optional)
 ~~~          
 python manage.py check
 python manage.py test
@@ -64,6 +69,8 @@ Run server
 ~~~bash
 python manage.py runserver
 ~~~
+
+
 
 ## External sources
 - *Tango with Django 2* (Azzopardi & Maxwell) - learning patterns and “progress tests” style used in book.
