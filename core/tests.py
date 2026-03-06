@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
-from .models import Game, Prompt, Follow, Vote
+from .models import Game, Prompt, Follow, Vote, Profile
 
 # Test constrains for core models.
 # Note : Wrap expected IntegrityError writes in transaction.atomic()

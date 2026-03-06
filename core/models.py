@@ -10,6 +10,7 @@ class Game(models.Model):
     slug = models.SlugField(max_length=120, unique=True, blank=True)
     description = models.TextField()
 
+    # Auto create slug field
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
