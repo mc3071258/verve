@@ -40,7 +40,7 @@ def populate():
         "Never Have I Ever": [
             ("Never have I ever broken a bone", "james"),
             ("Never have I ever skipped a lecture", "mary"),
-            ("Never have i ever fainted", "lucas")
+            ("Never have I ever fainted", "lucas"),
         ],
     }
 
@@ -61,7 +61,7 @@ def populate():
         ("Would You Rather", "Would you rather only eat beans for the rest of your life", [], ["session1234b"]),
         ("Never Have I Ever", "Never have I ever broken a bone", [], ["session1234a"]),
         ("Never Have I Ever", "Never have I ever skipped a lecture", [], []),
-        ("Never Have I Ever", "Never have I ever fainted", ["james","mary"], ["session1234a", "session1234b"]),
+        ("Never Have I Ever", "Never have I ever fainted", ["james", "mary"], ["session1234a", "session1234b"]),
     ]
 
     with transaction.atomic():
