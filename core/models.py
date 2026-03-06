@@ -23,6 +23,11 @@ class Prompt(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="prompts")
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="prompts")
     text = models.TextField()
+    #--edited stuff here
+
+    upvotes = models.IntegerField(default=0)
+
+    #--edited stuff here
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

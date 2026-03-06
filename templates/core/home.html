@@ -5,4 +5,19 @@
 {% block content %}
 <h1>Home Page</h1>
 <p>Template inheritance is working.</p>
+
+<div>
+    <strong> displaying most highly rated prompts </strong>
+    {% if prompts %}
+        <ul>
+            {% for prompt in prompts %}
+                <li>
+                    {{ forloop.counter }}. FROM GAME - {{ prompt.game }}, PROMPT - {{ prompt.text }}, UPVOTES - {{ prompt.upvotes}} 
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <strong>There are no prompts present</strong>
+    {% endif %}
+</div>
 {% endblock %}  
