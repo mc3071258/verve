@@ -22,6 +22,7 @@ def populate():
     users_data = [
         ("james", "BobPass1234!", "Hi, this is James's bio."),
         ("mary", "MaryPass1234!", "Hi, this is Mary's bio."),
+        ("lucas","LucasPass1234!","Hi, this is Lucas' bio")
     ]
     
     # game : (text, creator_name)
@@ -29,30 +30,38 @@ def populate():
         "Truth or Dare": [
             ("Truth: What's the strangest dream you've had?", "james"),
             ("Dare: Try and lick your own elbow", "mary"),
+            ("Truth: Who's your celebrity crush?", "lucas")
         ],
         "Would You Rather": [
             ("Would you rather shoot spaghetti out of your fingers", "james"),
             ("Would you rather sneeze meatballs", "mary"),
+            ("Would you rather only eat beans for the rest of your life", "lucas")
         ],
         "Never Have I Ever": [
             ("Never have I ever broken a bone", "james"),
             ("Never have I ever skipped a lecture", "mary"),
+            ("Never have i ever fainted", "lucas")
         ],
     }
 
     follow_pairs = [
         ("james", "mary"),
         ("mary", "james"),
+        ("james", "lucas"),
+        ("lucas","james")
     ]
 
     # (game_name, prompt_text, user_voters, guest_sessions)
     votes_data = [
         ("Truth or Dare", "Truth: What's the strangest dream you've had?", ["james"], ["session1234a"]),
         ("Truth or Dare", "Dare: Try and lick your own elbow", ["mary"], ["session1234a", "session1234b"]),
+        ("Truth or Dare", "Truth: Who's your celebrity crush?", ["james"], ["session1234a"]),
         ("Would You Rather", "Would you rather shoot spaghetti out of your fingers", ["james", "mary"], []),
         ("Would You Rather", "Would you rather sneeze meatballs", ["mary"], ["session1234b"]),
+        ("Would You Rather", "Would you rather only eat beans for the rest of your life", [], ["session1234b"]),
         ("Never Have I Ever", "Never have I ever broken a bone", [], ["session1234a"]),
         ("Never Have I Ever", "Never have I ever skipped a lecture", [], []),
+        ("Never Have I Ever", "Never have I ever fainted", ["james","mary"], ["session1234a", "session1234b"]),
     ]
 
     with transaction.atomic():
