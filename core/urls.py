@@ -1,10 +1,12 @@
 from django.urls import path
 from . import views
-from django.http import HttpResponse
+from django.views.generic import RedirectView
+
 
 urlpatterns = [
     path("", views.home, name="home"),
-    path("home/", views.home), # Add redirect later
+    # Redirect with home/, use "" as homepage
+    path("home/", RedirectView.as_view(pattern_name="home", permanent=False)),
 
     path("game/<slug:slug>/", views.game, name="game"),
     path("game/<slug:slug>/play/", views.game_play, name="game_play"),
