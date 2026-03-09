@@ -20,7 +20,7 @@ def populate():
     ]
 
     users_data = [
-        ("james", "BobPass1234!", "Hi, this is James's bio."),
+        ("james", "JamesPass1234!", "Hi, this is James's bio."),
         ("mary", "MaryPass1234!", "Hi, this is Mary's bio."),
         ("lucas","LucasPass1234!","Hi, this is Lucas' bio")
     ]
@@ -133,4 +133,4 @@ def populate():
 if __name__ == '__main__':
     print('Starting Verve population script...')
     populate()
-    print("Django set up OK")
+    print("Population complete.")
