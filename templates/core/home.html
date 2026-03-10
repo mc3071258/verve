@@ -7,22 +7,23 @@
 <p>Template inheritance is working.</p>
 
 <div>
-    <strong> displaying most highly rated prompts </strong>
-    {% if prompts %}
-        <ul>
-            {% for prompt in prompts %}
-                <li>
-                    {{ forloop.counter }}. FROM GAME - {{ prompt.game }}, PROMPT - {{ prompt.text }}, UPVOTES - {{ prompt.upvotes}} 
-                </li>
-            {% endfor %}
-        </ul>
+    <h2> Top 5 Prompts </h2>
+
+            {% if  prompts %}
+            <table class="table">
+                {% for prompt in prompts %}
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td>FROM GAME - {{ prompt.game }}, PROMPT - {{ prompt.text }}, UPVOTES - {{ prompt.upvotes}} </td>
+                </tr>
+                {% endfor %}
+            </table>
+
     {% else %}
-        <strong>There are no prompts present</strong>
+    <strong>There are no prompts present</strong>
     {% endif %}
+
+
 </div>
 
-<div>
-    <strong>Create a Prompt</strong>
-    <a href="/create_prompt/">Add a New Prompt</a><br />
-</div>
-{% endblock %}  
+{% endblock %}
