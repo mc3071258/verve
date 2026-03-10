@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Prompt
-from .models import Game
+from .models import Game, Prompt, Profile, Follow, Vote
 
-admin.site.register(Prompt)
 admin.site.register(Game)
-
-# Register your models here.
+admin.site.register(Prompt)
+admin.site.register(Profile)
+admin.site.register(Follow)
+admin.site.register(Vote)
