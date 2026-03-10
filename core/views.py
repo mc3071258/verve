@@ -36,6 +36,7 @@ def register(request):
                 profile = profile_form.save(commit=False)
                 profile.user = user
                 profile.save()
+            auth_login(request, user)
             return redirect("home")
     else:
         # Get requests give them empty forms
