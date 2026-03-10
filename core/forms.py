@@ -1,17 +1,19 @@
 from django import forms
-from core.models import Profile
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm
+from .models import Profile
 
 User = get_user_model()
 
-class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())
+# Django's UserCreationForm
+class UserForm(UserCreationForm):
+    class Meta:
+        email = forms.EmailField(required=False)  # Optionally add email field later 
 
-    class Meta: 
         model = User
-        fields = ('username', 'email', 'password')
+        fields = ["username", "password1", "password2"]
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('bio', )
+        fields = ["bio", "profile_picture"]

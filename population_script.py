@@ -14,45 +14,54 @@ def populate():
     User = get_user_model()
 
     games_data = [
-        ("Truth or Dare", ""),
-        ("Would You Rather", ""),
-        ("Never Have I Ever", ""),
+        ("Truth or Dare", "Choose between honestly answering a question or performing a challenging task!"),
+        ("Would You Rather", "Use your decision making skills to decide between two scenarios!"),
+        ("Never Have I Ever", "Each player starts with ten fingers- drop one each time the given scenario applies to you!"),
     ]
 
     users_data = [
-        ("james", "BobPass1234!", "Hi, this is James's bio."),
+        ("james", "JamesPass1234!", "Hi, this is James's bio."),
         ("mary", "MaryPass1234!", "Hi, this is Mary's bio."),
+        ("lucas","LucasPass1234!","Hi, this is Lucas' bio")
     ]
     
     # game : (text, creator_name)
     prompts_data = {
         "Truth or Dare": [
-            ("Truth: test1", "james"),
-            ("Dare: test2", "mary"),
+            ("Truth: What's the strangest dream you've had?", "james"),
+            ("Dare: Try and lick your own elbow", "mary"),
+            ("Truth: Who's your celebrity crush?", "lucas")
         ],
         "Would You Rather": [
-            ("Would you rather test1", "james"),
-            ("Would you rather test2", "mary"),
+            ("Would you rather shoot spaghetti out of your fingers", "james"),
+            ("Would you rather sneeze meatballs", "mary"),
+            ("Would you rather only eat beans for the rest of your life", "lucas")
         ],
         "Never Have I Ever": [
-            ("Never have I ever test1", "james"),
-            ("Never have I ever test2", "mary"),
+            ("Never have I ever broken a bone", "james"),
+            ("Never have I ever skipped a lecture", "mary"),
+            ("Never have I ever fainted", "lucas"),
         ],
     }
 
     follow_pairs = [
         ("james", "mary"),
         ("mary", "james"),
+        ("james", "lucas"),
+        ("lucas","james")
     ]
 
     # (game_name, prompt_text, user_voters, guest_sessions)
     votes_data = [
-        ("Truth or Dare", "Truth: test1", ["james"], ["session1234a"]),
-        ("Truth or Dare", "Dare: test2", ["mary"], ["session1234a", "session1234b"]),
-        ("Would You Rather", "Would you rather test1", ["james", "mary"], []),
-        ("Would You Rather", "Would you rather test2", ["mary"], ["session1234b"]),
-        ("Never Have I Ever", "Never have I ever test1", [], ["session1234a"]),
-        ("Never Have I Ever", "Never have I ever test2", [], []),
+        ("Truth or Dare", "Truth: What's the strangest dream you've had?", ["james"], ["session1234a"]),
+        ("Truth or Dare", "Dare: Try and lick your own elbow", ["mary"], ["session1234a", "session1234b"]),
+        ("Truth or Dare", "Truth: Who's your celebrity crush?", ["james"], ["session1234a"]),
+        ("Would You Rather", "Would you rather shoot spaghetti out of your fingers", ["james", "mary"], []),
+        ("Would You Rather", "Would you rather sneeze meatballs", ["mary"], ["session1234b"]),
+        ("Would You Rather", "Would you rather only eat beans for the rest of your life", [], ["session1234b"]),
+        ("Never Have I Ever", "Never have I ever broken a bone", [], ["session1234a"]),
+        ("Never Have I Ever", "Never have I ever skipped a lecture", [], []),
+        ("Never Have I Ever", "Never have I ever fainted", ["james", "mary"], ["session1234a", "session1234b"]),
     ]
 
     with transaction.atomic():
@@ -124,4 +133,4 @@ def populate():
 if __name__ == '__main__':
     print('Starting Verve population script...')
     populate()
-    print("Django set up OK")
+    print("Population complete.")
