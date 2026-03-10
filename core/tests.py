@@ -1,7 +1,13 @@
 from django.test import TestCase
+from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from .models import Game, Prompt, Follow, Vote, Profile
+<<<<<<< HEAD
+=======
+
+User = get_user_model()
+>>>>>>> c47e8759fca27a36f470d01db1eeece2da742691
 
 # Test constrains for core models.
 # Note : Wrap expected IntegrityError writes in transaction.atomic()
@@ -9,7 +15,6 @@ from .models import Game, Prompt, Follow, Vote, Profile
 
 class ModelConstraintTests(TestCase):
     def setUp(self):
-        User = get_user_model()
         self.u1 = User.objects.create_user(username="u1", password="1234")
         self.u2 = User.objects.create_user(username="u2", password="1234")
         self.game = Game.objects.create(name="Test Game", description="Test")
@@ -79,3 +84,60 @@ class ModelConstraintTests(TestCase):
         Follow.objects.create(follower=self.u1, following=self.u2)
         derived_following_count = Follow.objects.filter(follower=self.u1).count()
         self.assertEqual(derived_following_count, 1)
+
+# Test auth url routing behaviour
+class AuthViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="TestPass1234!")
+        Profile.objects.create(user=self.user)
+
+    def test_register_get(self):
+        """ Tests for GET /register/. """
+        response = self.client.get(reverse("register"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "auth/register.html")
+
+    def test_register_post(self):
+        """ Tests for POST /register/. """
+        response = self.client.post(reverse("register"), 
+                                            {"username": "testusernew",
+                                             "password1" : "TestPassNew1!",
+                                             "password2" : "TestPassNew1!"})
+        self.assertRedirects(response, reverse("home"))
+        user = User.objects.get(username="testusernew")
+        self.assertTrue(User.objects.filter(username = user.username).exists())
+        # Check profile aswell
+        self.assertTrue(Profile.objects.filter(user=user).exists())
+        # Check auto login after register
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+
+    def test_login_get(self):
+        """ Test for GET /login/. """
+        response = self.client.get(reverse("login"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "auth/login.html")
+
+    def test_login_post_valid(self):
+        """ Test for valid POST /login/. """
+        response = self.client.post(reverse("login"),
+                                    {"username": self.user.username,
+                                     "password": "TestPass1234!"})
+        self.assertRedirects(response, reverse("home"))
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+        
+
+    def test_login_post_invalid(self):
+        """ Test for invalid POST /login/. """
+        response = self.client.post(reverse("login"),
+                                    {"username": "NonExistUser",
+                                     "password": "NonExistPassword"})
+        self.assertTemplateUsed(response, "auth/login.html")
+        self.assertIn("error", response.context)
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+    def test_logout(self):
+        """Test logout clears session and redirects home. """
+        self.client.login(username=self.user.username, password="TestPass1234!")
+        response = self.client.get(reverse("logout"))
+        self.assertRedirects(response, reverse("home"))
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
