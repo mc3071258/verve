@@ -1,0 +1,39 @@
+body{
+    background-color: #C6DCE5;
+}
+
+header{
+    background-color: #D9EAEC;
+    text-align: center;
+    padding: 10px;
+}
+
+.NavLoggedIn .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.NavLoggedIn .user-info {
+    display: relative;
+    align-items: right;
+    gap: 10px;                     
+}
+
+.profileNavSection{
+    display: relative;
+    float:inline-end
+}
+.profilePicture{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-left: 10px;
+}
+
+
+
+
+
