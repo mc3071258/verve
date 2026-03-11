@@ -8,23 +8,7 @@ header{
     padding: 10px;
 }
 
-.NavLoggedIn .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-}
 
-.NavLoggedIn .user-info {
-    display: relative;
-    align-items: right;
-    gap: 10px;                     
-}
-
-.profileNavSection{
-    display: relative;
-    float:inline-end
-}
 .profilePicture{
     width: 100px;
     height: 100px;
@@ -32,6 +16,49 @@ header{
     object-fit: cover;
     margin-left: 10px;
 }
+
+.footer{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #D9EAEC;
+  text-align: center;
+}
+
+.footer-items{
+    color: black;
+}
+
+.footer .nav-link {
+    color: black;
+    text-decoration: none;
+}
+
+.profileNavSection {
+    display: flex;
+    align-items: center;
+}
+
+.profileText {
+    display: flex;
+    flex-direction: column; /* stack username and logout vertically */
+    text-align: right;      /* align text to the right */
+    margin-right: 8px;      /* space between text and image */
+}
+
+.profileText .usernameText,
+.profileText .logOut {
+    font-size: 0.2rem;
+    line-height: 1;
+}
+
+.profileNavSection .profileText #usernameText,
+.profileNavSection .profileText #logOut {
+    font-size: 0.8rem; /*!important;  /* use !important to override Bootstrap */
+    line-height: 1.2;
+}
+
 
 
 
