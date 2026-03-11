@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from .forms import UserForm, UserProfileForm
@@ -11,8 +11,6 @@ def home(request):
     return render(request, "home.html")
 
 def register(request):
-    registered = False
-
     if request.method == "POST":
         user_form = UserForm(request.POST)
         profile_form = UserProfileForm(request.POST, request.FILES)
@@ -44,7 +42,7 @@ def login(request):
     if request.method == 'POST':
         username = request.POST.get("username")
         password = request.POST.get("password")
-        user = authenticate(username=username, password=password)
+        user = authenticate(request=request, username=username, password=password)
 
         if user is not None:
             auth_login(request, user)
@@ -76,7 +74,8 @@ def my_profile_edit(request):
             profile_form = UserProfileForm(instance=profile)
 
         return render(request, "profiles/edit_profile.html",{
-            "profile_form": profile_form
+            "profile_form": profile_form,
+            "profile": profile
         })
 
 def profile(request, username):
