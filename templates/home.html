@@ -15,6 +15,16 @@
                 <tr>
                     <td>{{ forloop.counter }}.</td>
                     <td>FROM GAME - {{ prompt.game }}, PROMPT - {{ prompt.text }}, UPVOTES - {{ prompt.upvote_count }} </td>
+                    <td>
+                        {% if prompt.id in voted_prompts %}
+                        <button disabled class="btn btn-primary"> You have already voted on this prompt </button>
+                    {% else %}
+                        <form action="{% url 'upvote_prompt' prompt.id %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-primary" type="submit"> Upvote this Prompt </button>
+                        </form>
+                    {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </table>
@@ -26,7 +36,7 @@
 </div>
 
     <div>
-        <a href="{% url 'create_prompt' %}">Add a New Prompt</a>
+        <a class="btn btn-primary" href="{% url 'create_prompt' %}">Add a New Prompt</a>
     </div>
 
 
