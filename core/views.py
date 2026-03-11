@@ -58,7 +58,7 @@ def my_profile(request):
     profile = get_object_or_404(Profile, user=request.user)
     return render(request, "profiles/my_profile.html", {
         "profile_user": request.user,
-        "profile": profile
+        "profile": profile,
         "edit_mode": False
     })
 
