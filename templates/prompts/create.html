@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Create a Prompt{% endblock %}
+
+{% block content %}
+    <h1>
+        Add a Prompt
+    </h1>
+
+    <div>
+        <form method="post" action="{% url 'create_prompt' %}">
+            {% csrf_token %}
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {{ field.help_text }}
+                {{ field }}
+            {% endfor %}
+            <input type="submit" name="submit" value="Create Prompt" />
+        </form>
+    </div>
+{% endblock %}
+
