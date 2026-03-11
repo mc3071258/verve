@@ -20,6 +20,8 @@ urlpatterns = [
 
     path("profiles/", views.my_profile, name="my_profile"),
     path("profiles/edit/", views.my_profile_edit, name="edit_profile"),
+    path("profiles/my_prompts/", views.my_prompts, name="my_prompts"),
+    path("profiles/my_prompts/edit", views.edit_prompts, name="edit_prompts"),
     path("profiles/<str:username>/", views.profile, name="profile"),
 ]
 

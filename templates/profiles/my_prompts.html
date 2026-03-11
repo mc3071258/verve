@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}My Prompts{% endblock %}
+
+{% block content %}
+    {% if prompts %}
+        {% for prompt in prompts %}
+            {{ prompt.game }} - {{ prompt.created_at }}
+            <br />{{ prompt.text }}<br /><br />
+        {% endfor %}
+    {% else %}
+        <strong>You have no prompts.</strong>
+    {% endif %}
+{% endblock %}

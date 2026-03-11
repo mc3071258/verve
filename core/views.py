@@ -3,6 +3,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout, auth
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from core.forms import UserForm, UserProfileForm
+from core.models import Prompt
 
 def home(request):
     return render(request, "home.html")
@@ -73,6 +74,20 @@ def my_profile(request):
 @login_required
 def my_profile_edit(request):
     return render(request, "profiles/my_profile.html", {"edit_mode": True})
+
+@login_required
+def my_prompts(request):
+    context_dict = {"edit_mode": False}
+    current_user = request.user
+    user_prompts = Prompt.objects.filter(creator=current_user)
+    context_dict["prompts"] = user_prompts
+
+    return render(request, "profiles/my_prompts.html", context_dict)
+
+@login_required
+def edit_prompts(request):
+    context_dict = {"edit_mode": True}
+    return render(request, "profiles/my_prompts.html", context_dict)
 
 def profile(request, username):
     return render(request, "profiles/profile.html", {"username": username})
