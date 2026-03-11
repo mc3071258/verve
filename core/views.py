@@ -11,11 +11,10 @@ User = get_user_model()
 
 def home(request):
     prompt_list = (
-        Prompt.objects.annotate(upvote_count=Count('votes')).order_by("-upvote_count")[:5]
+        Prompt.objects.annotate(upvote_count=Count("votes")).order_by("-upvote_count")[:5]
     )
     context_dict = {}
-    context_dict['boldmessage'] = 'Crunchy'
-    context_dict['prompts'] = prompt_list
+    context_dict["prompts"] = prompt_list
 
     return render(request, "home.html", context=context_dict)
 
@@ -35,7 +34,7 @@ def create_prompt(request):
                 
             return redirect("home")
 
-    return render(request, 'prompts/create.html', {'form': form})
+    return render(request, "prompts/create.html", {"form": form})
 
 # Auth
 def login(request):

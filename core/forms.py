@@ -11,7 +11,7 @@ class PromptForm(forms.ModelForm):
 
     class Meta:
         model = Prompt
-        fields = ('game', 'text')
+        fields = ["game", "text"]
 
 # Django's UserCreationForm
 class UserForm(UserCreationForm):

@@ -13,8 +13,6 @@ urlpatterns = [
     path("game/<slug:slug>/play/", views.game_play, name="game_play"),
     path("game/<slug:slug>/view/", views.game_prompts, name="game_prompts"),
 
-  
-
     path("login/", views.login, name="login"),
     path("register/", views.register, name="register"),
     path("logout/", views.logout, name="logout"),
@@ -23,7 +21,7 @@ urlpatterns = [
     path("profiles/edit/", views.my_profile_edit, name="edit_profile"),
     path("profiles/<str:username>/", views.profile, name="profile"),
 
-    path('prompts/create/', views.create_prompt, name='create_prompt'),
+    path("prompts/create/", views.create_prompt, name="create_prompt"),
 ]
 
 
