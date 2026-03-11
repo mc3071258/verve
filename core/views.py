@@ -1,15 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
-
 from core.models import Profile, Prompt
-from django.contrib.auth.models import User
 from django.db.models import Count
-from core.forms import PromptForm
 from django.http import HttpResponse
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from core.forms import UserForm, UserProfileForm
+from core.forms import UserForm, UserProfileForm, PromptForm
+from django.contrib.auth import get_user_model 
 
+User = get_user_model()
 
 def home(request):
     prompt_list = (
@@ -30,12 +29,12 @@ def create_prompt(request):
         form = PromptForm(request.POST)
     
         if form.is_valid():
-            prompt = form.save(commit=False)
-            prompt.creator = request.user # User.objects.filter(is_superuser=True).first()
-            prompt.save()
-            
-            #THIS MAY BE INCORRECT
-            return redirect('/')
+            with transaction.atomic():
+                prompt = form.save(commit=False)
+                prompt.creator = request.user
+                prompt.save()
+                
+                return redirect("home")
         else:
             print(form.errors)
 
