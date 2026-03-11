@@ -1,2 +1,8 @@
 {% extends "base.html" %}
 
+{% block title %}Game{% endblock %}
+
+{% block content %}
+<h1>{% block game_title %}Game{% endblock %}</h1>
+{% block game_content %}{% endblock %}
+{% endblock %}

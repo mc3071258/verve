@@ -8,11 +8,8 @@
     </h1>
 
     <div>
-        <form id="prompt_form" method="post" action="/prompts/create">
+        <form method="post" action="{% url 'create_prompt' %}">
             {% csrf_token %}
-            {% for hidden in form.hidden_fields %}
-                {{ hidden }}
-            {% endfor %}
             {% for field in form.visible_fields %}
                 {{ field.errors }}
                 {{ field.help_text }}
