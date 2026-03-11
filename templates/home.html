@@ -14,7 +14,7 @@
                 {% for prompt in prompts %}
                 <tr>
                     <td>{{ forloop.counter }}.</td>
-                    <td>FROM GAME - {{ prompt.game }}, PROMPT - {{ prompt.text }}, UPVOTES - {{ prompt.upvotes}} </td>
+                    <td>FROM GAME - {{ prompt.game }}, PROMPT - {{ prompt.text }}, UPVOTES - {{ prompt.upvote_count }} </td>
                 </tr>
                 {% endfor %}
             </table>
@@ -23,7 +23,11 @@
     <strong>There are no prompts present</strong>
     {% endif %}
 
-
 </div>
+{% if user.is_authenticated %}
+    <div>
+        <strong> Want to create a prompt? - <a href="/prompts/create">Add a New Prompt</a> ||</strong>
+    </div>
+{% endif %}
 
 {% endblock %}

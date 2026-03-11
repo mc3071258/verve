@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from core.models import Profile, Prompt
 from django.contrib.auth.models import User
+from django.db.models import Count
 from core.forms import PromptForm
 from django.http import HttpResponse
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
@@ -11,7 +12,9 @@ from core.forms import UserForm, UserProfileForm
 
 
 def home(request):
-    prompt_list = Prompt.objects.order_by('-upvotes')[:5]
+    prompt_list = (
+        Prompt.objects.annotate(upvote_count=Count('votes')).order_by("-upvote_count")[:5]
+    )
     context_dict = {}
     context_dict['boldmessage'] = 'Crunchy'
     context_dict['prompts'] = prompt_list
@@ -37,8 +40,6 @@ def create_prompt(request):
             print(form.errors)
 
     return render(request, 'prompts/create.html', {'form': form})
-
-
 
 # Auth
 def login(request):
