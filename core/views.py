@@ -1,11 +1,40 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from core.models import Prompt
+from django.db.models import Count
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from core.forms import UserForm, UserProfileForm
+from core.forms import UserForm, UserProfileForm, PromptForm
+from django.contrib.auth import get_user_model 
+
+User = get_user_model()
 
 def home(request):
-    return render(request, "home.html")
+    prompt_list = (
+        Prompt.objects.annotate(upvote_count=Count("votes")).order_by("-upvote_count")[:5]
+    )
+    context_dict = {}
+    context_dict["prompts"] = prompt_list
+
+    return render(request, "home.html", context=context_dict)
+
+# Prompts
+@login_required
+def create_prompt(request):
+    form = PromptForm()
+
+    if request.method == "POST":
+        form = PromptForm(request.POST)
+    
+        if form.is_valid():
+            with transaction.atomic():
+                prompt = form.save(commit=False)
+                prompt.creator = request.user
+                prompt.save()
+                
+            return redirect("home")
+
+    return render(request, "prompts/create.html", {"form": form})
 
 # Auth
 def login(request):
@@ -59,10 +88,7 @@ def game_play(request, slug):
 def game_prompts(request, slug):
     return render(request, "games/prompts.html", {"slug": slug})
 
-# Prompts
-@login_required
-def create_prompt(request):
-    return render(request, "prompts/create.html")
+
 
 
 # Profiles
