@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from core.models import Profile, Prompt
+from core.models import Prompt
 from django.db.models import Count
-from django.http import HttpResponse
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
@@ -34,9 +33,7 @@ def create_prompt(request):
                 prompt.creator = request.user
                 prompt.save()
                 
-                return redirect("home")
-        else:
-            print(form.errors)
+            return redirect("home")
 
     return render(request, 'prompts/create.html', {'form': form})
 
