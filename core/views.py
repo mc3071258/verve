@@ -7,6 +7,7 @@ from django.db import transaction
 from core.forms import UserForm, UserProfileForm, PromptForm
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError 
+from django.views.decorators.http import require_POST
 
 User = get_user_model()
 
@@ -52,27 +53,27 @@ def create_prompt(request):
 
     return render(request, "prompts/create.html", {"form": form})
 
+@require_POST
 def upvote_prompt(request, prompt_id):
-    if request.method == "POST":
-        prompt = get_object_or_404(Prompt, id=prompt_id)
-        if request.user.is_authenticated:
-            voter = request.user
-            session_id = None
-        else:
-            if not request.session.session_key:
-                request.session.save()
+    prompt = get_object_or_404(Prompt, id=prompt_id)
+    if request.user.is_authenticated:
+        voter = request.user
+        session_id = None
+    else:
+        if not request.session.session_key:
+            request.session.save()
 
-            voter = None
-            session_id = request.session.session_key
+        voter = None
+        session_id = request.session.session_key
 
-        try:
-            Vote.objects.create(
-                prompt=prompt,
-                voter=voter,
-                guest_session_id=session_id
-            )
-        except IntegrityError:
-            pass
+    try:
+        Vote.objects.create(
+            prompt=prompt,
+            voter=voter,
+            guest_session_id=session_id
+        )
+    except IntegrityError:
+        pass
 
     return redirect("home")
 
