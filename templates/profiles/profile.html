@@ -3,6 +3,13 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-<h1>Profile</h1>
-<p>Public profile page works.</p>
+<div class="card p-4 shadow-sm">
+    <h1 class="mb-3">{{ profile_user.username }}</h1>
+
+    {% if profile.profile_picture %}
+        <img src="{{ profile.profile_picture.url }}" alt="Profile picture" class="img-thumbnail mb-3" style="max-width: 200px;">
+    {% endif %}
+
+    <p><strong>Bio:</strong> {{ profile.bio|default:"No bio yet." }}</p>
+</div>
 {% endblock %}
