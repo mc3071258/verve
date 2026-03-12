@@ -22,6 +22,7 @@ urlpatterns = [
     path("profiles/<str:username>/", views.profile, name="profile"),
 
     path("prompts/create/", views.create_prompt, name="create_prompt"),
+    path("prompts/<int:prompt_id>/upvote/", views.upvote_prompt, name="upvote_prompt")
 ]
 
 
