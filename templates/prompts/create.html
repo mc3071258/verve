@@ -3,6 +3,16 @@
 {% block title %}Create Prompt{% endblock %}
 
 {% block content %}
-<h1>Create Prompt</h1>
-<p>Create prompt page works.</p>
+    <h1>Create Prompt</h1>
+    <form id="prompt_form" method="POST" action="/create-prompt/">
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        {% for field in form.visible_fields %}
+            {{ field.help_text }}<br />
+            {{ field }}<br /><br />
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
 {% endblock %}

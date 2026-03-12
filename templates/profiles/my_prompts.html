@@ -5,8 +5,18 @@
 {% block content %}
     {% if prompts %}
         {% for prompt in prompts %}
-            {{ prompt.game }} - {{ prompt.created_at }}
-            <br />{{ prompt.text }}<br /><br />
+            {% if edit_mode %}
+                {{ prompt.0.game }} - {{ prompt.0.created_at }}
+                <form method="post" action="/profiles/my_prompts/edit/">
+                    {% csrf_token %}
+                    <input type="text" name="text" placeholder="{{ prompt.0.text }}">
+                    <input type="hidden" name="prompt_inst" value="{{ prompt.0.text }}">
+                    <button type="submit">Save</button>
+                </form>
+            {% else %}
+                {{ prompt.0.game }} - {{ prompt.0.created_at }}
+                <br />{{ prompt.0.text }} ({{ prompt.1 }} votes)<br /><br />
+            {% endif %}
         {% endfor %}
     {% else %}
         <strong>You have no prompts.</strong>
