@@ -3,22 +3,30 @@
 {% block title %}My Prompts{% endblock %}
 
 {% block content %}
-    {% if prompts %}
-        {% for prompt in prompts %}
+    <div>
+        {% if prompts %}
+            {% for prompt in prompts %}
+                {% if edit_mode %}
+                    {{ prompt.game }} - {{ prompt.created_at }}
+                    <form method="post" action="{% url 'edit_prompts' %}">
+                        {% csrf_token %}
+                        <input type="text" name="text" placeholder="{{ prompt.text }}">
+                        <input type="hidden" name="prompt_inst" value="{{ prompt.text }}">
+                        <button class="btn btn-primary" type="submit"> Submit </button>
+                    </form>
+                    <br />
+                {% else %}
+                    {{ prompt.game }} - {{ prompt.created_at }}
+                    <br />{{ prompt.text }} ({{ prompt.upvote_count }} votes)<br /><br />
+                {% endif %}
+            {% endfor %}
             {% if edit_mode %}
-                {{ prompt.0.game }} - {{ prompt.0.created_at }}
-                <form method="post" action="{% url 'edit_prompts' %}">
-                    {% csrf_token %}
-                    <input type="text" name="text" placeholder="{{ prompt.0.text }}">
-                    <input type="hidden" name="prompt_inst" value="{{ prompt.0.text }}">
-                    <button type="submit">Save</button>
-                </form>
+                <a href="{% url 'my_prompts' %}" class="btn btn-primary"> Cancel Edit </a>
             {% else %}
-                {{ prompt.0.game }} - {{ prompt.0.created_at }}
-                <br />{{ prompt.0.text }} ({{ prompt.1 }} votes)<br /><br />
+                <a href="{% url 'edit_prompts' %}" class="btn btn-primary"> Edit Prompts </a>
             {% endif %}
-        {% endfor %}
-    {% else %}
-        <strong>You have no prompts.</strong>
-    {% endif %}
+        {% else %}
+            <strong>You have no prompts.</strong>
+        {% endif %}
+    </div>
 {% endblock %}

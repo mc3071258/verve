@@ -157,13 +157,9 @@ def my_profile_edit(request):
 def my_prompts(request):
     context_dict = {"edit_mode": False}
     current_user = request.user
-    user_prompts = Prompt.objects.filter(creator=current_user)
-
-    votes_list = []
-    for cur_prompt in user_prompts:
-        votes = Vote.objects.filter(prompt=cur_prompt)
-        votes_list.append(votes.__len__())
-    context_dict["prompts"] = zip(user_prompts, votes_list)
+    user_prompts = Prompt.objects.annotate(upvote_count=Count("votes")).filter(creator=current_user)
+    
+    context_dict["prompts"] = user_prompts
     
     return render(request, "profiles/my_prompts.html", context_dict)
 
@@ -177,13 +173,8 @@ def edit_prompts(request):
 
     context_dict = {"edit_mode":True}
     current_user = request.user
-    user_prompts = Prompt.objects.filter(creator=current_user)
-
-    votes_list = []
-    for cur_prompt in user_prompts:
-        votes = Vote.objects.filter(prompt=cur_prompt)
-        votes_list.append(votes.__len__())
-    context_dict["prompts"] = zip(user_prompts, votes_list)
+    user_prompts = Prompt.objects.annotate(upvote_count=Count("votes")).filter(creator=current_user)
+    context_dict["prompts"] = user_prompts
 
     return render(request, "profiles/my_prompts.html", context_dict)
 
