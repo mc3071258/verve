@@ -1,12 +1,82 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from core.models import Prompt, Vote
+from django.db.models import Count
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from core.forms import UserForm, UserProfileForm, PromptForm
 from core.models import Prompt, Vote
+from django.contrib.auth import get_user_model
+from django.db import IntegrityError 
+from django.views.decorators.http import require_POST
+
+User = get_user_model()
 
 def home(request):
-    return render(request, "home.html")
+    prompt_list = (
+        Prompt.objects.annotate(upvote_count=Count("votes")).order_by("-upvote_count")[:5]
+    )
+    voted_prompts_list = set()
+
+    if request.user.is_authenticated:
+        voted_prompts_list = set(
+            Vote.objects.filter(voter=request.user).values_list("prompt_id", flat=True)
+        )
+
+    else:
+        if request.session.session_key:
+            voted_prompts_list = set(
+                Vote.objects.filter(guest_session_id=request.session.session_key)
+                .values_list("prompt_id", flat=True)
+            )
+
+    context_dict = {}
+    context_dict["prompts"] = prompt_list
+    context_dict["voted_prompts"] = voted_prompts_list
+
+    return render(request, "home.html", context=context_dict)
+
+# Prompts
+@login_required
+def create_prompt(request):
+    form = PromptForm()
+
+    if request.method == "POST":
+        form = PromptForm(request.POST)
+    
+        if form.is_valid():
+            with transaction.atomic():
+                prompt = form.save(commit=False)
+                prompt.creator = request.user
+                prompt.save()
+                
+            return redirect("home")
+
+    return render(request, "prompts/create.html", {"form": form})
+
+@require_POST
+def upvote_prompt(request, prompt_id):
+    prompt = get_object_or_404(Prompt, id=prompt_id)
+    if request.user.is_authenticated:
+        voter = request.user
+        session_id = None
+    else:
+        if not request.session.session_key:
+            request.session.save()
+
+        voter = None
+        session_id = request.session.session_key
+
+    try:
+        Vote.objects.create(
+            prompt=prompt,
+            voter=voter,
+            guest_session_id=session_id
+        )
+    except IntegrityError:
+        pass
+
+    return redirect("home")
 
 # Auth
 def login(request):
