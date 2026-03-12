@@ -3,11 +3,8 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from .models import Game, Prompt, Follow, Vote, Profile
-<<<<<<< HEAD
-=======
 
 User = get_user_model()
->>>>>>> c47e8759fca27a36f470d01db1eeece2da742691
 
 # Test constrains for core models.
 # Note : Wrap expected IntegrityError writes in transaction.atomic()
