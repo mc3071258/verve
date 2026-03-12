@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +9,9 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <link rel="stylesheet" type="text/css" href ="baseStyle.css"/>
+
+    <link rel="stylesheet" type="text/css" href ="{% static 'baseStyle.css' %}"/>
+    
     <title>{% block title %}Party Games{% endblock %}</title>
 </head>
 <body>
@@ -21,7 +24,7 @@
             <li class="nav-item"><a class="nav-link" href="#">Never Have I Ever</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Truth Or Dare</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Would You Rather?</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Create</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'create_prompt' %}">Create</a></li>
         </ul>
 
         
@@ -29,15 +32,15 @@
         {% if user.is_authenticated %}
          <div class = "profileText text-end me-2">
             <span id="usernameText">@{{profile.user.username}}</span><br>
-            <a href="#" id="logOut">Log out</a>   
+            <a href="{% url 'logout' %}" id="logOut">Log out</a>   
         </div>
             {% if user.profile.profile_picture%}   
             <img src="{{ profile.profile_picture.url }}" alt="Profile Photo" id="profilePicture" width="40" height="40">
             {% endif %}
         {% else %}
          <div class = "profileText text-end me-2">
-            <a href="#" id="logIn">Log in</a>
-            <a href="#" id="Register">Register</a>
+            <a href="{% url 'login' %}" id="logIn">Log in</a>
+            <a href="{% url 'register' %}" id="Register">Register</a>
         {% endif %}
             </div>
         </div>
@@ -58,7 +61,7 @@
             <li class="nav-item"><a class="nav-link" href="#">Never Have I Ever</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Truth Or Dare</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Would You Rather?</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Create</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'create_prompt' %}">Create</a></li>
         </ul>
         </div>
    </footer>
@@ -66,6 +69,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <script src="basejs.js"></script>
+    <!-- <script src="basejs.js"></script> -->
+    <script src="{% static 'basejs.js' %}"></script>
 </body>
 </html>
