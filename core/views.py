@@ -183,13 +183,17 @@ def my_prompts(request):
 @login_required
 def edit_prompt(request, prompt_id):
     prompt_inst = get_object_or_404(Prompt, id=prompt_id)
+    context_dict = {"prompt":prompt_inst}
 
     if request.method == "POST":
         if prompt_inst.creator == request.user:
-            prompt_inst.text = request.POST.get("text")
-            prompt_inst.save()
-
-    context_dict = {"prompt":prompt_inst}
+            new_text = request.POST.get("text")
+            if len(new_text) > 0 and len(new_text) < 250:
+                prompt_inst.text = request.POST.get("text")
+                prompt_inst.save()
+            else:
+                context_dict["error"] = "Input of invalid length."
+                
     return render(request, "prompts/edit.html", context_dict)
 
 def profile(request, username):

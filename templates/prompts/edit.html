@@ -10,6 +10,9 @@
         {% csrf_token %}
         <input type="text" name="text" placeholder="{{ prompt.text }}"><br />
         <input type="hidden" name="prompt_id" value="{{ prompt.id }}">
+        {% if error %}
+            {{ error }}
+        {% endif %}
         <br /><button class="btn btn-primary" type="submit"> Submit </button>
     </form>
     <br />
