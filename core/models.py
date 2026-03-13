@@ -25,6 +25,10 @@ class Prompt(models.Model):
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # Truth or dare needs extra field (DB, display)
+    CATEGORY_CHOICES = [("truth", "Truth"), ("dare", "Dare")]
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, blank=True, null=True)
+
     def __str__(self):
         # Truncate to aviod visibility issues in admin, some prompt might be too long
         return f"{self.game.name}: {self.text[:30]}"
@@ -74,3 +78,4 @@ class Vote(models.Model):
         else:
             who = self.guest_session_id
         return f"{who} voted on prompt {self.prompt_id}" 
+    
