@@ -1,8 +1,16 @@
 {% extends "base.html" %}
+<link rel="stylesheet" type="text/css" href ="game_baseStyle.css"/>
 
 {% block title %}Game{% endblock %}
 
 {% block content %}
 <h1>{% block game_title %}Game{% endblock %}</h1>
-{% block game_content %}{% endblock %}
+{% block game_content %}
+
+    <div class = "GameOptions">
+    <button id="playGameButton" href="{% url 'game_play' slug=game.slug %}">Play Game</button>
+    <button id = "viewPromptsButton" href="{% url 'game_prompts' slug=game.slug %}">View Prompts</button>
+    </div>
+    
+{% endblock %}
 {% endblock %}
