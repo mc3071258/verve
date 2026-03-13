@@ -5,7 +5,6 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path("", views.home, name="home"),
-
     # Redirect with home/, use "" as homepage
     path("home/", RedirectView.as_view(pattern_name="home", permanent=False)),
 

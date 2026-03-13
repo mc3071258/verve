@@ -140,7 +140,6 @@ def create_prompt(request):
 
     return render(request, "prompts/create.html", {"form":form})
 
-
 # Profiles
 @login_required
 def my_profile(request):
