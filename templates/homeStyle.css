@@ -1,5 +1,16 @@
+h1{
+    color: #57506C;
+    text-align: center;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
 #GameButtons{
     display: flex;
+    justify-content: space-between;
     width: 1299px;
     height: 349.886px;
     border-radius: 10px;
@@ -8,6 +19,8 @@
 }
 
 #GameButtons button{
+    
+    margin: 2.5%;
     width: 310.195px;
     height: 286.063px;
     border-radius: 10px;
@@ -23,6 +36,8 @@
 }
 
 #PromptBox{
+    justify-content: space-between;
+    display: flex;
     width: 1299px;
     height: 327px;
     border-radius: 10px;
@@ -36,8 +51,21 @@
     line-height: normal;
 }
 
+#PromptBox h2{
+    margin-left: 2%;
+    margin-top: 2%;
+    color: #5E547C;
+    text-align: center;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
 #PromptList{
-    display: relative;
+    margin: 2.5%;   
+    display: absolute;
     float: right;
     width: 1064px;
     height: 270px;
@@ -45,6 +73,7 @@
 }
 
 #PromptBox #PromptList .table{
+    margin: 2.5%;
     height: 29px;
     flex-shrink: 0;
     align-self: stretch;
