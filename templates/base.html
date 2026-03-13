@@ -31,11 +31,11 @@
         <div class = "profileNavSection  d-flex align-items-center ms-auto">
         {% if user.is_authenticated %}
          <div class = "profileText text-end me-2">
-            <span id="usernameText">@{{profile.user.username}}</span><br>
+            <span id="usernameText">@{{user.profile.username}}</span><br>
             <a href="{% url 'logout' %}" id="logOut">Log out</a>   
         </div>
             {% if user.profile.profile_picture%}   
-            <img src="{{ profile.profile_picture.url }}" alt="Profile Photo" id="profilePicture" width="40" height="40">
+            <img src="{{ user.profile.profile_picture.url }}" alt="Profile Photo" id="profilePicture" width="40" height="40">
             {% endif %}
         {% else %}
          <div class = "profileText text-end me-2">
