@@ -3,6 +3,41 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h1>Home</h1>
+<h1>Home Page</h1>
 <p>Home page works.</p>
+
+<div>
+    <h2> Top 5 Prompts </h2>
+
+            {% if  prompts %}
+            <table class="table">
+                {% for prompt in prompts %}
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td>FROM GAME - {{ prompt.game }}, PROMPT - {{ prompt.text }}, UPVOTES - {{ prompt.upvote_count }} </td>
+                    <td>
+                        {% if prompt.id in voted_prompts %}
+                        <button disabled class="btn btn-primary"> You have already voted on this prompt </button>
+                    {% else %}
+                        <form action="{% url 'upvote_prompt' prompt.id %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-primary" type="submit"> Upvote this Prompt </button>
+                        </form>
+                    {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+    {% else %}
+    <strong>There are no prompts present</strong>
+    {% endif %}
+
+</div>
+
+    <div>
+        <a class="btn btn-primary" href="{% url 'create_prompt' %}">Add a New Prompt</a>
+    </div>
+
+
 {% endblock %}
