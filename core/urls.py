@@ -20,7 +20,8 @@ urlpatterns = [
     path("profiles/edit/", views.my_profile_edit, name="edit_profile"),
     path("profiles/<str:username>/", views.profile, name="profile"),
 
-    path("prompts/create/", views.create_prompt, name="create_prompt"),
+    path("prompts/create/", views.choose_game, name="choose_game"),
+    path("prompts/create/<slug:slug>/", views.create_prompt, name="create_prompt"),
     path("prompts/<int:prompt_id>/upvote/", views.upvote_prompt, name="upvote_prompt")
 ]
 
