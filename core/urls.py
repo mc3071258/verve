@@ -5,7 +5,6 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path("", views.home, name="home"),
-
     # Redirect with home/, use "" as homepage
     path("home/", RedirectView.as_view(pattern_name="home", permanent=False)),
 
@@ -22,6 +21,7 @@ urlpatterns = [
     path("profiles/<str:username>/", views.profile, name="profile"),
 
     path("prompts/create/", views.create_prompt, name="create_prompt"),
+    path("prompts/<int:prompt_id>/upvote/", views.upvote_prompt, name="upvote_prompt")
 ]
 
 

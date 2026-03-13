@@ -1,11 +1,11 @@
+from django.db import transaction, IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
-from core.models import Prompt
 from django.db.models import Count
-from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
+from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
-from core.forms import UserForm, UserProfileForm, PromptForm
-from django.contrib.auth import get_user_model 
+from django.views.decorators.http import require_POST
+from core.models import Prompt, Vote, Profile
+from core.forms import UserForm, UserProfileForm, PromptForm 
 
 User = get_user_model()
 
@@ -13,8 +13,23 @@ def home(request):
     prompt_list = (
         Prompt.objects.annotate(upvote_count=Count("votes")).order_by("-upvote_count")[:5]
     )
+    voted_prompts_list = set()
+
+    if request.user.is_authenticated:
+        voted_prompts_list = set(
+            Vote.objects.filter(voter=request.user).values_list("prompt_id", flat=True)
+        )
+
+    else:
+        if request.session.session_key:
+            voted_prompts_list = set(
+                Vote.objects.filter(guest_session_id=request.session.session_key)
+                .values_list("prompt_id", flat=True)
+            )
+
     context_dict = {}
     context_dict["prompts"] = prompt_list
+    context_dict["voted_prompts"] = voted_prompts_list
 
     return render(request, "home.html", context=context_dict)
 
@@ -35,6 +50,30 @@ def create_prompt(request):
             return redirect("home")
 
     return render(request, "prompts/create.html", {"form": form})
+
+@require_POST
+def upvote_prompt(request, prompt_id):
+    prompt = get_object_or_404(Prompt, id=prompt_id)
+    if request.user.is_authenticated:
+        voter = request.user
+        session_id = None
+    else:
+        if not request.session.session_key:
+            request.session.save()
+
+        voter = None
+        session_id = request.session.session_key
+
+    try:
+        Vote.objects.create(
+            prompt=prompt,
+            voter=voter,
+            guest_session_id=session_id
+        )
+    except IntegrityError:
+        pass
+
+    return redirect("home")
 
 # Auth
 def login(request):
@@ -90,16 +129,36 @@ def game_prompts(request, slug):
 
 
 
-
 # Profiles
 @login_required
 def my_profile(request):
-    return render(request, "profiles/my_profile.html", {"edit_mode": False})
+    profile = get_object_or_404(Profile, user=request.user)
+    return render(request, "profiles/my_profile.html", {
+        "profile_user": request.user,
+        "profile": profile,
+        "edit_mode": False})
+
 
 @login_required
 def my_profile_edit(request):
-    return render(request, "profiles/my_profile.html", {"edit_mode": True})
+    profile = get_object_or_404(Profile, user=request.user)
+    if request.method == "POST":
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        if profile_form.is_valid():
+            profile_form.save()
+            return redirect("my_profile")
+    else:
+        profile_form = UserProfileForm(instance=profile)
+
+    return render(request, "profiles/edit_profile.html", {
+        "profile_form": profile_form
+    })
 
 def profile(request, username):
-    return render(request, "profiles/profile.html", {"username": username})
+    user = get_object_or_404(User, username=username)
+    profile = get_object_or_404(Profile, user=user)
+
+    return render(request, "profiles/profile.html", {
+        "profile_user": user,
+        "profile": profile})
 
