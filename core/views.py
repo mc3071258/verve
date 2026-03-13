@@ -129,7 +129,6 @@ def game_prompts(request, slug):
 
 
 
-
 # Profiles
 @login_required
 def my_profile(request):
