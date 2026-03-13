@@ -131,12 +131,17 @@ def game_prompts(request, slug):
 @login_required
 def create_prompt(request):
     form = PromptForm()
+
     if request.method == "POST":
         form = PromptForm(request.POST)
-        new_prompt = form.save(commit=False)
-        new_prompt.creator = request.user
-        new_prompt.save()
-        return redirect("my_prompts")
+
+        if form.is_valid():
+            with transaction.atomic():
+                prompt = form.save(commit=False)
+                prompt.creator = request.user
+                prompt.save()
+
+            return redirect("home")
 
     return render(request, "prompts/create.html", {"form":form})
 
@@ -176,19 +181,16 @@ def my_prompts(request):
     return render(request, "profiles/my_prompts.html", context_dict)
 
 @login_required
-def edit_prompts(request):
+def edit_prompt(request, prompt_id):
+    prompt_inst = get_object_or_404(Prompt, id=prompt_id)
+
     if request.method == "POST":
-        prompt_text = request.POST.get("prompt_inst")
-        instance = Prompt.objects.get(text=prompt_text)
-        instance.text = request.POST.get("text")
-        instance.save()
+        if prompt_inst.creator == request.user:
+            prompt_inst.text = request.POST.get("text")
+            prompt_inst.save()
 
-    context_dict = {"edit_mode":True}
-    current_user = request.user
-    user_prompts = Prompt.objects.annotate(upvote_count=Count("votes")).filter(creator=current_user)
-    context_dict["prompts"] = user_prompts
-
-    return render(request, "profiles/my_prompts.html", context_dict)
+    context_dict = {"prompt":prompt_inst}
+    return render(request, "prompts/edit.html", context_dict)
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)

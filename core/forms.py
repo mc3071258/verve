@@ -6,13 +6,6 @@ from .models import Profile, Prompt, Game
 
 User = get_user_model()
 
-class PromptForm(forms.ModelForm):
-    text = forms.CharField(max_length=250, help_text="Please enter the prompt")    
-
-    class Meta:
-        model = Prompt
-        fields = ["game", "text"]
-
 # Django's UserCreationForm
 class UserForm(UserCreationForm):
     email = forms.EmailField(required=False)  # Optionally add email field later 
