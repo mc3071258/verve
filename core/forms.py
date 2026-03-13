@@ -2,16 +2,9 @@ from django import forms
 from core.models import Prompt
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile
+from .models import Profile, Prompt, Game
 
 User = get_user_model()
-
-class PromptForm(forms.ModelForm):
-    text = forms.CharField(max_length=250, help_text="Please enter the prompt")    
-
-    class Meta:
-        model = Prompt
-        fields = ["game", "text"]
 
 # Django's UserCreationForm
 class UserForm(UserCreationForm):
@@ -25,3 +18,14 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ["bio", "profile_picture"]
+
+# Prompt Forms
+class PromptForm(forms.ModelForm):
+    
+    game = forms.ModelChoiceField(queryset=Game.objects, help_text="Select the game you want to make a prompt for:", widget=forms.RadioSelect, required=True)
+    text = forms.CharField(max_length=250, help_text="Enter your prompt:", required=True)
+
+
+    class Meta:
+        model = Prompt
+        fields = ["game","text"]
