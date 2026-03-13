@@ -1,0 +1,61 @@
+#GameButtons{
+    display: flex;
+    width: 1299px;
+    height: 349.886px;
+    border-radius: 10px;
+    background: linear-gradient(94deg, #AFA3D0 25.92%, #E0D9F2 99.62%);
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+#GameButtons button{
+    width: 310.195px;
+    height: 286.063px;
+    border-radius: 10px;
+    border-color: #E0D9F2;
+    background: #E0D9F2;
+    color: #746895;
+    text-align: center;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#PromptBox{
+    width: 1299px;
+    height: 327px;
+    border-radius: 10px;
+    background: #ACC9AB;
+    color: #5E547C;
+    text-align: left;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#PromptList{
+    display: relative;
+    float: right;
+    width: 1064px;
+    height: 270px;
+    background: #F6F0F0;
+}
+
+#PromptBox #PromptList .table{
+    height: 29px;
+    flex-shrink: 0;
+    align-self: stretch;
+    color: #5E547C;
+    text-align: center;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+
+

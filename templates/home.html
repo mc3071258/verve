@@ -1,13 +1,22 @@
 {% extends "base.html" %}
 
+
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h1>Home Page</h1>
-<p>Home page works.</p>
+<link rel="stylesheet" type="text/css" href ="homeStyle.css"/>
+<h1>Choose a game</h1>
 
-<div>
+<div id = GameButtons>
+    <button>Truth or Dare</button>
+    <button>Never Have I Ever</button>
+    <button>Would You Rather?</button>
+</div>
+
+
+<div id = PromptBox>
     <h2> Top 5 Prompts </h2>
+    <div id=PromptList>
 
             {% if  prompts %}
             <table class="table">
@@ -32,6 +41,7 @@
     {% else %}
     <strong>There are no prompts present</strong>
     {% endif %}
+    </div>
 
 </div>
 
