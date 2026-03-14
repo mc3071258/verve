@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}My Prompts{% endblock %}
+
+{% block content %}
+    <div>
+        {% if prompts %}
+            {% for prompt in prompts %}
+                {{ prompt.game }} - {{ prompt.created_at }}
+                <br />{{ prompt.text }} ({{ prompt.upvote_count }} votes)
+                <br /><a href="{% url 'edit_prompt' prompt.id %}" class="btn btn-primary"> Edit Prompt </a><br /><br />
+            {% endfor %}
+        {% else %}
+            <strong>You have no prompts.</strong>
+        {% endif %}
+    </div>
+{% endblock %}
