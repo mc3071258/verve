@@ -18,12 +18,12 @@ class TruthOrDareForm(forms.ModelForm):
         ("truth", "Truth"),
         ("dare", "Dare"),
     ]
-    truth_or_dare = forms.ChoiceField(choices=TRUTH_DARE_CHOICES)
+    category = forms.ChoiceField(choices=TRUTH_DARE_CHOICES)
     text = forms.CharField(max_length=250, help_text="Please enter the prompt") 
 
     class Meta:
         model = Prompt
-        fields = ["text", "truth_or_dare"]
+        fields = ["text", "category"]
 
 class GameForm(forms.Form):
     game = forms.ModelChoiceField(queryset=Game.objects.all(), 
@@ -45,12 +45,12 @@ class UserProfileForm(forms.ModelForm):
         fields = ["bio", "profile_picture"]
 
 # Prompt Forms
-class PromptForm(forms.ModelForm):
-    
-    game = forms.ModelChoiceField(queryset=Game.objects, help_text="Select the game you want to make a prompt for:", widget=forms.RadioSelect, required=True)
-    text = forms.CharField(max_length=250, help_text="Enter your prompt:", required=True)
-
-
-    class Meta:
-        model = Prompt
-        fields = ["game","text"]
+#class PromptForm(forms.ModelForm):
+#    
+#    game = forms.ModelChoiceField(queryset=Game.objects, help_text="Select the game you want to make a prompt for:", widget=forms.RadioSelect, required=True)
+#    text = forms.CharField(max_length=250, help_text="Enter your prompt:", required=True)
+#
+#
+#    class Meta:
+#       model = Prompt
+#        fields = ["game","text"]

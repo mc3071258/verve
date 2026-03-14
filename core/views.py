@@ -57,7 +57,7 @@ def create_prompt(request, slug):
             return redirect("home")
 
     else:
-        form = FormClass
+        form = FormClass()
 
     return render(request, "prompts/create.html", {"form": form, "game": game})
 
@@ -149,22 +149,22 @@ def game_prompts(request, slug):
     return render(request, "games/prompts.html", {"slug": slug})
 
 # Prompts
-@login_required
-def create_prompt(request):
-    form = PromptForm()
-
-    if request.method == "POST":
-        form = PromptForm(request.POST)
-
-        if form.is_valid():
-            with transaction.atomic():
-                prompt = form.save(commit=False)
-                prompt.creator = request.user
-                prompt.save()
-
-            return redirect("home")
-
-    return render(request, "prompts/create.html", {"form":form})
+#@login_required
+#def create_prompt(request):
+#    form = PromptForm()
+#
+#    if request.method == "POST":
+#        form = PromptForm(request.POST)
+#
+#        if form.is_valid():
+#            with transaction.atomic():
+#                prompt = form.save(commit=False)
+#                prompt.creator = request.user
+#                prompt.save()
+#
+#            return redirect("home")
+#
+#    return render(request, "prompts/create.html", {"form":form})
 
 # Profiles
 @login_required
