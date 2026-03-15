@@ -28,14 +28,14 @@ def populate():
     # game : (text, creator_name)
     prompts_data = {
         "Truth or Dare": [
-            ("Truth: What's the strangest dream you've had?", "james"),
-            ("Dare: Try and lick your own elbow", "mary"),
-            ("Truth: Who's your celebrity crush?", "lucas")
+            ("What's the strangest dream you've had?", "james", "truth"),
+            ("Try and lick your own elbow", "mary", "dare"),
+            ("Who's your celebrity crush?", "lucas", "truth"),
         ],
         "Would You Rather": [
             ("Would you rather shoot spaghetti out of your fingers", "james"),
             ("Would you rather sneeze meatballs", "mary"),
-            ("Would you rather only eat beans for the rest of your life", "lucas")
+            ("Would you rather only eat beans for the rest of your life", "lucas"),
         ],
         "Never Have I Ever": [
             ("Never have I ever broken a bone", "james"),
@@ -53,9 +53,9 @@ def populate():
 
     # (game_name, prompt_text, user_voters, guest_sessions)
     votes_data = [
-        ("Truth or Dare", "Truth: What's the strangest dream you've had?", ["james"], ["session1234a"]),
-        ("Truth or Dare", "Dare: Try and lick your own elbow", ["mary"], ["session1234a", "session1234b"]),
-        ("Truth or Dare", "Truth: Who's your celebrity crush?", ["james"], ["session1234a"]),
+        ("Truth or Dare", "What's the strangest dream you've had?", ["james"], ["session1234a"]),
+        ("Truth or Dare", "Try and lick your own elbow", ["mary"], ["session1234a", "session1234b"]),
+        ("Truth or Dare", "Who's your celebrity crush?", ["james"], ["session1234a"]),
         ("Would You Rather", "Would you rather shoot spaghetti out of your fingers", ["james", "mary"], []),
         ("Would You Rather", "Would you rather sneeze meatballs", ["mary"], ["session1234b"]),
         ("Would You Rather", "Would you rather only eat beans for the rest of your life", [], ["session1234b"]),
@@ -101,10 +101,16 @@ def populate():
 
         for game_name, prompts in prompts_data.items():
             game = Game.objects.get(name=game_name)
-            for text, creator_username in prompts:
-                creator = creator_map[creator_username]
-                Prompt.objects.get_or_create(game=game, creator=creator, text=text)
-
+            for prompt_entry in prompts:
+                text = prompt_entry[0]
+                creator = creator_map[prompt_entry[1]]
+                # For truth or dare
+                if len(prompt_entry) > 2:
+                    category = prompt_entry[2] 
+                else:
+                    category = None
+                Prompt.objects.get_or_create(game=game, creator=creator, text=text, category=category)
+                
         # Seed follow pairs
         # Constraints
         for follower_username, following_username in follow_pairs:

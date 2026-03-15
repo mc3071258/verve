@@ -171,7 +171,7 @@ def my_profile_edit(request):
     })
 
 @login_required
-def my_prompts(request, context_dict = {}):
+def my_prompts(request):
     current_user = request.user
     user_prompts = Prompt.objects.annotate(upvote_count=Count("votes")).filter(creator=current_user)
     
