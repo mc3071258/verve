@@ -141,7 +141,7 @@ def create_prompt(request):
                 prompt.creator = request.user
                 prompt.save()
 
-            return redirect("home")
+            return redirect("my_prompts")
 
     return render(request, "prompts/create.html", {"form":form})
 
@@ -171,12 +171,12 @@ def my_profile_edit(request):
     })
 
 @login_required
-def my_prompts(request):
-    context_dict = {"edit_mode": False}
+def my_prompts(request, context_dict = {}):
     current_user = request.user
     user_prompts = Prompt.objects.annotate(upvote_count=Count("votes")).filter(creator=current_user)
     
     context_dict["prompts"] = user_prompts
+    context_dict["del_auth_error"] = request.session.get("del_auth_error")
     
     return render(request, "profiles/my_prompts.html", context_dict)
 
@@ -192,12 +192,26 @@ def edit_prompt(request, prompt_id):
                 if len(new_text) > 0 and len(new_text) < 250:
                     prompt_inst.text = request.POST.get("text")
                     prompt_inst.save()
+                    return redirect("my_prompts")
                 else:
                     context_dict["error"] = "Input of invalid length."
     else:
         context_dict["auth_error"] = "You are not the creator of this prompt."
     
     return render(request, "prompts/edit.html", context_dict)
+
+@require_POST
+def del_prompt(request, prompt_id):
+    # A validation pop-up is still needed, no protection from misclicks
+    prompt_inst = get_object_or_404(Prompt, id=prompt_id)
+
+    if prompt_inst.creator == request.user and request.user.is_authenticated:
+        prompt_inst.delete()
+    
+    else:
+        request.session["del_auth_error"] = "You are not authorised to delete this prompt."
+    
+    return redirect("my_prompts")
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)

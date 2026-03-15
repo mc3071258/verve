@@ -4,11 +4,17 @@
 
 {% block content %}
     <div>
+        {{ del_auth_error }}
         {% if prompts %}
             {% for prompt in prompts %}
                 {{ prompt.game }} - {{ prompt.created_at }}
                 <br />{{ prompt.text }} ({{ prompt.upvote_count }} votes)
-                <br /><a href="{% url 'edit_prompt' prompt.id %}" class="btn btn-primary"> Edit Prompt </a><br /><br />
+                <br />
+                <form action="{% url 'delete_prompt' prompt.id %}" method="post">
+                    {% csrf_token %}
+                    <a href="{% url 'edit_prompt' prompt.id %}" class="btn btn-primary"> Edit Prompt </a>
+                    <button class="btn btn-primary" type="submit"> Delete Prompt </button><br /><br />
+                </form>
             {% endfor %}
         {% else %}
             <strong>You have no prompts.</strong>
