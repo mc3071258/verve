@@ -4,7 +4,9 @@
 
 {% block content %}
     <div>
-        {{ del_auth_error }}
+        {% if del_auth_error %}
+            {{ del_auth_error }}
+        {% endif %}
         {% if prompts %}
             {% for prompt in prompts %}
                 {{ prompt.game }} - {{ prompt.created_at }}
