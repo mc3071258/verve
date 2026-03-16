@@ -33,45 +33,6 @@ def home(request):
 
     return render(request, "home.html", context=context_dict)
 
-# Prompts
-@login_required
-def create_prompt(request, slug):
-    game = get_object_or_404(Game, slug=slug)
-
-
-    if game.slug == "truth-or-dare":
-        FormClass = TruthOrDareForm
-    else:
-        FormClass = PromptForm
-
-    if request.method == "POST":
-        form = FormClass(request.POST)
-    
-        if form.is_valid():
-            with transaction.atomic():
-                prompt = form.save(commit=False)
-                prompt.creator = request.user
-                prompt.game = game
-                prompt.save()
-                
-            return redirect("home")
-
-    else:
-        form = FormClass()
-
-    return render(request, "prompts/create.html", {"form": form, "game": game})
-
-@login_required
-def choose_game(request):
-    form = GameForm()
-
-    if request.method == "POST":
-        form = GameForm(request.POST)
-        if form.is_valid():
-            game = form.cleaned_data["game"]
-            return redirect("create_prompt", slug=game.slug)
-
-    return render(request, "prompts/choose_game.html", {"form": form})
 
 @require_POST
 def upvote_prompt(request, prompt_id):
@@ -206,7 +167,7 @@ def my_prompts(request):
 @login_required
 def edit_prompt(request, prompt_id):
     context_dict = {}
-    prompt_inst = get_object_or_404(Prompt, id=prompt_id)
+    prompt_inst = get_object_or_404(Prompt, id=prompt_id, creator=request.user)
 
     if prompt_inst.creator == request.user:
         context_dict["prompt"] = prompt_inst
@@ -226,7 +187,7 @@ def edit_prompt(request, prompt_id):
 @require_POST
 def del_prompt(request, prompt_id):
     # A validation pop-up is still needed, no protection from misclicks
-    prompt_inst = get_object_or_404(Prompt, id=prompt_id)
+    prompt_inst = get_object_or_404(Prompt, id=prompt_id, creator=request.user)
 
     if prompt_inst.creator == request.user and request.user.is_authenticated:
         prompt_inst.delete()
