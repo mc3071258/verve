@@ -1,8 +1,32 @@
 {% extends "games/game_base.html" %}
 
-{% block title %}Prompts{% endblock %}
-{% block game_title %}Prompts{% endblock %}
+{% block title %}
+    Prompts for {{ game.name }}
+{% endblock %}
+
+{% block game_title %}
+    Prompts for {{ game.name }}
+{% endblock %}
+
 
 {% block game_content %}
-<p>Game prompts page works.</p>
+    {% if  prompts %}
+        <table class="table">
+            {% for prompt in prompts %}
+            <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>FROM GAME - {{ game.name }}, PROMPT - {{ prompt.text }}, UPVOTES - {{ prompt.upvote_count }} </td>
+                <td>
+                    {% if prompt.category == "truth"%}
+                        , CATEGORY - TRUTH
+                    {% elif prompt.category == "dare" %}
+                        , CATEGORY - DARE
+                    {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        No Prompts For {{ game.name }}
+    {% endif %}
+
 {% endblock %}

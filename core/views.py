@@ -143,13 +143,55 @@ def logout(request):
 def game(request, slug):
     return render(request, "games/game.html", {"slug": slug})
 
-def game_play(request, slug):
-    return render(request, "games/play.html", {"slug": slug})
-
 def game_prompts(request, slug):
-    return render(request, "games/prompts.html", {"slug": slug})
+    game = get_object_or_404(Game, slug=slug)
+
+    prompt_list = (
+        Prompt.objects
+            .filter(game=game)
+            .annotate(upvote_count=Count("votes"))
+            .order_by("-upvote_count")[:5]
+    )
+
+    context_dict = {}
+    context_dict["game": game]
+    context_dict["prompt_list": prompts]
+
+    return render(request, "games/prompts.html", context = context_dict)
 
 
+def game_play(request, slug):
+    game = get_object_or_404(Game, slug=slug)
+    context_dict = {}
+    games_with_same_logic = ["would-you-rather", "never-have-i-ever"]
+
+    if slug in games_with_same_logic:
+        prompt_list = (
+            Prompt.objects
+                .filter(game=game)
+        )
+        context_dict["prompts"] = prompt_list
+
+    elif slug == "truth-or-dare":
+        truth_list = (
+            Prompt.objects
+                .filter(game=game, category="truth")
+        )
+        dare_list = (
+            Prompt.objects
+                .filter(game=game, category="dare")
+        )
+        context_dict["truth_prompts"] = truth_list
+        context_dict["dare_prompts"] =  dare_list
+
+    else:
+        raise Http404("Game not found")
+    
+    #f stands for for format, interpolates slug into path
+    template_name = f"games/{slug}/play.html" 
+
+    return render(request, template_name, context = context_dict)
+    
 # Profiles
 @login_required
 def my_profile(request):
