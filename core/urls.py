@@ -23,7 +23,6 @@ urlpatterns = [
 
     path("prompts/create/", views.choose_game, name="choose_game"),
     path("prompts/create/<slug:slug>/", views.create_prompt, name="create_prompt"),
-    #qpath("prompts/create/", views.create_prompt, name="create_prompt"),
     path("prompts/<int:prompt_id>/edit/", views.edit_prompt, name="edit_prompt"),
     path("prompts/<int:prompt_id>/upvote/", views.upvote_prompt, name="upvote_prompt")
 ]
