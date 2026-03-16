@@ -61,6 +61,7 @@ def create_prompt(request, slug):
 
     return render(request, "prompts/create.html", {"form": form, "game": game})
 
+@login_required
 def choose_game(request):
     form = GameForm()
 
