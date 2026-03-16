@@ -6,7 +6,7 @@
 {% block game_content %}
 
     <div id='prompt'></div>
-    <button onclick="nextPrompt()">Next Prompt</button>
+    <button class="btn btn-primary" onclick="nextPrompt()">Next Prompt</button>
 
     {{ prompts|json_script:"prompt-data" }}
 

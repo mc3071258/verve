@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
@@ -138,3 +138,62 @@ class AuthViewTest(TestCase):
         response = self.client.get(reverse("logout"))
         self.assertRedirects(response, reverse("home"))
         self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+#Test Home Page
+class HomeViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password")
+        self.game = Game.objects.create(name="Test Game", slug="test-game")
+        for i in range(6):
+            p = Prompt.objects.create(text=f"Prompt {i}", creator=self.user, game=self.game)
+            self.prompts.append(p)
+
+        Vote.objects.create(
+            prompt=self.prompts[0],
+            voter=self.user
+        )
+        Vote.objects.create(
+            prompt=self.prompts[0],
+            voter=None,
+            guest_session_id="guest123"
+        )
+        Vote.objects.create(
+            prompt=self.prompts[1],
+            voter=self.user
+        )
+
+        self.client = Client()
+
+    def test_home_view_status(self):
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_top_prompts_order_and_length(self):
+        response = self.client.get(reverse('home'))
+        prompts_in_context = list(response.context["prompts"])
+        self.assertEqual(prompts_in_context[0], self.prompts[0])
+        self.assertEqual(len(prompts_in_context), 5)
+
+    def test_home_authenticated_voted_prompts(self):
+        self.client.login(username="testuser", password="password")
+        response = self.client.get(reverse("home"))
+        voted_prompts = response.context["voted_prompts"]
+        self.assertIn(self.prompts[0].id, voted_prompts)
+        self.assertIn(self.prompts[1].id, voted_prompts)
+
+    def test_home_guest_voted_prompts(self):
+        session = self.client.session
+        session["foo"] = "bar"  # just here to ensure session exists
+        session.save()
+
+        Vote.objects.create(
+            prompt=self.prompts[2], 
+            voter=None, 
+            guest_session_id=session.session_key
+        )
+        response = self.client.get(reverse("home"))
+        voted_prompts = response.context["voted_prompts"]
+        self.assertIn(self.prompts[2].id, voted_prompts)
+
+
+
