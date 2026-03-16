@@ -78,26 +78,32 @@ h1{
 
 #PromptList{
     margin: 2.5%;   
-    display: absolute;
-    float: right;
     width: 55.42vw;
     height: 27vh;
     background: #F6F0F0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #PromptBox #PromptList .table{
-    margin: 2.5%;
-    height: 2.9vh;
-    flex-shrink: 0;
-    align-self: stretch;
-    color: #5E547C;
-    text-align: center;
-    font-family: "Konkhmer Sleokchher";
-    font-size: 1.2vw;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
+    width: 100%;
+    border-collapse: collapse;
 }
+
+#PromptBox #PromptList .table td{
+    padding: 0.5vh;
+    font-size: 1vw;
+}
+
+#PromptList .btn{
+    width: 5vw;
+    font-size: 1.2vw;
+    background: #E0D9F2;
+    color: #746895;
+}
+
+
 
 
 
