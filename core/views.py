@@ -4,8 +4,8 @@ from django.db.models import Count
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from core.models import Prompt, Vote, Profile
-from core.forms import UserForm, UserProfileForm, PromptForm 
+from core.models import Prompt, Vote, Profile, Game
+from core.forms import UserForm, UserProfileForm, PromptForm, GameForm, TruthOrDareForm
 
 User = get_user_model()
 
@@ -35,21 +35,43 @@ def home(request):
 
 # Prompts
 @login_required
-def create_prompt(request):
-    form = PromptForm()
+def create_prompt(request, slug):
+    game = get_object_or_404(Game, slug=slug)
+
+
+    if game.slug == "truth-or-dare":
+        FormClass = TruthOrDareForm
+    else:
+        FormClass = PromptForm
 
     if request.method == "POST":
-        form = PromptForm(request.POST)
+        form = FormClass(request.POST)
     
         if form.is_valid():
             with transaction.atomic():
                 prompt = form.save(commit=False)
                 prompt.creator = request.user
+                prompt.game = game
                 prompt.save()
                 
             return redirect("home")
 
-    return render(request, "prompts/create.html", {"form": form})
+    else:
+        form = FormClass()
+
+    return render(request, "prompts/create.html", {"form": form, "game": game})
+
+@login_required
+def choose_game(request):
+    form = GameForm()
+
+    if request.method == "POST":
+        form = GameForm(request.POST)
+        if form.is_valid():
+            game = form.cleaned_data["game"]
+            return redirect("create_prompt", slug=game.slug)
+
+    return render(request, "prompts/choose_game.html", {"form": form})
 
 @require_POST
 def upvote_prompt(request, prompt_id):
@@ -128,7 +150,6 @@ def game_prompts(request, slug):
     return render(request, "games/prompts.html", {"slug": slug})
 
 
-
 # Profiles
 @login_required
 def my_profile(request):
@@ -153,6 +174,35 @@ def my_profile_edit(request):
     return render(request, "profiles/edit_profile.html", {
         "profile_form": profile_form
     })
+
+@login_required
+def my_prompts(request):
+    context_dict = {"edit_mode": False}
+    current_user = request.user
+    user_prompts = Prompt.objects.annotate(upvote_count=Count("votes")).filter(creator=current_user)
+    
+    context_dict["prompts"] = user_prompts
+    
+    return render(request, "profiles/my_prompts.html", context_dict)
+
+@login_required
+def edit_prompt(request, prompt_id):
+    context_dict = {}
+    prompt_inst = get_object_or_404(Prompt, id=prompt_id)
+
+    if prompt_inst.creator == request.user:
+        context_dict["prompt"] = prompt_inst
+        if request.method == "POST":
+                new_text = request.POST.get("text")
+                if len(new_text) > 0 and len(new_text) < 250:
+                    prompt_inst.text = request.POST.get("text")
+                    prompt_inst.save()
+                else:
+                    context_dict["error"] = "Input of invalid length."
+    else:
+        context_dict["auth_error"] = "You are not the creator of this prompt."
+    
+    return render(request, "prompts/edit.html", context_dict)
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)
