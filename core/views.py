@@ -170,20 +170,24 @@ def game_play(request, slug):
     games_with_same_logic = ["would-you-rather", "never-have-i-ever"]
 
     if slug in games_with_same_logic:
-        prompt_list = (
+        prompt_list = list(
             Prompt.objects
                 .filter(game=game)
+                .values_list("text", flat=True)
         )
         context_dict["prompts"] = prompt_list
 
     elif slug == "truth-or-dare":
-        truth_list = (
+        truth_list = list(
             Prompt.objects
                 .filter(game=game, category="truth")
+                .values_list("text", flat=True)
+                
         )
-        dare_list = (
+        dare_list = list(
             Prompt.objects
                 .filter(game=game, category="dare")
+                .values_list("text", flat=True)
         )
         context_dict["truth_prompts"] = truth_list
         context_dict["dare_prompts"] =  dare_list

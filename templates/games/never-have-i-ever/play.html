@@ -1,8 +1,29 @@
 {% extends "games/game_base.html" %}
 
 {% block title %}Play{% endblock %}
-{% block game_title %}Play{% endblock %}
+{% block game_title %}Play Never Have I Ever {% endblock %}
 
 {% block game_content %}
-<p>Game play page works nhie.</p>
+
+    <div id='prompt'></div>
+    <button onclick="nextPrompt()">Next Prompt</button>
+
+    {{ prompts|json_script:"prompt-data" }}
+
+    <script>
+        const prompts = JSON.parse(document.getElementById("prompt-data").textContent);
+        
+        let index = 0;
+
+        function showPrompt(){
+            document.getElementById("prompt").innerText = prompts[index] || "No more prompts";
+        }
+
+        function nextPrompt(){
+            index = (index + 1) % prompts.length;
+            showPrompt();
+        }
+
+        showPrompt();
+    </script>
 {% endblock %}

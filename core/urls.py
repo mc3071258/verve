@@ -11,8 +11,6 @@ urlpatterns = [
     path("games/<slug:slug>/", views.game, name="game"),
     path("games/<slug:slug>/play/", views.game_play, name="game_play"),
     path("games/<slug:slug>/prompts/", views.game_prompts, name="game_prompts"),
-    # path("game/truth-or-dare/play/", views.truth_or_dare_play, name= "truth or dare play")
-
 
     path("login/", views.login, name="login"),
     path("register/", views.register, name="register"),
