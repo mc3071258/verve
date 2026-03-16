@@ -1,28 +1,11 @@
 #playGameButton{
 
-    width: 431px;
-    height: 107px;
-    border-radius: 90px;
     background: #C4DCB7;
-    color: #000;
-    font-family: Inter;
-    font-size: 32px;
-    font-style: italic;
-    font-weight: 600;
-    line-height: normal;
 }
 
 #viewPromptsButton{
-    width: 431px;
-    height: 107px;
-    border-radius: 90px;
     background: #888ED1;
-    color: #000;
-    font-family: Inter;
-    font-size: 32px;
-    font-style: italic;
-    font-weight: 600;
-    line-height: normal;
+    
 }
 
 .GameOptions{
@@ -32,7 +15,19 @@
     left:50%;
     justify-content: space-between;
     transform: translate(-50%, -50%);
-    gap: 100px;
+    gap: 4vw;
+}
+
+#viewPromptsButton, #playGameButton{
+    width: 25vw;
+    height: 10.7vh;
+    border-radius: 90px;
+    color: #000;
+    font-family: Inter;
+    font-size: 2vw;
+    font-style: italic;
+    font-weight: 600;
+    line-height: normal;
 }
 
 
