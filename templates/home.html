@@ -7,10 +7,12 @@
 <link rel="stylesheet" type="text/css" href ="homeStyle.css"/>
 <h1>Choose a game</h1>
 
+<div id ="MainContent">
+
 <div id = GameButtons>
-    <button>Truth or Dare</button>
-    <button>Never Have I Ever</button>
-    <button>Would You Rather?</button>
+    <button href="{% url 'game' 'truth-or-dare' %}">Truth or Dare</button>
+    <button href="{% url 'game' 'never-have-ever' %}">Never Have I Ever</button>
+    <button href="{% url 'game' 'would-you-rather' %}">Would You Rather?</button>
 </div>
 
 
@@ -57,5 +59,6 @@
         <a class="btn btn-primary" href="{% url 'choose_game' %}">Create Prompt</a>
     </div>
 
+    </div>
 
 {% endblock %}

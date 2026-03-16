@@ -1,8 +1,17 @@
+
+#MainContent{
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3vh;
+}
+
 h1{
     color: #57506C;
     text-align: center;
     font-family: "Konkhmer Sleokchher";
-    font-size: 32px;
+    font-size: 2vw;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -11,8 +20,8 @@ h1{
 #GameButtons{
     display: flex;
     justify-content: space-between;
-    width: 1299px;
-    height: 349.886px;
+    width: 67.66vw;
+    height: 34.99vh;
     border-radius: 10px;
     background: linear-gradient(94deg, #AFA3D0 25.92%, #E0D9F2 99.62%);
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
@@ -21,15 +30,17 @@ h1{
 #GameButtons button{
     
     margin: 2.5%;
-    width: 310.195px;
-    height: 286.063px;
+    width: 16.16vw;
+    height: 28.61vh;
+
     border-radius: 10px;
     border-color: #E0D9F2;
     background: #E0D9F2;
     color: #746895;
+
     text-align: center;
     font-family: "Konkhmer Sleokchher";
-    font-size: 40px;
+    font-size: 2.2vw;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -38,14 +49,16 @@ h1{
 #PromptBox{
     justify-content: space-between;
     display: flex;
-    width: 1299px;
-    height: 327px;
+    align-items: flex-start;
+    gap:2%;
+    width: 67.66vw;
+    height: 32.7vh;
     border-radius: 10px;
     background: #ACC9AB;
     color: #5E547C;
     text-align: left;
     font-family: "Konkhmer Sleokchher";
-    font-size: 20px;
+    font-size: 1.2vw;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -57,7 +70,7 @@ h1{
     color: #5E547C;
     text-align: center;
     font-family: "Konkhmer Sleokchher";
-    font-size: 20px;
+    font-size: 1.2vw;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -67,20 +80,20 @@ h1{
     margin: 2.5%;   
     display: absolute;
     float: right;
-    width: 1064px;
-    height: 270px;
+    width: 55.42vw;
+    height: 27vh;
     background: #F6F0F0;
 }
 
 #PromptBox #PromptList .table{
     margin: 2.5%;
-    height: 29px;
+    height: 2.9vh;
     flex-shrink: 0;
     align-self: stretch;
     color: #5E547C;
     text-align: center;
     font-family: "Konkhmer Sleokchher";
-    font-size: 20px;
+    font-size: 1.2vw;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
