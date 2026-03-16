@@ -4,8 +4,8 @@ from django.db.models import Count
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from core.models import Prompt, Vote, Profile
-from core.forms import UserForm, UserProfileForm, PromptForm 
+from core.models import Prompt, Vote, Profile, Game
+from core.forms import UserForm, UserProfileForm, PromptForm, GameForm, TruthOrDareForm
 
 User = get_user_model()
 
@@ -35,21 +35,43 @@ def home(request):
 
 # Prompts
 @login_required
-def create_prompt(request):
-    form = PromptForm()
+def create_prompt(request, slug):
+    game = get_object_or_404(Game, slug=slug)
+
+
+    if game.slug == "truth-or-dare":
+        FormClass = TruthOrDareForm
+    else:
+        FormClass = PromptForm
 
     if request.method == "POST":
-        form = PromptForm(request.POST)
+        form = FormClass(request.POST)
     
         if form.is_valid():
             with transaction.atomic():
                 prompt = form.save(commit=False)
                 prompt.creator = request.user
+                prompt.game = game
                 prompt.save()
                 
             return redirect("home")
 
-    return render(request, "prompts/create.html", {"form": form})
+    else:
+        form = FormClass()
+
+    return render(request, "prompts/create.html", {"form": form, "game": game})
+
+@login_required
+def choose_game(request):
+    form = GameForm()
+
+    if request.method == "POST":
+        form = GameForm(request.POST)
+        if form.is_valid():
+            game = form.cleaned_data["game"]
+            return redirect("create_prompt", slug=game.slug)
+
+    return render(request, "prompts/choose_game.html", {"form": form})
 
 @require_POST
 def upvote_prompt(request, prompt_id):

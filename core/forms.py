@@ -1,10 +1,35 @@
 from django import forms
-from core.models import Prompt
+from core.models import Prompt, Game
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile, Prompt, Game
 
 User = get_user_model()
+
+class PromptForm(forms.ModelForm):
+    text = forms.CharField(max_length=250, help_text="Please enter the prompt")    
+
+    class Meta:
+        model = Prompt
+        fields = ["text"]
+
+class TruthOrDareForm(forms.ModelForm):
+    TRUTH_DARE_CHOICES = [
+        ("truth", "Truth"),
+        ("dare", "Dare"),
+    ]
+    category = forms.ChoiceField(choices=TRUTH_DARE_CHOICES)
+    text = forms.CharField(max_length=250, help_text="Please enter the prompt") 
+
+    class Meta:
+        model = Prompt
+        fields = ["text", "category"]
+
+class GameForm(forms.Form):
+    game = forms.ModelChoiceField(queryset=Game.objects.all(), 
+                                empty_label="Select a game",
+                                widget=forms.Select(attrs={"class": "form-select"}))
+
 
 # Django's UserCreationForm
 class UserForm(UserCreationForm):
@@ -19,13 +44,3 @@ class UserProfileForm(forms.ModelForm):
         model = Profile
         fields = ["bio", "profile_picture"]
 
-# Prompt Forms
-class PromptForm(forms.ModelForm):
-    
-    game = forms.ModelChoiceField(queryset=Game.objects, help_text="Select the game you want to make a prompt for:", widget=forms.RadioSelect, required=True)
-    text = forms.CharField(max_length=250, help_text="Enter your prompt:", required=True)
-
-
-    class Meta:
-        model = Prompt
-        fields = ["game","text"]
