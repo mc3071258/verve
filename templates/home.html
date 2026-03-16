@@ -16,6 +16,12 @@
                     <td>{{ forloop.counter }}.</td>
                     <td>FROM GAME - {{ prompt.game }}, PROMPT - {{ prompt.text }}, UPVOTES - {{ prompt.upvote_count }} </td>
                     <td>
+                        {% if prompt.category == "truth"%}
+                            , CATEGORY - TRUTH
+                        {% elif prompt.category == "dare" %}
+                            , CATEGORY - DARE
+                        {% endif %}
+                    <td>
                         {% if prompt.id in voted_prompts %}
                         <button disabled class="btn btn-primary"> You have already voted on this prompt </button>
                     {% else %}
@@ -36,7 +42,7 @@
 </div>
 
     <div>
-        <a class="btn btn-primary" href="{% url 'create_prompt' %}">Add a New Prompt</a>
+        <a class="btn btn-primary" href="{% url 'choose_game' %}">Create Prompt</a>
     </div>
 
 
