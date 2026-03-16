@@ -7,6 +7,13 @@
 <p>Home page works.</p>
 
 <div>
+    <h2>Play Games</h2>
+        <a class="btn btn-primary" href="{% url 'game' slug='truth-or-dare' %}">Play Truth or Dare</a>
+        <a class="btn btn-primary" href="{% url 'game' slug='never-have-i-ever' %}">Play Never Have I Ever</a>
+        <a class="btn btn-primary" href="{% url 'game' slug='would-you-rather' %}">Play Would you Rather</a>
+</div>
+
+<div>
     <h2> Top 5 Prompts </h2>
 
             {% if  prompts %}

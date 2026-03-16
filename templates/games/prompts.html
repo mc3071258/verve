@@ -10,9 +10,9 @@
 
 
 {% block game_content %}
-    {% if  prompts %}
+    {% if prompt_list %}
         <table class="table">
-            {% for prompt in prompts %}
+            {% for prompt in prompt_list %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td>FROM GAME - {{ game.name }}, PROMPT - {{ prompt.text }}, UPVOTES - {{ prompt.upvote_count }} </td>

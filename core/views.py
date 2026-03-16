@@ -141,7 +141,11 @@ def logout(request):
 
 # Games
 def game(request, slug):
-    return render(request, "games/game.html", {"slug": slug})
+    context_dict = {}
+    context_dict["slug"] = slug
+    context_dict["game_title"] = slug.replace("-", " ")
+    
+    return render(request, "games/game.html", context = context_dict)
 
 def game_prompts(request, slug):
     game = get_object_or_404(Game, slug=slug)
@@ -150,12 +154,12 @@ def game_prompts(request, slug):
         Prompt.objects
             .filter(game=game)
             .annotate(upvote_count=Count("votes"))
-            .order_by("-upvote_count")[:5]
+            .order_by("-upvote_count")
     )
 
     context_dict = {}
-    context_dict["game": game]
-    context_dict["prompt_list": prompts]
+    context_dict["game"] = game
+    context_dict["prompt_list"] = prompt_list
 
     return render(request, "games/prompts.html", context = context_dict)
 
