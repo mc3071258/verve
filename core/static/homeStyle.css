@@ -101,6 +101,15 @@ h1{
     font-size: 1.2vw;
     background: #E0D9F2;
     color: #746895;
+    text-align: center;
+}
+
+#MainContent #create .btn{
+    width: 10vw;
+    font-size: 1.2vw;
+    background: #E0D9F2;
+    color: #746895;
+    text-align: center;
 }
 
 
