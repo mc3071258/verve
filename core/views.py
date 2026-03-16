@@ -4,8 +4,8 @@ from django.db.models import Count
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from core.models import Prompt, Vote, Profile, Game
-from core.forms import UserForm, UserProfileForm, PromptForm, GameForm, TruthOrDareForm
+from core.models import Prompt, Vote, Profile
+from core.forms import UserForm, UserProfileForm, PromptForm
 
 User = get_user_model()
 
