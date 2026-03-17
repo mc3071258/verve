@@ -163,6 +163,12 @@ def game_prompts(request, slug):
             .order_by("-upvote_count")
     )
 
+    if game.slug == "would-you-rather":
+        for prompt in prompt_list:
+            option_parts = prompt.text.split("|")
+            prompt.optionA = option_parts[0]
+            prompt.optionB = option_parts[1]
+
     context_dict = {}
     context_dict["game"] = game
     context_dict["prompt_list"] = prompt_list

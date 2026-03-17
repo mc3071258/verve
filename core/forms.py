@@ -40,7 +40,7 @@ class WouldYouRatherForm(forms.ModelForm):
         return value
     
     def clean_optionB(self):
-        value = self.cleaned_data["optionA"]
+        value = self.cleaned_data["optionB"]
         if  "|" in value:
             raise forms.ValidationError("Character '|' is not allowed.")
         return value

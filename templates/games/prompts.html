@@ -15,7 +15,19 @@
             {% for prompt in prompt_list %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
-                <td>FROM GAME - {{ game.name }}, PROMPT - {{ prompt.text }}, UPVOTES - {{ prompt.upvote_count }} </td>
+                <td>FROM GAME - {{ game.name }}, </td>
+
+                <td> 
+                    PROMPT - 
+                    {% if game.slug == "would-you-rather" %}
+                        Option A: {{ prompt.optionA }}, <br>
+                        Option B: {{ prompt.optionB }},
+                    {% else %}
+                        {{ prompt.text }}
+                    {% endif %}
+                </td>
+
+                <td> UPVOTES - {{ prompt.upvote_count }} </td>
                 <td>
                     {% if prompt.category == "truth"%}
                         , CATEGORY - TRUTH

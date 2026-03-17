@@ -1,8 +1,41 @@
 {% extends "games/game_base.html" %}
 
 {% block title %}Play{% endblock %}
-{% block game_title %}Play{% endblock %}
+{% block game_title %}Play Would You Rather {% endblock %}
 
 {% block game_content %}
-<p>Game play page works wyr.</p>
+
+    <div id="optionA" class="option-card"></div>
+    <div id="optionB" class="option-card"></div>
+    
+    <button class="btn btn-primary" onclick="nextPrompt()">Next Prompt</button>
+
+    {{ prompts|json_script:"prompt-data" }}
+
+    <script>
+        const prompts = JSON.parse(document.getElementById("prompt-data").textContent);
+
+        let index = 0;
+
+        function showPrompt(){
+
+            if(prompts.length == 0){
+                document.getElementById("optionA").innerText = "No prompts";
+                document.getElementById("optionB").innerText = "";
+                return;
+            }
+
+            const [optionA, optionB] = prompts[index].split("|");
+
+            document.getElementById("optionA").innerText = optionA;
+            document.getElementById("optionB").innerText = optionB;
+        }
+
+        function nextPrompt(){
+            index = (index + 1) % prompts.length;
+            showPrompt();
+        }
+
+        showPrompt();
+    </script>
 {% endblock %}
