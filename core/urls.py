@@ -20,6 +20,8 @@ urlpatterns = [
     path("profiles/edit/", views.my_profile_edit, name="edit_profile"),
     path("profiles/my_prompts/", views.my_prompts, name="my_prompts"),
     path("profiles/<str:username>/", views.profile, name="profile"),
+    path("profiles/<str:username>/follow/", views.follow_user, name="follow_user"),
+    path("profiles/<str:username>/unfollow/", views.unfollow_user, name="unfollow_user"),
 
     path("prompts/create/", views.choose_game, name="choose_game"),
     path("prompts/create/<slug:slug>/", views.create_prompt, name="create_prompt"),

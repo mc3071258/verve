@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from core.models import Prompt, Vote, Profile, Game
+from core.models import Prompt, Vote, Profile, Game, Follow
 from core.forms import UserForm, UserProfileForm, PromptForm, GameForm, TruthOrDareForm
 
 User = get_user_model()
@@ -212,3 +212,23 @@ def profile(request, username):
         "profile_user": user,
         "profile": profile})
 
+@login_required
+def follow_user(request, username):
+    if request.method == "POST":
+        target_user = get_object_or_404(User, username=username)
+
+        if request.user != target_user:
+            Follow.objects.get_or_create(
+                follower=request.user,
+                following=target_user)
+    return redirect("profile", username=username)
+
+@login_required
+def unfollow_user(request, username):
+    if request.method == "POST":
+        target_user = get_object_or_404(User, username=username)
+
+        Follow.objects.filter(
+            follower=request.user,
+            following=target_user).delete()
+    return redirect("profile", username=username)
