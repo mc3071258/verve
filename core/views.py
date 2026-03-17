@@ -5,7 +5,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout, auth
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from core.models import Prompt, Vote, Profile, Game
-from core.forms import UserForm, UserProfileForm, PromptForm, GameForm, TruthOrDareForm
+from core.forms import UserForm, UserProfileForm, GameForm, TruthOrDareForm, NeverHaveIEverForm, WouldYouRatherForm
 
 User = get_user_model()
 
@@ -41,8 +41,12 @@ def create_prompt(request, slug):
 
     if game.slug == "truth-or-dare":
         FormClass = TruthOrDareForm
+
+    elif game.slug == "would-you-rather":
+        FormClass = WouldYouRatherForm
+
     else:
-        FormClass = PromptForm
+        FormClass = NeverHaveIEverForm
 
     if request.method == "POST":
         form = FormClass(request.POST)
