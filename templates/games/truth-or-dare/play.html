@@ -1,8 +1,36 @@
 {% extends "games/game_base.html" %}
 
 {% block title %}Play{% endblock %}
-{% block game_title %}Play{% endblock %}
+{% block game_title %}Play Truth Or Dare {% endblock %}
 
 {% block game_content %}
-<p>Game play page works tod.</p>
+
+    <div id='truth_prompt'></div>
+    <div id='dare_prompt'></div>
+
+    <button class="btn btn-primary" onclick="nextPrompt()">Next Prompt</button>
+
+    {{ truth_prompts|json_script:"truth-prompt-data" }}
+    {{ dare_prompts|json_script:"dare-prompt-data" }}
+
+    <script>
+        const truth_prompts = JSON.parse(document.getElementById("truth-prompt-data").textContent);
+        const dare_prompts = JSON.parse(document.getElementById("dare-prompt-data").textContent);
+        
+        let truth_index = 0;
+        let dare_index = 0
+
+        function showPrompt(){
+            document.getElementById("truth_prompt").innerText = truth_prompts[truth_index] || "No more prompts";
+            document.getElementById("dare_prompt").innerText = dare_prompts[dare_index] || "No more prompts";
+        }
+
+        function nextPrompt(){
+            truth_index = (truth_index + 1) % truth_prompts.length;
+            dare_index = (dare_index + 1) % dare_prompts.length;
+            showPrompt();
+        }
+
+        showPrompt();
+    </script>
 {% endblock %}
