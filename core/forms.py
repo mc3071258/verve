@@ -7,7 +7,7 @@ from .models import Profile, Prompt, Game
 User = get_user_model()
 
 class PromptForm(forms.ModelForm):
-    text = forms.CharField(max_length=250, help_text="Please enter the prompt")    
+    text = forms.CharField(required=True, max_length=250, help_text="Please enter the prompt")    
 
     class Meta:
         model = Prompt
@@ -19,7 +19,7 @@ class TruthOrDareForm(forms.ModelForm):
         ("dare", "Dare"),
     ]
     category = forms.ChoiceField(choices=TRUTH_DARE_CHOICES)
-    text = forms.CharField(max_length=250, help_text="Please enter the prompt") 
+    text = forms.CharField(required=True, max_length=250, help_text="Please enter the prompt") 
 
     class Meta:
         model = Prompt

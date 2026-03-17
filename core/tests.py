@@ -139,11 +139,13 @@ class AuthViewTest(TestCase):
         self.assertRedirects(response, reverse("home"))
         self.assertFalse(response.wsgi_request.user.is_authenticated)
 
-#Test Home Page
-class HomeViewTests(TestCase):
+#Test Home View
+class HomeViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="testuser", password="password")
         self.game = Game.objects.create(name="Test Game", slug="test-game")
+        self.prompts = []
+
         for i in range(6):
             p = Prompt.objects.create(text=f"Prompt {i}", creator=self.user, game=self.game)
             self.prompts.append(p)
@@ -194,6 +196,101 @@ class HomeViewTests(TestCase):
         response = self.client.get(reverse("home"))
         voted_prompts = response.context["voted_prompts"]
         self.assertIn(self.prompts[2].id, voted_prompts)
+
+class CreatePromptViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username="tester", password="pass")
+        self.game1 = Game.objects.create(name="Mario Maker", slug="mario-maker")
+        self.game2 = Game.objects.create(name="Truth Or Dare", slug="truth-or-dare")
+
+    def test_redirect_guest_user(self):
+        url = reverse("create_prompt", args=[self.game1.slug])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 302) 
+        self.assertIn("/login", response.url) #redirected to log in page
+
+    def test_get_request_returns_form(self):
+        self.client.login(username="tester", password="pass")
+        url = reverse("create_prompt", args=[self.game1.slug])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("form", response.context)
+
+    def test_correct_form_for_truth_or_dare(self):
+        self.client.login(username="tester", password="pass")
+        url = reverse("create_prompt", args=[self.game2.slug])
+        response = self.client.get(url)
+
+        form = response.context["form"]
+
+        self.assertEqual(form.__class__.__name__, "TruthOrDareForm")
+
+    def test_post_creates_prompt(self):
+        self.client.login(username="tester", password="pass")
+        url = reverse("create_prompt", args=[self.game1.slug])
+        data = {"text": "Test Prompt"}
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Prompt.objects.count(), 1) #A prompt has been created
+
+        prompt = Prompt.objects.first()
+
+        self.assertEqual(prompt.creator, self.user)
+        self.assertEqual(prompt.game, self.game1)
+        self.assertEqual(prompt.text, "Test Prompt")
+
+    def test_post_invalid_prompt(self):
+        self.client.login(username="tester", password="pass")
+        url = reverse("create_prompt", args=[self.game1.slug])
+        data = {}#{"text":""} #should be invalid, empty text
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, 200) #form is redisplayed
+        self.assertEqual(Prompt.objects.count(), 0) #No prompt has been created
+
+class GamePageTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="tester", password="pass")
+
+        self.would_you_rather = Game.objects.create(name="Would You Rather", slug="would-you-rather")
+        self.never_have_i_ever = Game.objects.create(name="Never Have I Ever", slug="never-have-i-ever")
+        self.truth_or_dare = Game.objects.create(name="Truth or Dare", slug="truth-or-dare")
+
+    def test_game_play_never_have_i_ever(self):
+        Prompt.objects.create(text="Be invisible?", game=self.never_have_i_ever, creator=self.user)
+        Prompt.objects.create(text="Fly forever?", game=self.never_have_i_ever, creator=self.user)
+
+        url = reverse("game_play", args=[self.never_have_i_ever.slug])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("prompts", response.context)
+
+    def test_game_invalid_slug(self):
+        url = reverse("game_play", args=["invalid-game"])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 404)
+
+
+        
+
+
+
+
+    
+
+
+
+
+
+
+
+
 
 
 

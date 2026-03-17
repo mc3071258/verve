@@ -55,6 +55,8 @@ def create_prompt(request, slug):
                 prompt.save()
                 
             return redirect("home")
+        else:
+            return render(request, "prompts/create.html", {"form": form, "game": game})
 
     else:
         form = FormClass()
