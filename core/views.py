@@ -154,10 +154,15 @@ def game_prompts(request, slug):
 @login_required
 def my_profile(request):
     profile = get_object_or_404(Profile, user=request.user)
+    follower_count = Follow.objects.filter(following=request.user).count()
+    following_count = Follow.objects.filter(follower=request.user).count()
+
     return render(request, "profiles/my_profile.html", {
         "profile_user": request.user,
         "profile": profile,
-        "edit_mode": False})
+        "edit_mode": False,
+        "follower_count": follower_count,
+        "following_count": following_count,})
 
 
 @login_required
@@ -207,10 +212,23 @@ def edit_prompt(request, prompt_id):
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     profile = get_object_or_404(Profile, user=user)
+    is_following = False
+
+    if request.user.is_authenticated and request.user != user:
+        is_following = Follow.objects.filter(
+            follower= request.user,
+            following= user).exists()
+        
+    follower_count = Follow.objects.filter(following=user).count()
+    following_count = Follow.objects.filter(follower=profile.user).count()
 
     return render(request, "profiles/profile.html", {
         "profile_user": user,
-        "profile": profile})
+        "profile": profile,
+        "is_following": is_following,
+        "follower_count": follower_count,
+        "following_count": following_count,
+        })
 
 @login_required
 def follow_user(request, username):

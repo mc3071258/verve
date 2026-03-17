@@ -11,7 +11,9 @@
     {% endif %}
 
     <p><strong>Bio:</strong> {{ profile.bio|default:"No bio yet." }}</p>
-
+    <p><strong>Followers:</strong> {{ follower_count }}</p>
+    <p><strong>Following:</strong> {{ following_count }}</p>
+    
     <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
 </div>
 {% endblock %}
