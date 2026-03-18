@@ -138,3 +138,68 @@ class AuthViewTest(TestCase):
         response = self.client.get(reverse("logout"))
         self.assertRedirects(response, reverse("home"))
         self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+# Test follow/unfollow profile behaviour
+class FollowViewTests(TestCase):
+    def setUp(self):
+        self.u1 = User.objects.create_user(username="testuser1", password="TestPass1234!")
+        self.u2 = User.objects.create_user(username="testuser2", password="TestPass1234!")
+        Profile.objects.create(user=self.u1)
+        Profile.objects.create(user=self.u2)
+
+    def test_follow_user_post(self):
+        """ Tests for following user """
+        self.client.login(username="testuser1", password="TestPass1234!")
+        response = self.client.post(reverse("follow_user", args=[self.u2.username]))
+
+        self.assertRedirects(response, reverse("profile", args=[self.u2.username]))
+        self.assertTrue(Follow.objects.filter(follower=self.u1, following=self.u2).exists())
+
+    def test_unfollow_user_post(self):
+        """ Tests for unfollowing user """
+        Follow.objects.create(follower=self.u1, following=self.u2)
+        self.client.login(username="testuser1", password="TestPass1234!")
+
+        response = self.client.post(reverse("unfollow_user", args=[self.u2.username]))
+
+        self.assertRedirects(response, reverse("profile", args=[self.u2.username]))
+        self.assertFalse(Follow.objects.filter(follower=self.u1, following=self.u2).exists())
+
+    def test_follow_user_requires_login(self):
+        """ Tests that following user requires login """
+        response = self.client.post(reverse("follow_user", args=[self.u2.username]))
+
+        login_url = reverse("login")
+        follow_url = reverse("follow_user", args=[self.u2.username])
+        self.assertRedirects(response, f"{login_url}?next={follow_url}")
+        self.assertFalse(Follow.objects.filter(follower=self.u1, following=self.u2).exists())
+
+    def test_unfollow_user_requires_login(self):
+        """ Tests that unfollow user requires login. """
+        Follow.objects.create(follower=self.u1, following=self.u2)
+
+        response = self.client.post(reverse("unfollow_user", args=[self.u2.username]))
+
+        login_url = reverse("login")
+        unfollow_url = reverse("unfollow_user", args=[self.u2.username])
+        self.assertRedirects(response, f"{login_url}?next={unfollow_url}")
+        self.assertTrue(Follow.objects.filter(follower=self.u1, following=self.u2).exists())
+
+    def test_follow_user_cannot_follow_self(self):
+        """ Tests logged in user cannot follow themselves. """
+        self.client.login(username="testuser1", password="TestPass1234!")
+
+        response = self.client.post(reverse("follow_user", args=[self.u1.username]))
+
+        self.assertRedirects(response, reverse("profile", args=[self.u1.username]))
+        self.assertFalse(Follow.objects.filter(follower=self.u1, following=self.u1).exists())
+
+    def test_follow_user_no_duplicate_follow_created(self):
+        """ Tests follow user does not create duplicate follow. """
+        self.client.login(username="testuser1", password="TestPass1234!")
+
+        self.client.post(reverse("follow_user", args=[self.u2.username]))
+        response = self.client.post(reverse("follow_user", args=[self.u2.username]))
+
+        self.assertRedirects(response, reverse("profile", args=[self.u2.username]))
+        self.assertEqual(Follow.objects.filter(follower=self.u1, following=self.u2).count(), 1)
