@@ -4,11 +4,11 @@
 
 {% block content %}
     <h1>
-        Add a Prompt
+        Create a Prompt for {{ game.name }}
     </h1>
 
     <div>
-        <form method="post" action="{% url 'create_prompt' %}">
+        <form method="post">
             {% csrf_token %}
             {% for field in form.visible_fields %}
                 {{ field.errors }}
@@ -19,4 +19,3 @@
         </form>
     </div>
 {% endblock %}
-
