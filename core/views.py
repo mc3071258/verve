@@ -4,7 +4,8 @@ from django.db.models import Count
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from core.models import Prompt, Vote, Profile, Game
+
+from core.models import Prompt, Vote, Profile, Game, Follow
 from core.forms import UserForm, UserProfileForm, GameForm, TruthOrDareForm, NeverHaveIEverForm, WouldYouRatherForm
 
 User = get_user_model()
@@ -257,10 +258,15 @@ def game_play(request, slug):
 @login_required
 def my_profile(request):
     profile = get_object_or_404(Profile, user=request.user)
+    follower_count = Follow.objects.filter(following=request.user).count()
+    following_count = Follow.objects.filter(follower=request.user).count()
+
     return render(request, "profiles/my_profile.html", {
         "profile_user": request.user,
         "profile": profile,
-        "edit_mode": False})
+        "edit_mode": False,
+        "follower_count": follower_count,
+        "following_count": following_count,})
 
 
 @login_required
@@ -325,8 +331,41 @@ def del_prompt(request, prompt_id):
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     profile = get_object_or_404(Profile, user=user)
+    is_following = False
+
+    if request.user.is_authenticated and request.user != user:
+        is_following = Follow.objects.filter(
+            follower= request.user,
+            following= user).exists()
+        
+    follower_count = Follow.objects.filter(following=user).count()
+    following_count = Follow.objects.filter(follower=profile.user).count()
 
     return render(request, "profiles/profile.html", {
         "profile_user": user,
-        "profile": profile})
+        "profile": profile,
+        "is_following": is_following,
+        "follower_count": follower_count,
+        "following_count": following_count,
+        })
 
+@login_required
+def follow_user(request, username):
+    if request.method == "POST":
+        target_user = get_object_or_404(User, username=username)
+
+        if request.user != target_user:
+            Follow.objects.get_or_create(
+                follower=request.user,
+                following=target_user)
+    return redirect("profile", username=username)
+
+@login_required
+def unfollow_user(request, username):
+    if request.method == "POST":
+        target_user = get_object_or_404(User, username=username)
+
+        Follow.objects.filter(
+            follower=request.user,
+            following=target_user).delete()
+    return redirect("profile", username=username)
