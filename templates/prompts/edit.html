@@ -4,7 +4,7 @@
 
 {% block content %}
     {% if auth_error %}
-        {{ auth_error }}
+        {{ auth_error }}<br /><br />
     {% else %}
         <br />{{ prompt.game }} - {{ prompt.created_at }}
         <br />Current Prompt Text:<br />{{ prompt.text }}
