@@ -185,7 +185,7 @@ def create_prompt(request, slug):
     if game.slug == "truth-or-dare":
         FormClass = TruthOrDareForm
     else:
-        FormClass = PromptForm
+        FormClass = NeverHaveIEverForm
 
     if request.method == "POST":
         form = FormClass(request.POST)
