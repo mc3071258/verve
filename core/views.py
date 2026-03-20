@@ -79,6 +79,7 @@ def choose_game(request):
 
     return render(request, "prompts/choose_game.html", {"form": form})
 
+
 @require_POST
 def upvote_prompt(request, prompt_id):
     prompt = get_object_or_404(Prompt, id=prompt_id)
