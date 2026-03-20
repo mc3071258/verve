@@ -82,6 +82,22 @@ class ModelConstraintTests(TestCase):
         derived_following_count = Follow.objects.filter(follower=self.u1).count()
         self.assertEqual(derived_following_count, 1)
 
+    # Prompt Model Tests
+    def test_prompt_requires_user(self):
+        """ Tests for required logged in user """
+
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                Prompt.objects.create(game=self.game, text="Test text")
+
+    def test_prompt_creates_id(self):
+        """ Tests for id generation on prompt create """
+
+        prompt = Prompt.objects.create(game=self.game, creator=self.u1, text="")
+        prompt.save()
+        self.assertTrue(prompt.id is not None)
+
+
 # Test auth url routing behaviour
 class AuthViewTest(TestCase):
     def setUp(self):
@@ -138,3 +154,60 @@ class AuthViewTest(TestCase):
         response = self.client.get(reverse("logout"))
         self.assertRedirects(response, reverse("home"))
         self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+class PromptViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="test_user", password="TestPass1234!")
+        self.game = Game.objects.create(name="Test Game", description="Test")
+        self.prompt = Prompt.objects.create(game=self.game, creator=self.user, text="Test prompt")
+    
+    def test_choose_game_get(self):
+        """ Test for GET /create/. """
+        self.client.login(username=self.user.username, password="TestPass1234!")
+        response = self.client.get(reverse("choose_game"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "prompts/choose_game.html")
+    
+    def test_choose_game_post(self):
+        """ Test for POST /create/. """
+        self.client.login(username=self.user.username, password="TestPass1234!")
+        response = self.client.post(reverse("choose_game"),
+                                    {"game":self.game.id})
+        self.assertRedirects(response, reverse("create_prompt", 
+                                               kwargs={"slug":self.game.slug}))
+    
+    def test_create_get(self):
+        """ Test for GET /create/<slug:slug>/. """
+        self.client.login(username=self.user.username, password="TestPass1234!")
+        response = self.client.get(reverse("create_prompt",
+                                           kwargs={"slug":self.game.slug}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "prompts/create.html")
+
+    def test_create_post(self):
+        """ Test for POST /create/<slug:slug>/. """
+        self.client.login(username=self.user.username, password="TestPass1234!")
+        response = self.client.post(reverse("create_prompt",kwargs={"slug":self.game.slug}),
+                                    {"text":"Test post"})
+        self.assertRedirects(response, reverse("home"))
+        prompt = Prompt.objects.get(text="Test post")
+        self.assertTrue(Prompt.objects.filter(creator=self.user).exists())
+    
+    def test_edit_get(self):
+        """ Test for GET /<int:prompt_id>/edit/. """
+        self.client.login(username=self.user.username, password="TestPass1234!")
+        response = self.client.get(reverse("edit_prompt",
+                                           kwargs={"prompt_id":self.prompt.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "prompts/edit.html")
+
+    def test_edit_post(self):
+        """ Test for POST /<int:prompt_id>/edit/. """
+        self.client.login(username=self.user.username, password="TestPass1234!")
+        response = self.client.post(reverse("edit_prompt", kwargs={"prompt_id":self.prompt.id}),
+                                    {"text":"Test edit post",
+                                     "prompt_id":self.prompt.id})
+        self.assertRedirects(response, reverse("my_prompts"))
+        prompt = Prompt.objects.get(id=self.prompt.id)
+        self.assertTrue(Prompt.objects.filter(text="Test edit post").exists())
+        

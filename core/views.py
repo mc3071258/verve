@@ -197,6 +197,7 @@ def edit_prompt(request, prompt_id):
                 if len(new_text) > 0 and len(new_text) < 250:
                     prompt_inst.text = request.POST.get("text")
                     prompt_inst.save()
+                    return redirect("my_prompts")
                 else:
                     context_dict["error"] = "Input of invalid length."
     else:
