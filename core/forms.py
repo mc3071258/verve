@@ -6,8 +6,8 @@ from .models import Profile, Prompt, Game
 
 User = get_user_model()
 
-class PromptForm(forms.ModelForm):
-    text = forms.CharField(max_length=250, help_text="Please enter the prompt")    
+class NeverHaveIEverForm(forms.ModelForm):
+    text = forms.CharField(required=True, max_length=250, help_text="Please enter the prompt")    
 
     class Meta:
         model = Prompt
@@ -19,11 +19,44 @@ class TruthOrDareForm(forms.ModelForm):
         ("dare", "Dare"),
     ]
     category = forms.ChoiceField(choices=TRUTH_DARE_CHOICES)
-    text = forms.CharField(max_length=250, help_text="Please enter the prompt") 
+    text = forms.CharField(required=True, max_length=250, help_text="Please enter the prompt") 
 
     class Meta:
         model = Prompt
         fields = ["text", "category"]
+
+class WouldYouRatherForm(forms.ModelForm):
+    optionA = forms.CharField(required=True, max_length=250, help_text="Please enter option 1")
+    optionB = forms.CharField(required=True, max_length=250, help_text="Please enter option 1")
+
+    class Meta:
+        model = Prompt
+        fields = []
+
+    def clean_optionA(self):
+        value = self.cleaned_data["optionA"]
+        if  "|" in value:
+            raise forms.ValidationError("Character '|' is not allowed.")
+        return value
+    
+    def clean_optionB(self):
+        value = self.cleaned_data["optionB"]
+        if  "|" in value:
+            raise forms.ValidationError("Character '|' is not allowed.")
+        return value
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        optionA = self.cleaned_data["optionA"]
+        optionB = self.cleaned_data["optionB"]
+
+        instance.text = f"{optionA}|{optionB}"
+
+        if commit:
+            instance.save()
+        
+        return instance
 
 class GameForm(forms.Form):
     game = forms.ModelChoiceField(queryset=Game.objects.all(), 

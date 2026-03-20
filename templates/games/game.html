@@ -1,8 +1,19 @@
 {% extends "games/game_base.html" %}
 
-{% block title %}Game{% endblock %}
-{% block game_title %}Game Page{% endblock %}
+{% block title %}
+    {{ slug|capfirst }}
+{% endblock %}
+
+
+{% block game_title %} 
+    Game Options for {{game_title|title}} 
+{% endblock %}
+
 
 {% block game_content %}
-<p>Game page works.</p>
+
+<a href="/games/{{ slug }}/play/">Play {{ slug|capfirst }}</a><br>
+
+<a href="/games/{{ slug }}/prompts/">View Prompts</a>
+
 {% endblock %}
