@@ -8,6 +8,7 @@
 <link rel="stylesheet" type="text/css" href ="{% static 'homeStyle.css' %}"/>
 <h1>Choose a game</h1>
 
+
 <div id ="MainContent">
 
 <div id = GameButtons>
@@ -20,6 +21,7 @@
 <div id = PromptBox>
     <h2> Top 5 Prompts: </h2>
     <div id=PromptList>
+
 
             {% if  prompts %}
             <table class="table">
@@ -35,13 +37,13 @@
                         {% endif %}                    
                     <td>
                         {% if prompt.id in voted_prompts %}
-<<<<<<< HEAD
+
                             <button disabled class="btn btn-primary"> You have already voted on this prompt </button>
                         {% elif prompt.creator == request.user %}
                             <button disabled class="btn btn-primary"> You cannot vote on your own prompts </button>
-=======
+
                         <button disabled class="btn"> Upvote </button>
->>>>>>> main
+
                     {% else %}
                         <form action="{% url 'upvote_prompt' prompt.id %}" method="post">
                             {% csrf_token %}
