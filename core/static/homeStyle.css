@@ -1,0 +1,118 @@
+
+#MainContent{
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3vh;
+}
+
+h1{
+    color: #57506C;
+    text-align: center;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 2vw;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#GameButtons{
+    display: flex;
+    justify-content: space-between;
+    width: 67.66vw;
+    height: 34.99vh;
+    border-radius: 10px;
+    background: linear-gradient(94deg, #AFA3D0 25.92%, #E0D9F2 99.62%);
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+#GameButtons button{
+    
+    margin: 2.5%;
+    width: 16.16vw;
+    height: 28.61vh;
+
+    border-radius: 10px;
+    border-color: #E0D9F2;
+    background: #E0D9F2;
+    color: #746895;
+
+    text-align: center;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 2.2vw;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#PromptBox{
+    justify-content: space-between;
+    display: flex;
+    align-items: flex-start;
+    gap:2%;
+    width: 67.66vw;
+    height: 32.7vh;
+    border-radius: 10px;
+    background: #ACC9AB;
+    color: #5E547C;
+    text-align: left;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 1.2vw;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#PromptBox h2{
+    margin-left: 2%;
+    margin-top: 2%;
+    color: #5E547C;
+    text-align: center;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 1.2vw;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#PromptList{
+    margin: 2.5%;   
+    width: 55.42vw;
+    height: 27vh;
+    background: #F6F0F0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#PromptBox #PromptList .table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#PromptBox #PromptList .table td{
+    padding: 0.5vh;
+    font-size: 1vw;
+}
+
+#PromptList .btn{
+    width: 5vw;
+    font-size: 1.2vw;
+    background: #E0D9F2;
+    color: #746895;
+    text-align: center;
+}
+
+#MainContent #create .btn{
+    width: 10vw;
+    font-size: 1.2vw;
+    background: #E0D9F2;
+    color: #746895;
+    text-align: center;
+}
+
+
+
+
+
