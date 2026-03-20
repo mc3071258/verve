@@ -5,7 +5,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout, auth
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from core.models import Prompt, Vote, Profile, Game
-from core.forms import UserForm, UserProfileForm, PromptForm, GameForm, TruthOrDareForm
+from core.forms import UserForm, UserProfileForm, GameForm, TruthOrDareForm, NeverHaveIEverForm, WouldYouRatherForm
 
 User = get_user_model()
 
@@ -33,6 +33,51 @@ def home(request):
 
     return render(request, "home.html", context=context_dict)
 
+# Prompts
+@login_required
+def create_prompt(request, slug):
+    game = get_object_or_404(Game, slug=slug)
+
+
+    if game.slug == "truth-or-dare":
+        FormClass = TruthOrDareForm
+
+    elif game.slug == "would-you-rather":
+        FormClass = WouldYouRatherForm
+
+    else:
+        FormClass = NeverHaveIEverForm
+
+    if request.method == "POST":
+        form = FormClass(request.POST)
+    
+        if form.is_valid():
+            with transaction.atomic():
+                prompt = form.save(commit=False)
+                prompt.creator = request.user
+                prompt.game = game
+                prompt.save()
+                
+            return redirect("home")
+        else:
+            return render(request, "prompts/create.html", {"form": form, "game": game})
+
+    else:
+        form = FormClass()
+
+    return render(request, "prompts/create.html", {"form": form, "game": game})
+
+@login_required
+def choose_game(request):
+    form = GameForm()
+
+    if request.method == "POST":
+        form = GameForm(request.POST)
+        if form.is_valid():
+            game = form.cleaned_data["game"]
+            return redirect("create_prompt", slug=game.slug)
+
+    return render(request, "prompts/choose_game.html", {"form": form})
 
 @require_POST
 def upvote_prompt(request, prompt_id):
@@ -102,13 +147,33 @@ def logout(request):
 
 # Games
 def game(request, slug):
-    return render(request, "games/game.html", {"slug": slug})
-
-def game_play(request, slug):
-    return render(request, "games/play.html", {"slug": slug})
+    context_dict = {}
+    context_dict["slug"] = slug
+    context_dict["game_title"] = slug.replace("-", " ")
+    
+    return render(request, "games/game.html", context = context_dict)
 
 def game_prompts(request, slug):
-    return render(request, "games/prompts.html", {"slug": slug})
+    game = get_object_or_404(Game, slug=slug)
+
+    prompt_list = (
+        Prompt.objects
+            .filter(game=game)
+            .annotate(upvote_count=Count("votes"))
+            .order_by("-upvote_count")
+    )
+
+    if game.slug == "would-you-rather":
+        for prompt in prompt_list:
+            option_parts = prompt.text.split("|")
+            prompt.optionA = option_parts[0]
+            prompt.optionB = option_parts[1]
+
+    context_dict = {}
+    context_dict["game"] = game
+    context_dict["prompt_list"] = prompt_list
+
+    return render(request, "games/prompts.html", context = context_dict)
 
 # Prompts
 
@@ -120,7 +185,7 @@ def create_prompt(request, slug):
     if game.slug == "truth-or-dare":
         FormClass = TruthOrDareForm
     else:
-        FormClass = PromptForm
+        FormClass = NeverHaveIEverForm
 
     if request.method == "POST":
         form = FormClass(request.POST)
@@ -151,6 +216,42 @@ def choose_game(request):
 
     return render(request, "prompts/choose_game.html", {"form": form})
 
+def game_play(request, slug):
+    game = get_object_or_404(Game, slug=slug)
+    context_dict = {}
+    games_with_same_logic = ["would-you-rather", "never-have-i-ever"]
+
+    if slug in games_with_same_logic:
+        prompt_list = list(
+            Prompt.objects
+                .filter(game=game)
+                .values_list("text", flat=True)
+        )
+        context_dict["prompts"] = prompt_list
+
+    elif slug == "truth-or-dare":
+        truth_list = list(
+            Prompt.objects
+                .filter(game=game, category="truth")
+                .values_list("text", flat=True)
+                
+        )
+        dare_list = list(
+            Prompt.objects
+                .filter(game=game, category="dare")
+                .values_list("text", flat=True)
+        )
+        context_dict["truth_prompts"] = truth_list
+        context_dict["dare_prompts"] =  dare_list
+
+    else:
+        raise Http404("Game not found")
+    
+    #f stands for for format, interpolates slug into path
+    template_name = f"games/{slug}/play.html" 
+
+    return render(request, template_name, context = context_dict)
+    
 # Profiles
 @login_required
 def my_profile(request):
