@@ -4,8 +4,9 @@ from django.db.models import Count
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+
 from core.models import Prompt, Vote, Profile, Game, Follow
-from core.forms import UserForm, UserProfileForm, PromptForm, GameForm, TruthOrDareForm
+from core.forms import UserForm, UserProfileForm, GameForm, TruthOrDareForm, NeverHaveIEverForm, WouldYouRatherForm
 
 User = get_user_model()
 
@@ -41,8 +42,12 @@ def create_prompt(request, slug):
 
     if game.slug == "truth-or-dare":
         FormClass = TruthOrDareForm
+
+    elif game.slug == "would-you-rather":
+        FormClass = WouldYouRatherForm
+
     else:
-        FormClass = PromptForm
+        FormClass = NeverHaveIEverForm
 
     if request.method == "POST":
         form = FormClass(request.POST)
@@ -55,6 +60,8 @@ def create_prompt(request, slug):
                 prompt.save()
                 
             return redirect("home")
+        else:
+            return render(request, "prompts/create.html", {"form": form, "game": game})
 
     else:
         form = FormClass()
@@ -72,6 +79,7 @@ def choose_game(request):
             return redirect("create_prompt", slug=game.slug)
 
     return render(request, "prompts/choose_game.html", {"form": form})
+
 
 @require_POST
 def upvote_prompt(request, prompt_id):
@@ -141,15 +149,111 @@ def logout(request):
 
 # Games
 def game(request, slug):
-    return render(request, "games/game.html", {"slug": slug})
-
-def game_play(request, slug):
-    return render(request, "games/play.html", {"slug": slug})
+    context_dict = {}
+    context_dict["slug"] = slug
+    context_dict["game_title"] = slug.replace("-", " ")
+    
+    return render(request, "games/game.html", context = context_dict)
 
 def game_prompts(request, slug):
-    return render(request, "games/prompts.html", {"slug": slug})
+    game = get_object_or_404(Game, slug=slug)
+
+    prompt_list = (
+        Prompt.objects
+            .filter(game=game)
+            .annotate(upvote_count=Count("votes"))
+            .order_by("-upvote_count")
+    )
+
+    if game.slug == "would-you-rather":
+        for prompt in prompt_list:
+            option_parts = prompt.text.split("|")
+            prompt.optionA = option_parts[0]
+            prompt.optionB = option_parts[1]
+
+    context_dict = {}
+    context_dict["game"] = game
+    context_dict["prompt_list"] = prompt_list
+
+    return render(request, "games/prompts.html", context = context_dict)
+
+# Prompts
+
+@login_required
+def create_prompt(request, slug):
+    game = get_object_or_404(Game, slug=slug)
 
 
+    if game.slug == "truth-or-dare":
+        FormClass = TruthOrDareForm
+    else:
+        FormClass = NeverHaveIEverForm
+
+    if request.method == "POST":
+        form = FormClass(request.POST)
+    
+        if form.is_valid():
+            with transaction.atomic():
+                prompt = form.save(commit=False)
+                prompt.creator = request.user
+                prompt.game = game
+                prompt.save()
+                
+            return redirect("my_prompts")
+
+    else:
+        form = FormClass()
+
+    return render(request, "prompts/create.html", {"form": form, "game": game})
+
+@login_required
+def choose_game(request):
+    form = GameForm()
+
+    if request.method == "POST":
+        form = GameForm(request.POST)
+        if form.is_valid():
+            game = form.cleaned_data["game"]
+            return redirect("create_prompt", slug=game.slug)
+
+    return render(request, "prompts/choose_game.html", {"form": form})
+
+def game_play(request, slug):
+    game = get_object_or_404(Game, slug=slug)
+    context_dict = {}
+    games_with_same_logic = ["would-you-rather", "never-have-i-ever"]
+
+    if slug in games_with_same_logic:
+        prompt_list = list(
+            Prompt.objects
+                .filter(game=game)
+                .values_list("text", flat=True)
+        )
+        context_dict["prompts"] = prompt_list
+
+    elif slug == "truth-or-dare":
+        truth_list = list(
+            Prompt.objects
+                .filter(game=game, category="truth")
+                .values_list("text", flat=True)
+                
+        )
+        dare_list = list(
+            Prompt.objects
+                .filter(game=game, category="dare")
+                .values_list("text", flat=True)
+        )
+        context_dict["truth_prompts"] = truth_list
+        context_dict["dare_prompts"] =  dare_list
+
+    else:
+        raise Http404("Game not found")
+    
+    #f stands for for format, interpolates slug into path
+    template_name = f"games/{slug}/play.html" 
+
+    return render(request, template_name, context = context_dict)
+    
 # Profiles
 @login_required
 def my_profile(request):
@@ -182,18 +286,19 @@ def my_profile_edit(request):
 
 @login_required
 def my_prompts(request):
-    context_dict = {"edit_mode": False}
+    context_dict = {}
     current_user = request.user
     user_prompts = Prompt.objects.annotate(upvote_count=Count("votes")).filter(creator=current_user)
     
     context_dict["prompts"] = user_prompts
+    context_dict["del_auth_error"] = request.session.get("del_auth_error")
     
     return render(request, "profiles/my_prompts.html", context_dict)
 
 @login_required
 def edit_prompt(request, prompt_id):
     context_dict = {}
-    prompt_inst = get_object_or_404(Prompt, id=prompt_id)
+    prompt_inst = get_object_or_404(Prompt, id=prompt_id, creator=request.user)
 
     if prompt_inst.creator == request.user:
         context_dict["prompt"] = prompt_inst
@@ -202,12 +307,26 @@ def edit_prompt(request, prompt_id):
                 if len(new_text) > 0 and len(new_text) < 250:
                     prompt_inst.text = request.POST.get("text")
                     prompt_inst.save()
+                    return redirect("my_prompts")
                 else:
                     context_dict["error"] = "Input of invalid length."
     else:
         context_dict["auth_error"] = "You are not the creator of this prompt."
     
     return render(request, "prompts/edit.html", context_dict)
+
+@require_POST
+def del_prompt(request, prompt_id):
+    # A validation pop-up is still needed, no protection from misclicks
+    prompt_inst = get_object_or_404(Prompt, id=prompt_id, creator=request.user)
+
+    if prompt_inst.creator == request.user and request.user.is_authenticated:
+        prompt_inst.delete()
+    
+    else:
+        request.session["del_auth_error"] = "You are not authorised to delete this prompt."
+    
+    return redirect("my_prompts")
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)
