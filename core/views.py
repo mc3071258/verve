@@ -33,7 +33,6 @@ def home(request):
 
     return render(request, "home.html", context=context_dict)
 
-<<<<<<< HEAD
 # Prompts
 @login_required
 def create_prompt(request, slug):
@@ -79,8 +78,7 @@ def choose_game(request):
             return redirect("create_prompt", slug=game.slug)
 
     return render(request, "prompts/choose_game.html", {"form": form})
-=======
->>>>>>> 98d614a201348c7246c623fdda4440d0f3d6da7c
+
 
 @require_POST
 def upvote_prompt(request, prompt_id):
@@ -188,7 +186,7 @@ def create_prompt(request, slug):
     if game.slug == "truth-or-dare":
         FormClass = TruthOrDareForm
     else:
-        FormClass = PromptForm
+        FormClass = NeverHaveIEverForm
 
     if request.method == "POST":
         form = FormClass(request.POST)
