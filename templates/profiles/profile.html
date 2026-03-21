@@ -11,5 +11,22 @@
     {% endif %}
 
     <p><strong>Bio:</strong> {{ profile.bio|default:"No bio yet." }}</p>
+    <p><strong>Followers:</strong> {{ follower_count }}</p>
+    <p><strong>Following:</strong> {{ following_count }}</p>
+
+    {% if user.is_authenticated and user != profile_user %}
+        {% if is_following %}
+            <form method="post" action="{% url 'unfollow_user' profile_user.username %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger">Unfollow</button>
+            </form>
+        {% else %}
+            <form method="post" action="{% url 'follow_user' profile_user.username %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Follow</button>
+            </form>
+        {% endif %}
+    {% endif %}
+    
 </div>
 {% endblock %}
