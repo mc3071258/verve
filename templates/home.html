@@ -1,33 +1,47 @@
 {% extends "base.html" %}
+{% load static %}
+
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h1>Home Page</h1>
-<p>Home page works.</p>
+<link rel="stylesheet" type="text/css" href ="{% static 'homeStyle.css' %}"/>
+<h1>Choose a game</h1>
 
-<div>
-    <h2> Top 5 Prompts </h2>
+<div id ="MainContent">
+
+<div id = GameButtons>
+    <button href="{% url 'game' 'truth-or-dare' %}">Truth or Dare</button>
+    <button href="{% url 'game' 'never-have-ever' %}">Never Have I Ever</button>
+    <button href="{% url 'game' 'would-you-rather' %}">Would You Rather?</button>
+</div>
+
+
+<div id = PromptBox>
+    <h2> Top 5 Prompts: </h2>
+    <div id=PromptList>
 
             {% if  prompts %}
             <table class="table">
                 {% for prompt in prompts %}
                 <tr>
-                    <td>{{ forloop.counter }}.</td>
-                    <td>FROM GAME - {{ prompt.game }}, PROMPT - {{ prompt.text }}, UPVOTES - {{ prompt.upvote_count }} </td>
+                    <td>{{ forloop.counter }}.</td>                
+                    <td> Game: {{ prompt.game }} , Prompt: {{ prompt.text }} , UPVOTES : {{ prompt.upvote_count }} </td>                   
                     <td>
                         {% if prompt.category == "truth"%}
-                            , CATEGORY - TRUTH
+                            Category: TRUTH
                         {% elif prompt.category == "dare" %}
-                            , CATEGORY - DARE
-                        {% endif %}
+                            Category: DARE
+                        {% endif %}                    
                     <td>
                         {% if prompt.id in voted_prompts %}
-                        <button disabled class="btn btn-primary"> You have already voted on this prompt </button>
+                            <button disabled class="btn btn-primary"> You have already voted on this prompt </button>
+                        {% elif prompt.creator == request.user %}
+                            <button disabled class="btn btn-primary"> You cannot vote on your own prompts </button>
                     {% else %}
                         <form action="{% url 'upvote_prompt' prompt.id %}" method="post">
                             {% csrf_token %}
-                            <button class="btn btn-primary" type="submit"> Upvote this Prompt </button>
+                            <button class="btn" type="submit"> Upvote </button>
                         </form>
                     {% endif %}
                     </td>
@@ -38,12 +52,16 @@
     {% else %}
     <strong>There are no prompts present</strong>
     {% endif %}
+    </div>
+
+    
 
 </div>
 
-    <div>
-        <a class="btn btn-primary" href="{% url 'choose_game' %}">Create Prompt</a>
+    <div id="create">
+        <a class="btn" href="{% url 'choose_game' %}">Create Prompt</a>
     </div>
 
+    </div>
 
 {% endblock %}
