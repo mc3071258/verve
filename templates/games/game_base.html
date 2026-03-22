@@ -5,14 +5,17 @@
 
 {% block title %}Game{% endblock %}
 
+
+
 {% block content %}
+
 <link rel="stylesheet" type="text/css" href ="{% static 'game_baseStyle.css' %}"/>
-<h1>{% block game_title %}Game{% endblock %}</h1>
+<h1>{% block gameTitle %}Game{% endblock %}</h1>
 {% block game_content %}
 
     <div class = "GameOptions">
-    <button id="playGameButton" href="{% url 'game_play' slug=game.slug %}">Play Game</button>
-    <button id = "viewPromptsButton" href="{% url 'game_prompts' slug=game.slug %}">View Prompts</button>
+    <a id="playGameButton" class ="btn" href="{% block playGameUrl %}{% endblock%}">{% block playGameName %}Play Game{% endblock %}</a>
+    <a id = "viewPromptsButton" class = "btn" href="{% block viewPromptsUrl %}{% endblock%}'">View Prompts</a>
     </div>
     
 {% endblock %}
