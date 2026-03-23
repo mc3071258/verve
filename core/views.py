@@ -280,18 +280,19 @@ def edit_prompt(request, prompt_id):
         if form.is_valid():
             form.save()
             return redirect("my_prompts")
+        
+    else:
+        if game.slug == "would-you-rather":
+            parts = prompt_inst.text.split("|", 1)
+            initial = {
+                "optionA": parts[0],
+                "optionB": parts[1] if len(parts) > 1 else "",
+            }
+            form = FormClass(initial=initial, instance=prompt_inst)
         else:
-            if game.slug == "would-you-rather":
-                parts = prompt_inst.text.split("|", 1)
-                initial = {
-                    "optionA": parts[0],
-                    "optionB": parts[1] if len(parts) > 1 else "",
-                }
-                form = FormClass(initial=initial, instance=prompt_inst)
-            else:
-                form = FormClass(instance=prompt_inst)
-            
-        return render(request, "prompts/edit.html", {"form": form, "prompt": prompt_inst})
+            form = FormClass(instance=prompt_inst)
+        
+    return render(request, "prompts/edit.html", {"form": form, "prompt": prompt_inst})
 
 @login_required
 @require_POST
