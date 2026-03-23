@@ -277,17 +277,11 @@ def edit_prompt(request, prompt_id):
     
     return render(request, "prompts/edit.html", context_dict)
 
+@login_required
 @require_POST
 def del_prompt(request, prompt_id):
-    # A validation pop-up is still needed, no protection from misclicks
     prompt_inst = get_object_or_404(Prompt, id=prompt_id, creator=request.user)
-
-    if prompt_inst.creator == request.user and request.user.is_authenticated:
-        prompt_inst.delete()
-    
-    else:
-        request.session["del_auth_error"] = "You are not authorised to delete this prompt."
-    
+    prompt_inst.delete()
     return redirect("my_prompts")
 
 def profile(request, username):
