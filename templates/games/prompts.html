@@ -1,44 +1,46 @@
 {% extends "games/game_base.html" %}
 
-{% block title %}
-    Prompts for {{ game.name }}
-{% endblock %}
+{% block title %}Prompts for {{ game.name }}{% endblock %}
 
-{% block game_title %}
-    Prompts for {{ game.name }}
-{% endblock %}
-
+{% block game_title %}Prompts for {{ game.name }}{% endblock %}
 
 {% block game_content %}
     {% if prompt_list %}
         <table class="table">
             {% for prompt in prompt_list %}
-            <tr>
-                <td>{{ forloop.counter }}.</td>
-                <td>FROM GAME - {{ game.name }}, </td>
-
-                <td> 
-                    PROMPT - 
-                    {% if game.slug == "would-you-rather" %}
-                        Option A: {{ prompt.optionA }}, <br>
-                        Option B: {{ prompt.optionB }},
-                    {% else %}
-                        {{ prompt.text }}
-                    {% endif %}
-                </td>
-
-                <td> UPVOTES - {{ prompt.upvote_count }} </td>
-                <td>
-                    {% if prompt.category == "truth"%}
-                        , CATEGORY - TRUTH
-                    {% elif prompt.category == "dare" %}
-                        , CATEGORY - DARE
-                    {% endif %}
-            </tr>
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td>
+                        {% if game.slug == "would-you-rather" %}
+                            {{ prompt.optionA }} or {{ prompt.optionB }}
+                        {% else %}
+                            {{ prompt.text }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if prompt.category == "truth" %}
+                            TRUTH
+                        {% elif prompt.category == "dare" %}
+                            DARE
+                        {% endif %}
+                    </td>
+                    <td>{{ prompt.upvote_count }} votes</td>
+                    <td>
+                        {% if prompt.id in voted_prompts %}
+                            <button disabled class="btn">Voted</button>
+                        {% elif prompt.creator == request.user %}
+                            <button disabled class="btn">Your prompt</button>
+                        {% else %}
+                            <form action="{% url 'upvote_prompt' prompt.id %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn" type="submit">Upvote</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
             {% endfor %}
         </table>
     {% else %}
-        No Prompts For {{ game.name }}
+        <strong>No prompts for {{ game.name }}</strong>
     {% endif %}
-
 {% endblock %}
