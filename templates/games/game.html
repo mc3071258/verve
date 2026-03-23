@@ -5,15 +5,24 @@
 {% endblock %}
 
 
-{% block game_title %} 
+{% block gameTitle %} 
     Game Options for {{game_title|title}} 
 {% endblock %}
 
 
-{% block game_content %}
+{% block playGameName %}
+    Play {{ slug|capfirst }}
+{% endblock %}
+
+{% block playGameUrl %}
+    /games/{{ slug }}/play/
+{% endblock %}
+
+{% block viewPromptsUrl %}
+    /games/{{ slug }}/prompts/
+{% endblock %}
 
 <a href="/games/{{ slug }}/play/">Play {{ slug|capfirst }}</a><br>
 
 <a href="/games/{{ slug }}/prompts/">View Prompts</a>
 
-{% endblock %}
