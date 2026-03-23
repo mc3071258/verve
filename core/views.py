@@ -259,23 +259,36 @@ def my_prompts(request):
 
 @login_required
 def edit_prompt(request, prompt_id):
-    context_dict = {}
     prompt_inst = get_object_or_404(Prompt, id=prompt_id, creator=request.user)
+    game = prompt_inst.game
 
-    if prompt_inst.creator == request.user:
-        context_dict["prompt"] = prompt_inst
-        if request.method == "POST":
-                new_text = request.POST.get("text")
-                if len(new_text) > 0 and len(new_text) < 250:
-                    prompt_inst.text = request.POST.get("text")
-                    prompt_inst.save()
-                    return redirect("my_prompts")
-                else:
-                    context_dict["error"] = "Input of invalid length."
-    else:
-        context_dict["auth_error"] = "You are not the creator of this prompt."
+    if game.slug == "truth-or-dare":
+        FormClass = TruthOrDareForm
+
+    elif game.slug == "would-you-rather":
+        FormClass = WouldYouRatherForm
     
-    return render(request, "prompts/edit.html", context_dict)
+    else:
+        FormClass = NeverHaveIEverForm
+
+    if request.method == "POST":
+        form = FormClass(request.POST, instance=prompt_inst)
+    
+        if form.is_valid():
+            form.save()
+            return redirect("my_prompts")
+        else:
+            if game.slug == "would-you-rather":
+                parts = prompt_inst.text.split("|", 1)
+                initial = {
+                    "optionA": parts[0],
+                    "optionB": parts[1] if len(parts) > 1 else "",
+                }
+                form = FormClass(initial=initial, instance=prompt_inst)
+            else:
+                form = FormClass(instance=prompt_inst)
+            
+        return render(request, "prompts/edit.html", {"form": form, "prompt": prompt_inst})
 
 @login_required
 @require_POST
