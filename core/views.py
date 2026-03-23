@@ -94,11 +94,8 @@ def logout(request):
 # Games
 # Game page
 def game(request, slug):
-    context_dict = {}
-    context_dict["slug"] = slug
-    context_dict["game_title"] = slug.replace("-", " ")
-    
-    return render(request, "games/game.html", context = context_dict)
+    game = get_object_or_404(Game, slug=slug)
+    return render(request, "games/game.html", {"slug": game.slug, "game_title": game.name})
 
 # Game prompts page
 def game_prompts(request, slug):
@@ -113,9 +110,9 @@ def game_prompts(request, slug):
 
     if game.slug == "would-you-rather":
         for prompt in prompt_list:
-            option_parts = prompt.text.split("|")
-            prompt.optionA = option_parts[0]
-            prompt.optionB = option_parts[1]
+            parts = prompt.text.split("|", 1)
+            prompt.optionA = parts[0]
+            prompt.optionB = parts[1] if len(parts) > 1 else ""
 
     context_dict = {}
     context_dict["game"] = game
