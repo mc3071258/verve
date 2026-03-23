@@ -1,15 +1,18 @@
 {% extends "games/game_base.html" %}
-
+{% load static %}
 {% block title %}Play{% endblock %}
 
-{% block game_title %}Play Truth Or Dare {% endblock %}
+{% block gameTitle %}<a id="title">Truth Or Dare</a>{% endblock %}
 
 {% block game_content %}
 
-    <div id='truth_prompt'></div>
-    <div id='dare_prompt'></div>
+    <link rel="stylesheet" type="text/css" href ="{% static 'truthOrDareStyle.css' %}"/>
 
-    <button class="btn btn-primary" onclick="nextPrompt()">Next Prompt</button>
+    <div id="main">
+    <div id='truth_prompt' onclick="nextTruthPrompt()"><span>Click for truth</span></div>
+    <div id="or">OR</div>
+    <div id='dare_prompt' onclick="nextDarePrompt()"><span>Click for dare</span></div>
+    </div>
 
     {{ truth_prompts|json_script:"truth-prompt-data" }}
     {{ dare_prompts|json_script:"dare-prompt-data" }}
@@ -21,18 +24,26 @@
         let truth_index = 0;
         let dare_index = 0
 
-        function showPrompt(){
+        function showTruthPrompt(){
             document.getElementById("truth_prompt").innerText = truth_prompts[truth_index] || "There are no Truth Prompts Created";
+        }
+
+        function showDarePrompt(){ 
             document.getElementById("dare_prompt").innerText = dare_prompts[dare_index] || "There are No Dare Prompts Created";
         }
 
-        function nextPrompt(){
+        function nextTruthPrompt(){
             truth_index = (truth_index + 1) % truth_prompts.length;
+            showTruthPrompt();
+        }
+        function nextDarePrompt(){
             dare_index = (dare_index + 1) % dare_prompts.length;
-            showPrompt();
+            showDarePrompt();
         }
 
         showPrompt();
     </script>
+
+  
 
 {% endblock %}

@@ -12,9 +12,9 @@
 <div id ="MainContent">
 
 <div id = GameButtons>
-    <button href="{% url 'game' 'truth-or-dare' %}">Truth or Dare</button>
-    <button href="{% url 'game' 'never-have-ever' %}">Never Have I Ever</button>
-    <button href="{% url 'game' 'would-you-rather' %}">Would You Rather?</button>
+    <button onclick="window.location.href='{% url 'game' slug='truth-or-dare' %}'">Truth or Dare</button>
+    <button onclick="window.location.href='{% url 'game' slug='never-have-i-ever' %}'">Never Have I Ever</button>
+    <button onclick="window.location.href='{% url 'game' slug='would-you-rather' %}'">Would You Rather?</button>
 </div>
 
 

@@ -1,14 +1,17 @@
 {% extends "games/game_base.html" %}
-
+{% load static %}
 {% block title %}Play{% endblock %}
-{% block game_title %}Play Would You Rather {% endblock %}
 
+{% block gameTitle %}<a id="title">Would You Rather</a>{% endblock %}
 {% block game_content %}
 
-    <div id="optionA" class="option-card"></div>
-    <div id="optionB" class="option-card"></div>
-    
-    <button class="btn btn-primary" onclick="nextPrompt()">Next Prompt</button>
+    <link rel="stylesheet" type="text/css" href ="{% static 'wouldYouRatherStyle.css' %}"/>
+
+    <div id ="main">
+    <div id="optionA" class="option-card" onclick="nextPrompt()"><span>This</span></div>
+    <div id="or">OR</div>
+    <div id="optionB" class="option-card" onclick="nextPrompt()"><span>That</span></div>
+    </div>
 
     {{ prompts|json_script:"prompt-data" }}
 
