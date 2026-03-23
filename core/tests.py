@@ -10,7 +10,6 @@ User = get_user_model()
 # Test constrains for core models.
 # Note : Wrap expected IntegrityError writes in transaction.atomic()
 # to isolate the failure and roll back to a savepoint.
-
 class ModelConstraintTests(TestCase):
     def setUp(self):
         self.u1 = User.objects.create_user(username="u1", password="1234")
@@ -98,7 +97,6 @@ class ModelConstraintTests(TestCase):
         prompt.save()
         self.assertTrue(prompt.id is not None)
 
-
 # Test auth url routing behaviour
 class AuthViewTest(TestCase):
     def setUp(self):
@@ -150,9 +148,9 @@ class AuthViewTest(TestCase):
         self.assertFalse(response.wsgi_request.user.is_authenticated)
 
     def test_logout(self):
-        """Test logout clears session and redirects home. """
+        """Test logout clears session and redirects home."""
         self.client.login(username=self.user.username, password="TestPass1234!")
-        response = self.client.get(reverse("logout"))
+        response = self.client.post(reverse("logout"))
         self.assertRedirects(response, reverse("home"))
         self.assertFalse(response.wsgi_request.user.is_authenticated)
 
@@ -292,6 +290,7 @@ class FollowViewTests(TestCase):
 
         self.assertRedirects(response, reverse("profile", args=[self.u2.username]))
         self.assertEqual(Follow.objects.filter(follower=self.u1, following=self.u2).count(), 1)
+        
 #Test Home View
 class HomeViewTest(TestCase):
     def setUp(self):
@@ -428,22 +427,3 @@ class GamePageTest(TestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 404)
-
-
-        
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
