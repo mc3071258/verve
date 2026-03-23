@@ -114,9 +114,21 @@ def game_prompts(request, slug):
             prompt.optionA = parts[0]
             prompt.optionB = parts[1] if len(parts) > 1 else ""
 
+    voted_prompts = set()
+    if request.user.is_authenticated:
+        voted_prompts = set(
+            Vote.objects.filter(voter=request.user).values_list("prompt_id", flat=True)
+        )
+    elif request.session.session_key:
+        voted_prompts = set(
+            Vote.objects.filter(guest_session_id=request.session.session_key)
+            .values_list("prompt_id", flat=True)
+        )
+
     context_dict = {}
     context_dict["game"] = game
     context_dict["prompt_list"] = prompt_list
+    context_dict["voted_prompts"] = voted_prompts
 
     return render(request, "games/prompts.html", context = context_dict)
 
@@ -162,13 +174,16 @@ def my_profile(request):
     profile = get_object_or_404(Profile, user=request.user)
     follower_count = Follow.objects.filter(following=request.user).count()
     following_count = Follow.objects.filter(follower=request.user).count()
+    following_users = User.objects.filter(followers__follower=request.user)
+    user_prompts = Prompt.objects.filter(creator=request.user).annotate(upvote_count=Count("votes"))
 
     return render(request, "profiles/my_profile.html", {
         "profile_user": request.user,
         "profile": profile,
-        "edit_mode": False,
         "follower_count": follower_count,
-        "following_count": following_count,})
+        "following_count": following_count,
+        "following_users": following_users,
+        "user_prompts": user_prompts,})
 
 @login_required
 def my_profile_edit(request):
@@ -256,7 +271,7 @@ def my_prompts(request):
     user_prompts = Prompt.objects.annotate(upvote_count=Count("votes")).filter(creator=current_user)
     
     context_dict["prompts"] = user_prompts
-    context_dict["del_auth_error"] = request.session.get("del_auth_error")
+    context_dict["del_auth_error"] = request.session.pop("del_auth_error")
     
     return render(request, "profiles/my_prompts.html", context_dict)
 
@@ -308,11 +323,13 @@ def profile(request, username):
 
     if request.user.is_authenticated and request.user != user:
         is_following = Follow.objects.filter(
-            follower= request.user,
-            following= user).exists()
+            follower=request.user,
+            following=user).exists()
         
     follower_count = Follow.objects.filter(following=user).count()
-    following_count = Follow.objects.filter(follower=profile.user).count()
+    following_count = Follow.objects.filter(follower=user).count()
+    following_users = User.objects.filter(followers__follower=user)
+    user_prompts = Prompt.objects.filter(creator=user).annotate(upvote_count=Count("votes"))
 
     return render(request, "profiles/profile.html", {
         "profile_user": user,
@@ -320,6 +337,8 @@ def profile(request, username):
         "is_following": is_following,
         "follower_count": follower_count,
         "following_count": following_count,
+        "following_users": following_users,
+        "user_prompts": user_prompts,
         })
 
 # Follow
