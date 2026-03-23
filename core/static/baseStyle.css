@@ -5,6 +5,8 @@ body{
     height: 100vh;
     margin: 0;
     background-color: #C6DCE5;
+    padding-top: 3vh;
+    padding-bottom: 3vh;
 }
 
 header{
@@ -63,4 +65,9 @@ header{
 .profileNavSection .profileText #logOut {
     font-size: 0.8rem;
     line-height: 1.2;
+}
+
+#container {
+    padding-top: 9vh;
+    padding-bottom: 20vh;
 }

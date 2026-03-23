@@ -1,15 +1,19 @@
 {% extends "games/game_base.html" %}
-
+{% load static %}
 {% block title %}Play{% endblock %}
 
 {% block game_title %}Play Truth Or Dare {% endblock %}
 
 {% block game_content %}
+    <link rel="stylesheet" type="text/css" href ="{% static 'truthOrDareStyle.css' %}"/>
 
-    <div id='truth_prompt'></div>
-    <div id='dare_prompt'></div>
+    <div id="main">
+    <div id='truth_prompt' onclick="nextPrompt()">Click for truth</div>
+    <div id="or">OR</div>
+    <div id='dare_prompt' onclick="nextPrompt()">Click for dare</div>
+    </div>
 
-    <button class="btn btn-primary" onclick="nextPrompt()">Next Prompt</button>
+    <!-- <button class="btn btn-primary" onclick="nextPrompt()">Next Prompt</button> -->
 
     {{ truth_prompts|json_script:"truth-prompt-data" }}
     {{ dare_prompts|json_script:"dare-prompt-data" }}

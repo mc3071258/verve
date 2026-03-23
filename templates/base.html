@@ -32,7 +32,7 @@
         <div class = "profileNavSection  d-flex align-items-center ms-auto">
         {% if user.is_authenticated %}
          <div class = "profileText text-end me-2">
-            <span id="usernameText">@{{user.profile.username}}</span><br>
+            <span id="usernameText">@{{user.username}}</span><br>
             <a href="{% url 'logout' %}" id="logOut">Log out</a>   
         </div>
             {% if user.profile.profile_picture%}   
