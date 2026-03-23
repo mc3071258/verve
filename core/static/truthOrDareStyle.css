@@ -8,8 +8,24 @@
     font-family: Arial, sans-serif;
 }
 
+#title{
+    margin-bottom: 1vh;
+    color: #000;
+    font-family: Inter;
+    font-size: 3vw;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    width: 22vw;
+    height: 5vh;
+}
+
 #truth_prompt, #dare_prompt {
+    display: flex;
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
     width: 30vw;
     height: 75vh;
     padding: 30px 40px;
@@ -50,4 +66,5 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    opacity: 80%;
 }
