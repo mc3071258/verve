@@ -271,7 +271,7 @@ def my_prompts(request):
     user_prompts = Prompt.objects.annotate(upvote_count=Count("votes")).filter(creator=current_user)
     
     context_dict["prompts"] = user_prompts
-    context_dict["del_auth_error"] = request.session.pop("del_auth_error")
+    context_dict["del_auth_error"] = request.session.pop("del_auth_error", None)
     
     return render(request, "profiles/my_prompts.html", context_dict)
 
