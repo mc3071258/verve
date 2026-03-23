@@ -192,9 +192,15 @@ def my_profile_edit(request):
 @require_POST
 def upvote_prompt(request, prompt_id):
     prompt = get_object_or_404(Prompt, id=prompt_id)
+
+    # Prevent self-voting
+    if request.user.is_authenticated and request.user == prompt.creator:
+        return redirect(request.META.get("HTTP_REFERER", "home"))
+
     if request.user.is_authenticated:
         voter = request.user
         session_id = None
+
     else:
         if not request.session.session_key:
             # Create a session so they get key
@@ -212,7 +218,7 @@ def upvote_prompt(request, prompt_id):
     except IntegrityError:
         pass
 
-    return redirect("home")
+    return redirect(request.META.get("HTTP_REFERER", "home"))
 
 @login_required
 def create_prompt(request, slug):
