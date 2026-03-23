@@ -1,73 +1,58 @@
 {% extends "base.html" %}
 {% load static %}
 
-
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" type="text/css" href ="{% static 'homeStyle.css' %}"/>
-<h1>Choose a game</h1>
+    <link rel="stylesheet" type="text/css" href="{% static 'homeStyle.css' %}"/>
+    <h1>Choose a game</h1>
 
+    <div id="MainContent">
+        <div id="GameButtons">
+            <a href="{% url 'game' slug='truth-or-dare' %}">Truth or Dare</a>
+            <a href="{% url 'game' slug='never-have-i-ever' %}">Never Have I Ever</a>
+            <a href="{% url 'game' slug='would-you-rather' %}">Would You Rather?</a>
+        </div>
 
-<div id ="MainContent">
+        <div id="PromptBox">
+            <h2>Top 5 Prompts:</h2>
+            <div id="PromptList">
+                {% if prompts %}
+                    <table class="table">
+                        {% for prompt in prompts %}
+                            <tr>
+                                <td>{{ forloop.counter }}.</td>
+                                <td>{{ prompt.game }} - {{ prompt.text }} ({{ prompt.upvote_count }} votes)</td>
+                                <td>
+                                    {% if prompt.category == "truth" %}
+                                        TRUTH
+                                    {% elif prompt.category == "dare" %}
+                                        DARE
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if prompt.id in voted_prompts %}
+                                        <button disabled class="btn">Voted</button>
+                                    {% elif prompt.creator == request.user %}
+                                        <button disabled class="btn">Your prompt</button>
+                                    {% else %}
+                                        <form action="{% url 'upvote_prompt' prompt.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button class="btn" type="submit">Upvote</button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <strong>There are no prompts present</strong>
+                {% endif %}
+            </div>
+        </div>
 
-<div id = GameButtons>
-    <button onclick="window.location.href='{% url 'game' slug='truth-or-dare' %}'">Truth or Dare</button>
-    <button onclick="window.location.href='{% url 'game' slug='never-have-i-ever' %}'">Never Have I Ever</button>
-    <button onclick="window.location.href='{% url 'game' slug='would-you-rather' %}'">Would You Rather?</button>
-</div>
-
-
-<div id = PromptBox>
-    <h2> Top 5 Prompts: </h2>
-    <div id=PromptList>
-
-
-            {% if  prompts %}
-            <table class="table">
-                {% for prompt in prompts %}
-                <tr>
-                    <td>{{ forloop.counter }}.</td>                
-                    <td> Game: {{ prompt.game }} , Prompt: {{ prompt.text }} , UPVOTES : {{ prompt.upvote_count }} </td>                   
-                    <td>
-                        {% if prompt.category == "truth"%}
-                            Category: TRUTH
-                        {% elif prompt.category == "dare" %}
-                            Category: DARE
-                        {% endif %}                    
-                    <td>
-                        {% if prompt.id in voted_prompts %}
-
-                            <button disabled class="btn btn-primary"> You have already voted on this prompt </button>
-                        {% elif prompt.creator == request.user %}
-                            <button disabled class="btn btn-primary"> You cannot vote on your own prompts </button>
-
-                        <button disabled class="btn"> Upvote </button>
-
-                    {% else %}
-                        <form action="{% url 'upvote_prompt' prompt.id %}" method="post">
-                            {% csrf_token %}
-                            <button class="btn" type="submit"> Upvote </button>
-                        </form>
-                    {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-
-    {% else %}
-    <strong>There are no prompts present</strong>
-    {% endif %}
+        <div id="create">
+            <a class="btn" href="{% url 'choose_game' %}">Create Prompt</a>
+        </div>
     </div>
-
-    
-
-</div>
-
-    <div id="create">
-        <a class="btn" href="{% url 'choose_game' %}">Create Prompt</a>
-    </div>
-
-    </div>
-
 {% endblock %}
