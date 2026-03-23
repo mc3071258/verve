@@ -1,7 +1,8 @@
 {% extends "games/game_base.html" %}
 {% load static %}
 {% block title %}Play{% endblock %}
-{% block game_title %}<a id="title">Never Have I Ever ...</a>{% endblock %}
+
+{% block gameTitle %}<a id="title">Never Have I Ever ...</a>{% endblock %}
 
 {% block game_content %}
     <link rel="stylesheet" type="text/css" href ="{% static 'neverHaveIEverStyle.css' %}"/>
@@ -30,4 +31,5 @@
         showPrompt();
     </script>
     </div>
+
 {% endblock %}
