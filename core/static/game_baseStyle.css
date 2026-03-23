@@ -1,0 +1,48 @@
+#playGameButton{
+
+    background: #C4DCB7;
+}
+
+#viewPromptsButton{
+    background: #888ED1;
+    
+}
+
+h1{
+    color: #57506C;
+    text-align: center;
+    font-family: "Konkhmer Sleokchher";
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-top: 10vh;
+}
+.GameOptions{
+    display: flex;
+    position: absolute;
+    top:50%;
+    left:50%;
+    justify-content: space-between;
+    transform: translate(-50%, -50%);
+    gap: 4vw;
+}
+
+#viewPromptsButton, #playGameButton{
+    width: 25vw;
+    height: 10.7vh;
+    border-radius: 90px;
+    color: #000;
+    font-family: Inter;
+    font-size: 2vw;
+    font-weight: 600;
+    line-height: normal;
+    text-align: center;
+    border-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+
