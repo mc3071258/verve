@@ -1,28 +1,14 @@
 {% extends "games/game_base.html" %}
+{% load static %}
 
-{% block title %}
-    {{ slug|capfirst }}
+{% block title %}{{ game_title }}{% endblock %}
+
+{% block game_title %}Game Options for {{ game_title }}{% endblock %}
+
+{% block game_content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'game_baseStyle.css' %}"/>
+    <div class="GameOptions">
+        <a id="playGameButton" class="btn" href="{% url 'game_play' slug=slug %}">Play {{ game_title }}</a>
+        <a id="viewPromptsButton" class="btn" href="{% url 'game_prompts' slug=slug %}">View Prompts</a>
+    </div>
 {% endblock %}
-
-
-{% block gameTitle %} 
-    Game Options for {{game_title|title}} 
-{% endblock %}
-
-
-{% block playGameName %}
-    Play {{ slug|capfirst }}
-{% endblock %}
-
-{% block playGameUrl %}
-    /games/{{ slug }}/play/
-{% endblock %}
-
-{% block viewPromptsUrl %}
-    /games/{{ slug }}/prompts/
-{% endblock %}
-
-<a href="/games/{{ slug }}/play/">Play {{ slug|capfirst }}</a><br>
-
-<a href="/games/{{ slug }}/prompts/">View Prompts</a>
-
