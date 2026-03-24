@@ -165,3 +165,45 @@
     font-weight: normal;
     text-decoration: underline;
 }
+
+.votes-column {
+    width: 195px;
+}
+
+.vote-item {
+    background: #f9f6f6;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vote-item p {
+    font-size: 14px;
+    margin: 0;
+}
+
+.game-column {
+    width: 195px;
+}
+
+.game-item {
+    background: #f9f6f6;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-item p {
+    font-size: 14px;
+    margin: 0;
+}
+
+.edit-profile-link{
+    padding: 1%;
+}
+
+#edit{
+    color: #E55D5D;
+}

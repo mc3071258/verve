@@ -70,40 +70,62 @@
             <div class = "prompts-column">
                 <p class = "prompts-title">Your Prompts:</p>
                 <div class = "prompts-list">
-                    <div class="prompts-header">
-                        <p class="prompts-title">Your Prompts:</p>
-                        <p class="votes-title">Votes:</p>
+    
+                        {% for prompt in user_prompts %}               
+                                <div class="prompt-item">
+                                    <p>{{prompt.display_text}}</p>
+                                </div>
+                        {% empty %}
+                            <div class="prompt-item">
+                                <p>No prompts yet</p>
+                            </div>
+                        {% endfor %}
                     </div>
+                </div>
 
+                <div class="game-column">
+                    <p class="prompts-title">Game:</p>
                     <div class="prompts-list">
                         {% for prompt in user_prompts %}
-                            <div class="prompt-row">
-                                <div class="prompt-text">
-                                    {{ prompt.display_text }}
-                                </div>
-                                <div class="prompt-votes">
-                                    {{ prompt.upvote_count }}
-                                </div>
-                            </div>
+                        <div class="game-item">
+                            <p>{{ prompt.game }}</p>
+                        </div>
                         {% empty %}
-                            <div class="prompt-row">
-                                <div class="prompt-text">No prompts yet</div>
-                                <div class="prompt-votes">0</div>
-                            </div>
+                        <div class="game-item">
+                            <p>n/a</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="votes-column">
+                    <p class="prompts-title">Votes:</p>
+                    <div class="prompts-list">
+                        {% for prompt in user_prompts %}
+                        <div class="vote-item">
+                            <p>{{ prompt.upvote_count }}</p>
+                        </div>
+                        {% empty %}
+                        <div class="vote-item">
+                            <p>0</p>
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
 
         </div>
-    </div>
 
-    <div class="edit-profile-section">
+        <div class="edit-profile-section">
         <a href="{% url 'my_prompts' %}" class="edit-profile-link">My Prompts</a>
-        <a href="{% url 'edit_profile' %}" class="edit-profile-link">Edit Profile</a>
+        <a href="{% url 'edit_profile' %}" class="edit-profile-link" id="edit">Edit Profile</a>
+        </div>
+
     </div>
 
-</div>
+    
+
+
 
 
 {% endblock %}
