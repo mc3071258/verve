@@ -31,15 +31,18 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if prompt.id in voted_prompts %}
-                                        <button disabled class="btn">Voted</button>
-                                    {% elif prompt.creator == request.user %}
+                                    {% if prompt.creator == request.user %}
                                         <button disabled class="btn">Your prompt</button>
                                     {% else %}
-                                        <form action="{% url 'upvote_prompt' prompt.id %}" method="post">
-                                            {% csrf_token %}
-                                            <button class="btn" type="submit">Upvote</button>
-                                        </form>
+                                        <button type="button"
+                                                class="btn vote-btn {% if prompt.id in voted_prompts %}voted{% endif %}"
+                                                data-url="{% url 'upvote_prompt' prompt.id %}"
+                                                data-voted="{% if prompt.id in voted_prompts %}true{% else %}false{% endif %}">
+                                            <span class="vote-count">{{ prompt.upvote_count }}</span>
+                                            <span class="vote-label">
+                                                {% if prompt.id in voted_prompts %}Voted{% else %}Upvote{% endif %}
+                                            </span>
+                                        </button>
                                     {% endif %}
                                 </td>
                             </tr>
