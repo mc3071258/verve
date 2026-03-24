@@ -154,23 +154,6 @@
     margin: 0;
 }
 
-.votes-column {
-    width: 195px;
-}
-
-.vote-item {
-    background: #f9f6f6;
-    height: 43px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.vote-item p {
-    font-size: 14px;
-    margin: 0;
-}
-
 .edit-profile-section {
     display: flex;
     justify-content: flex-end;

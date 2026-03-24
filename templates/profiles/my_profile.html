@@ -87,20 +87,6 @@
                 </div>
             </div>
 
-            <!-- <div class = "votes-column">
-                <p class = "prompts-title">Votes:</p>
-                <div class = "prompts-list">
-                    {% for prompt in prompts%}
-                    <div class="vote-item">
-                        <p>{{ prompt.votes }}</p>
-                    </div>
-                    {% empty %}
-                    <div class="vote-item">
-                        <p>0</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div> -->
         </div>
     </div>
 
@@ -109,20 +95,5 @@
     </div>
 </div>
 
-
-
-    <!-- <div id="profileDetails">
-    <h1 class="mb-3">{{ profile_user.username }}</h1>
-    {% if profile.profile_picture %}
-        <img src="{{ profile.profile_picture.url }}" alt="Profile picture" class="img-thumbnail mb-3" style="max-width: 200px;">
-    {% endif %}
-    <p><strong>Followers:</strong> {{ follower_count }}</p>
-    <p><strong>Following:</strong> {{ following_count }}</p> -->
-
-
-
-    <!-- <p><strong>Bio:</strong> {{ profile.bio|default:"No bio yet." }}</p> -->
-    
-    <!-- <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a> -->
 
 {% endblock %}
