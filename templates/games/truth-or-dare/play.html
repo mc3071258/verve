@@ -10,7 +10,7 @@
 
     <div id="main">
     <div id='truth_prompt' onclick="nextTruthPrompt()"><span>Click for truth</span></div>
-    <div id="or">OR</div>
+    <div id="or" onclick="resetPrompts()">OR</div>
     <div id='dare_prompt' onclick="nextDarePrompt()"><span>Click for dare</span></div>
     </div>
 
@@ -24,24 +24,46 @@
         let truth_index = 0;
         let dare_index = 0
 
+        let showingPrompt = false;  //at start of game no promt yet
+
         function showTruthPrompt(){
             document.getElementById("truth_prompt").innerText = truth_prompts[truth_index] || "There are no Truth Prompts Created";
+            showingPrompt = true;
         }
 
         function showDarePrompt(){ 
             document.getElementById("dare_prompt").innerText = dare_prompts[dare_index] || "There are No Dare Prompts Created";
+            showingPrompt = true;
         }
 
         function nextTruthPrompt(){
-            truth_index = (truth_index + 1) % truth_prompts.length;
-            showTruthPrompt();
+            if (showingPrompt){
+                resetPrompts();
+                return;
+            }else{
+                truth_index = (truth_index + 1) % truth_prompts.length;
+                showTruthPrompt();
+            }
         }
         function nextDarePrompt(){
-            dare_index = (dare_index + 1) % dare_prompts.length;
-            showDarePrompt();
+              if (showingPrompt){
+                resetPrompts();
+                return;
+            }else{
+                dare_index = (dare_index + 1) % dare_prompts.length;
+                showDarePrompt();
+            }
         }
 
-        showPrompt();
+        function resetPrompts(){
+            if (showingPrompt){
+            document.getElementById("truth_prompt").innerText = "Click for truth";
+            document.getElementById("dare_prompt").innerText = "Click for dare";
+            showingPrompt  = false;
+            }
+        }
+
+        //showPrompt();
     </script>
 
   
