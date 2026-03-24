@@ -427,3 +427,69 @@ class GamePageTest(TestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 404)
+
+# Upvote with AJAX tests
+class UpvoteViewTests(TestCase):
+    def setUp(self):
+        self.u1 = User.objects.create_user(username="voter", password="TestPass1234!")
+        self.u2 = User.objects.create_user(username="creator", password="TestPass1234!")
+        Profile.objects.create(user=self.u1)
+        Profile.objects.create(user=self.u2)
+        self.game = Game.objects.create(name="Test Game", description="Test")
+        self.prompt = Prompt.objects.create(game=self.game, creator=self.u2, text="Test prompt")
+
+    def test_upvote_creates_vote(self):
+        """Test upvoting creates a vote."""
+        self.client.login(username="voter", password="TestPass1234!")
+        response = self.client.post(reverse("upvote_prompt", args=[self.prompt.id]))
+        self.assertEqual(Vote.objects.filter(prompt=self.prompt, voter=self.u1).count(), 1)
+
+    def test_upvote_toggle_removes_vote(self):
+        """Test upvoting again removes the vote."""
+        self.client.login(username="voter", password="TestPass1234!")
+        self.client.post(reverse("upvote_prompt", args=[self.prompt.id]))
+        self.client.post(reverse("upvote_prompt", args=[self.prompt.id]))
+        self.assertEqual(Vote.objects.filter(prompt=self.prompt, voter=self.u1).count(), 0)
+
+    def test_self_vote_blocked(self):
+        """Test creator cannot vote on own prompt."""
+        self.client.login(username="creator", password="TestPass1234!")
+        self.client.post(reverse("upvote_prompt", args=[self.prompt.id]))
+        self.assertEqual(Vote.objects.filter(prompt=self.prompt).count(), 0)
+
+    def test_upvote_ajax_returns_json(self):
+        """Test AJAX upvote returns JSON response."""
+        self.client.login(username="voter", password="TestPass1234!")
+        response = self.client.post(reverse("upvote_prompt", args=[self.prompt.id]), HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data["voted"])
+        self.assertEqual(data["vote_count"], 1)
+
+    def test_upvote_ajax_toggle_returns_json(self):
+        """Test AJAX unvote returns updated JSON."""
+        self.client.login(username="voter", password="TestPass1234!")
+        self.client.post(reverse("upvote_prompt", args=[self.prompt.id]), HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+
+        response = self.client.post(reverse("upvote_prompt", args=[self.prompt.id]),HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+
+        data = response.json()
+        self.assertFalse(data["voted"])
+        self.assertEqual(data["vote_count"], 0)
+
+    def test_self_vote_ajax_returns_403(self):
+        """Test AJAX self-vote returns 403."""
+        self.client.login(username="creator", password="TestPass1234!")
+        response = self.client.post(reverse("upvote_prompt", args=[self.prompt.id]),HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        self.assertEqual(response.status_code, 403)
+
+    def test_guest_vote(self):
+        """Test guest can vote via session."""
+        self.client.post(reverse("upvote_prompt", args=[self.prompt.id]))
+        self.assertEqual(Vote.objects.filter(prompt=self.prompt).count(), 1)
+
+    def test_get_rejected(self):
+        """Test GET request returns 405."""
+        response = self.client.get(reverse("upvote_prompt", args=[self.prompt.id]))
+        self.assertEqual(response.status_code, 405)
