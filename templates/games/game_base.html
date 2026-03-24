@@ -1,22 +1,6 @@
 {% extends "base.html" %}
-{% load static %}
-
-
-
-{% block title %}Game{% endblock %}
-
-
 
 {% block content %}
-
-<link rel="stylesheet" type="text/css" href ="{% static 'game_baseStyle.css' %}"/>
-<h1>{% block gameTitle %}Game{% endblock %}</h1>
-{% block game_content %}
-
-    <div class = "GameOptions">
-    <a id="playGameButton" class ="btn" href="{% block playGameUrl %}{% endblock%}">{% block playGameName %}Play Game{% endblock %}</a>
-    <a id = "viewPromptsButton" class = "btn" href="{% block viewPromptsUrl %}{% endblock%}'">View Prompts</a>
-    </div>
-    
-{% endblock %}
+    <h1>{% block game_title %}Game{% endblock %}</h1>
+    {% block game_content %}{% endblock %}
 {% endblock %}

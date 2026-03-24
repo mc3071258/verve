@@ -3,24 +3,18 @@
 {% block title %}Edit Prompt{% endblock %}
 
 {% block content %}
-    {% if auth_error %}
-        {{ auth_error }}<br /><br />
-    {% else %}
-        <br />{{ prompt.game }} - {{ prompt.created_at }}
-        <br />Current Prompt Text:<br />{{ prompt.text }}
-        <br /><br /> Edit Prompt Text: <br />
+    <h1>Edit Prompt for {{ prompt.game.name }}</h1>
+    <p><strong>Created:</strong> {{ prompt.created_at }}</p>
+
+    <div>
         <form method="post" action="{% url 'edit_prompt' prompt.id %}">
             {% csrf_token %}
-            <input type="text" name="text" placeholder="{{ prompt.text }}"><br />
-            <input type="hidden" name="prompt_id" value="{{ prompt.id }}">
-            {% if error %}
-                {{ error }}
-            {% endif %}
-            <br /><button class="btn btn-primary" type="submit"> Submit </button>
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {{ field.label_tag }}<br/>
+                {{ field }}<br/><br/>
+            {% endfor %}
+            <button class="btn btn-primary" type="submit">Save Changes</button>
         </form>
-        <br />
-    {% endif %}
+    </div>
 {% endblock %}
-
-
-                    

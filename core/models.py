@@ -33,6 +33,15 @@ class Prompt(models.Model):
         # Truncate to aviod visibility issues in admin, some prompt might be too long
         return f"{self.game.name}: {self.text[:30]}"
     
+    # For would you rather, split text by pipe and display as "Option 1 or Option 2"    
+    @property
+    def display_text(self):
+        """Return formatted text, splitting WYR pipe delimiter."""
+        if self.game.slug == "would-you-rather" and "|" in self.text:
+            parts = self.text.split("|", 1)
+            return f"{parts[0]} or {parts[1]}"
+        return self.text
+    
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     # Allow empty bio and profile pic
