@@ -5,71 +5,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-
-    <link rel="stylesheet" type="text/css" href ="{% static 'baseStyle.css' %}"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'baseStyle.css' %}"/>
     
     <title>{% block title %}Party Games{% endblock %}</title>
 </head>
+
 <body>
     <header>
-    <nav class ="NavLoggedIn">
-        
-        <div class = "nav items">
-        <ul class="nav nav-underline">
-            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='never-have-i-ever'%}">Never Have I Ever</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='truth-or-dare'%}">Truth Or Dare</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='would-you-rather' %}">Would You Rather?</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'choose_game' %}">Create</a></li>
-        </ul>
+        <nav class="NavLoggedIn">
+            <div class="nav items">
+                <ul class="nav nav-underline">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='never-have-i-ever' %}">Never Have I Ever</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='truth-or-dare' %}">Truth Or Dare</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='would-you-rather' %}">Would You Rather?</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'choose_game' %}">Create</a></li>
+                </ul>
 
-        
-        <div class = "profileNavSection  d-flex align-items-center ms-auto">
-        {% if user.is_authenticated %}
-         <div class = "profileText text-end me-2">
-            <span id="usernameText">@{{user.username}}</span><br>
-            <a href="{% url 'logout' %}" id="logOut">Log out</a>   
-        </div>
-            {% if user.profile.profile_picture%}   
-            <img src="{{ user.profile.profile_picture.url }}" alt="Profile Photo" id="profilePicture" width="40" height="40">
-            {% endif %}
-        {% else %}
-         <div class = "profileText text-end me-2">
-            <a href="{% url 'login' %}" id="logIn">Log in</a>
-            <a href="{% url 'register' %}" id="Register">Register</a>
-        {% endif %}
+                <div class="profileNavSection d-flex align-items-center ms-auto">
+                    {% if user.is_authenticated %}
+                        <div class="profileText text-end me-2">
+                            <a href="{% url 'my_profile' %}">
+                                <span id="usernameText">@{{ user.username }}</span>
+                            </a><br>
+                            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" id="logOut">Log out</button>
+                            </form>
+                        </div>
+                        {% if user.profile.profile_picture %}
+                            <a href="{% url 'my_profile' %}">
+                                <img src="{{ user.profile.profile_picture.url }}" alt="Profile Photo" id="profilePicture" width="40" height="40">
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <div class="profileText text-end me-2">
+                            <a href="{% url 'login' %}" id="logIn">Log in</a>
+                            <a href="{% url 'register' %}" id="Register">Register</a>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
-        </div>
-
-        </div>    
-    </nav>
+        </nav>
     </header>
 
-   <div id = "container">
-    {% block content %}
-    {% endblock %}
-   </div>
+    <div id="container">
+        {% block content %}
+        {% endblock %}
+    </div>
 
-   <footer class = "footer">
-    <div class = "footer-items d-flex justify-content-center">
-        <ul class= "nav nav-underline">
-            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='never-have-i-ever'%}">Never Have I Ever</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='truth-or-dare'%}">Truth Or Dare</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='would-you-rather' %}">Would You Rather?</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'choose_game' %}">Create</a></li>
-        </ul>
+    <footer class="footer">
+        <div class="footer-items d-flex justify-content-center">
+            <ul class="nav nav-underline">
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='never-have-i-ever' %}">Never Have I Ever</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='truth-or-dare' %}">Truth Or Dare</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='would-you-rather' %}">Would You Rather?</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'choose_game' %}">Create</a></li>
+            </ul>
         </div>
-   </footer>
-
+    </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <!-- <script src="basejs.js"></script> -->
     <script src="{% static 'basejs.js' %}"></script>
 </body>
 </html>

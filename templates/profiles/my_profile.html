@@ -3,17 +3,40 @@
 {% block title %}My Profile{% endblock %}
 
 {% block content %}
-<div class="card p-4 shadow-sm">
-    <h1 class="mb-3">{{ profile_user.username }}</h1>
+    <div class="card p-4 shadow-sm">
+        <h1 class="mb-3">{{ profile_user.username }}</h1>
 
-    {% if profile.profile_picture %}
-        <img src="{{ profile.profile_picture.url }}" alt="Profile picture" class="img-thumbnail mb-3" style="max-width: 200px;">
-    {% endif %}
+        {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" alt="Profile picture" class="img-thumbnail mb-3" style="max-width: 200px;">
+        {% endif %}
 
-    <p><strong>Bio:</strong> {{ profile.bio|default:"No bio yet." }}</p>
-    <p><strong>Followers:</strong> {{ follower_count }}</p>
-    <p><strong>Following:</strong> {{ following_count }}</p>
-    
-    <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
-</div>
+        <p><strong>Bio:</strong> {{ profile.bio|default:"No bio yet." }}</p>
+        <p><strong>Followers:</strong> {{ follower_count }}</p>
+        <p><strong>Following:</strong> {{ following_count }}</p>
+
+        <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+        <a href="{% url 'my_prompts' %}" class="btn btn-primary">My Prompts</a>
+    </div>
+
+    <div class="card p-4 shadow-sm mt-3">
+        <h2>Following</h2>
+        {% if following_users %}
+            {% for followed in following_users %}
+                <p><a href="{% url 'profile' followed.username %}">@{{ followed.username }}</a></p>
+            {% endfor %}
+        {% else %}
+            <p>Not following anyone yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="card p-4 shadow-sm mt-3">
+        <h2>Your Prompts</h2>
+        {% if user_prompts %}
+            {% for prompt in user_prompts %}
+                <p>{{ prompt.game.name }} - {{ prompt.text }} ({{ prompt.upvote_count }} votes)</p>
+            {% endfor %}
+        {% else %}
+            <p>No prompts yet.</p>
+        {% endif %}
+    </div>
 {% endblock %}

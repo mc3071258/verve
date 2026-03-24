@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}Play{% endblock %}
 
-{% block gameTitle %}<a id="title">Truth Or Dare</a>{% endblock %}
+{% block game_title %}<a id="title">Truth Or Dare</a>{% endblock %}
 
 {% block game_content %}
 
@@ -41,8 +41,8 @@
                 resetPrompts();
                 return;
             }else{
-                truth_index = (truth_index + 1) % truth_prompts.length;
                 showTruthPrompt();
+                truth_index = (truth_index + 1) % truth_prompts.length;
             }
         }
         function nextDarePrompt(){
@@ -50,8 +50,8 @@
                 resetPrompts();
                 return;
             }else{
-                dare_index = (dare_index + 1) % dare_prompts.length;
                 showDarePrompt();
+                dare_index = (dare_index + 1) % dare_prompts.length;
             }
         }
 
