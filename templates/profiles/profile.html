@@ -36,24 +36,19 @@
                     </div>
                     <div class = "info-row">
                         <p>Followers:</p>
-                        <p>{{ follower_count }}</p>
+                        <p id="follower-count">{{ follower_count }}</p>
                     </div>
                     <div class = "info-row">
-                        <div class ="follow-button">
-                        {% if user.is_authenticated and user != profile_user %}
-                            {% if is_following %}
-                                <form method="post" action="{% url 'unfollow_user' profile_user.username %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-danger">Unfollow</button>
-                            </form>
-                        {% else %}
-                            <form method="post" action="{% url 'follow_user' profile_user.username %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-primary">Follow</button>
-                            </form>
-                        {% endif %}
+                        <div class="follow-button">
+                            {% if user.is_authenticated and user != profile_user %}
+                                <button type="button"
+                                    class="btn follow-btn {% if is_following %}btn-outline-danger{% else %}btn-primary{% endif %}"
+                                    data-url="{% if is_following %}{% url 'unfollow_user' profile_user.username %}{% else %}{% url 'follow_user' profile_user.username %}{% endif %}"
+                                    data-following="{% if is_following %}true{% else %}false{% endif %}">
+                                    {% if is_following %}Unfollow{% else %}Follow{% endif %}
+                                </button>
                          {% endif %}
-                    </div>
+                        </div>
                     </div>
                 </div>
             </div>

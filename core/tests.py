@@ -290,7 +290,67 @@ class FollowViewTests(TestCase):
 
         self.assertRedirects(response, reverse("profile", args=[self.u2.username]))
         self.assertEqual(Follow.objects.filter(follower=self.u1, following=self.u2).count(), 1)
+
+    # AJAX specific follow/unfollow tests
+    def test_follow_user_ajax_returns_json(self):
+        """ Tests AJAX follow returns JSON and creates follow record """
+        self.client.login(username="testuser1", password="TestPass1234!")
+        response = self.client.post(
+            reverse("follow_user", args=[self.u2.username]),
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data["following"])
+        self.assertEqual(data["follower_count"], 1)
+        self.assertEqual(data["next_url"], reverse("unfollow_user", args=[self.u2.username]))
+        self.assertTrue(Follow.objects.filter(follower=self.u1, following=self.u2).exists())
+
+    def test_unfollow_user_ajax_returns_json(self):
+        """ Tests AJAX unfollow returns JSON and removes follow """
+        Follow.objects.create(follower=self.u1, following=self.u2)
+        self.client.login(username="testuser1", password="TestPass1234!")
+        response = self.client.post(
+            reverse("unfollow_user", args=[self.u2.username]),
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertFalse(data["following"])
+        self.assertEqual(data["follower_count"], 0)
+        self.assertEqual(data["next_url"], reverse("follow_user", args=[self.u2.username]))
+        self.assertFalse(Follow.objects.filter(follower=self.u1, following=self.u2).exists())
+
+    def test_follow_user_ajax_does_not_allow_self_follow(self):
+        """ Tests AJAX self-follow does not create a follow """
+        self.client.login(username="testuser1", password="TestPass1234!")
+        response = self.client.post(
+            reverse("follow_user", args=[self.u1.username]),
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data["following"])
+        self.assertEqual(data["follower_count"], 0)
+        self.assertEqual(data["next_url"], reverse("unfollow_user", args=[self.u1.username]))
+        self.assertFalse(Follow.objects.filter(follower=self.u1, following=self.u1).exists())
+    
+    def test_follow_user_ajax_does_not_duplicate_follow(self):
+        """ Tests AJAX follow does not create duplicate follow """
+        Follow.objects.create(follower=self.u1, following=self.u2)
+        self.client.login(username="testuser1", password="TestPass1234!")
+        response = self.client.post(
+            reverse("follow_user", args=[self.u2.username]),
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data["following"])
+        self.assertEqual(data["follower_count"], 1)
+        self.assertEqual(
+            Follow.objects.filter(follower=self.u1, following=self.u2).count(),
+            1)
+
 #Test Home View
 class HomeViewTest(TestCase):
     def setUp(self):
