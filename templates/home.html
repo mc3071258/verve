@@ -22,7 +22,7 @@
                         {% for prompt in prompts %}
                             <tr>
                                 <td>{{ forloop.counter }}.</td>
-                                <td>{{ prompt.game }} - {{ prompt.text }} ({{ prompt.upvote_count }} votes)</td>
+                                <td>{{ prompt.game }} - {{ prompt.display_text }} ({{ prompt.upvote_count }} votes)</td>
                                 <td>
                                     {% if prompt.category == "truth" %}
                                         TRUTH
