@@ -54,7 +54,7 @@
             <div class = "favourites-list">
                 {% for favourite in favourites %}
                 <div class = "favourite-item">
-                    <p>{{ favourite.text }} by @{{ favourite.creator }}</p>
+                    <p>{{ favourite.display_text }} by <a href="{% url 'profile' favourite.creator.username %}">@{{ favourite.creator.username }}</a></p>
                 </div>
                 {% empty %}
                 <div class="favourite-item">
@@ -67,12 +67,12 @@
 
     <div class = "prompts-section">
         <div class = "prompts-container">
-            <div class = prompts-column>
+            <div class = "prompts-column">
                 <p class = "prompts-title">Your Prompts:</p>
                 <div class = "prompts-list">
                 {% for prompt in user_prompts %}
-                        {{ prompt.game }} - {{ prompt.created_at }}
-                        <br />{{ prompt.text }} ({{ prompt.upvote_count }} votes)
+                        {{ prompt.game.name }} - {{ prompt.created_at }}
+                        <br/>{{ prompt.display_text }} ({{ prompt.upvote_count }} votes)
                         <br />
                         <form action="{% url 'delete_prompt' prompt.id %}" method="post">
                             {% csrf_token %}
@@ -91,8 +91,10 @@
     </div>
 
     <div class="edit-profile-section">
+        <a href="{% url 'my_prompts' %}" class="edit-profile-link">My Prompts</a>
         <a href="{% url 'edit_profile' %}" class="edit-profile-link">Edit Profile</a>
     </div>
+
 </div>
 
 
