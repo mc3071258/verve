@@ -12,7 +12,9 @@ body{
 header{
     background-color: #D9EAEC;
     text-align: center;
-    
+    top: 0;
+    z-index: 1000;
+    position: fixed;
     width: 100%;
 }
 
