@@ -20,9 +20,12 @@ def populate():
     ]
 
     users_data = [
-        ("james", "JamesPass1234!", "Hi, this is James's bio."),
-        ("mary", "MaryPass1234!", "Hi, this is Mary's bio."),
-        ("lucas","LucasPass1234!","Hi, this is Lucas' bio")
+        ("james", "JamesPass1234!", "Party game champion, Professional verve addict"),
+        ("mary", "MaryPass1234!", "Following friends only, Truth or Dare is my fave"),
+        ("lucas","LucasPass1234!","Check out my prompts- I spent way too long on them!!"),
+        ("emma", "EmmaPass1234!", "Student at UofG, procrastinating too hard rn"),
+        ("noah", "NoahPass1234!", "Just for fun! Here to find new games to try."),
+        ("olivia", "OliviaPass1234!", "Life of the party 🎵"),
     ]
     
     # game : (text, creator_name)
@@ -31,37 +34,106 @@ def populate():
             ("What's the strangest dream you've had?", "james", "truth"),
             ("Try and lick your own elbow", "mary", "dare"),
             ("Who's your celebrity crush?", "lucas", "truth"),
+            ("Text your crush right now", "emma", "dare"),
+            ("What's your biggest fear?", "noah", "truth"),
+            ("Have you ever lied to your best friend?", "mary", "truth"),
+            ("What's your most embarrassing moment?", "lucas", "truth"),
+            ("Do 10 push-ups right now", "olivia", "dare"),
+            ("Sing a song loudly for 30 seconds", "mary", "dare"),
+            ("What's a secret you've never told anyone?", "noah", "truth"),
+            ("Dance with no music for 1 minute", "lucas", "dare"),
+            ("Let someone send a message from your phone", "emma", "dare"),
         ],
         "Would You Rather": [
-            ("Would you rather shoot spaghetti out of your fingers", "james"),
-            ("Would you rather sneeze meatballs", "mary"),
-            ("Would you rather only eat beans for the rest of your life", "lucas"),
+            ("Shoot spaghetti out of your fingers | Sneeze meatballs", "james"),
+            ("Eat only beans forever | Never eat beans again", "mary"),
+            ("Always whisper | Always shout", "lucas"),
+            ("Be invisible | Be able to fly", "james"),
+            ("Live without music | Live without movies", "lucas"),
+            ("Always be late | Always be early", "emma"),
+            ("Have no internet | Have no phone", "noah"),
+            ("Speak all languages | Talk to animals", "olivia"),
+            ("Be super strong | Be super smart", "james"),
+            ("Never sleep | Never eat", "mary"),
+            ("Live in the past | Live in the future", "lucas"),
+            ("Win the lottery | Find true love", "olivia"),
         ],
         "Never Have I Ever": [
             ("Never have I ever broken a bone", "james"),
             ("Never have I ever skipped a lecture", "mary"),
             ("Never have I ever fainted", "lucas"),
+            ("Never have I ever lied to get out of plans", "mary"),
+            ("Never have I ever stayed up all night", "lucas"),
+            ("Never have I ever laughed at the wrong moment", "noah"),
+            ("Never have I ever forgotten someone's name", "james"),
+            ("Never have I ever looked through someone's phone", "mary"),
+            ("Never have I ever gotten lost", "lucas"),
+            ("Never have I ever been on stage", "emma"),
+            ("Never have I ever cried during a movie", "noah"),
+            ("Never have I ever cheated in a test", "olivia"),
         ],
     }
 
     follow_pairs = [
         ("james", "mary"),
-        ("mary", "james"),
         ("james", "lucas"),
-        ("lucas","james")
+        ("james", "olivia"),
+        ("mary", "james"),
+        ("mary", "emma"),
+        ("lucas","james"),
+        ("lucas", "olivia"),
+        ("lucas", "noah"),
+        ("emma", "james"),
+        ("emma", "mary"),
+        ("noah", "emma"),
+        ("noah", "james"),
+        ("olivia", "mary"),
+        ("olivia", "emma"),
     ]
 
     # (game_name, prompt_text, user_voters, guest_sessions)
     votes_data = [
-        ("Truth or Dare", "What's the strangest dream you've had?", ["james"], ["session1234a"]),
-        ("Truth or Dare", "Try and lick your own elbow", ["mary"], ["session1234a", "session1234b"]),
-        ("Truth or Dare", "Who's your celebrity crush?", ["james"], ["session1234a"]),
-        ("Would You Rather", "Would you rather shoot spaghetti out of your fingers", ["james", "mary"], []),
-        ("Would You Rather", "Would you rather sneeze meatballs", ["mary"], ["session1234b"]),
-        ("Would You Rather", "Would you rather only eat beans for the rest of your life", [], ["session1234b"]),
-        ("Never Have I Ever", "Never have I ever broken a bone", [], ["session1234a"]),
-        ("Never Have I Ever", "Never have I ever skipped a lecture", [], []),
-        ("Never Have I Ever", "Never have I ever fainted", ["james", "mary"], ["session1234a", "session1234b"]),
+        # Truth or Dare
+        ("Truth or Dare", "What's the strangest dream you've had?", ["mary", "emma"], ["session1234a"]),
+        ("Truth or Dare", "Try and lick your own elbow", ["james", "lucas"], ["session1234b"]),
+        ("Truth or Dare", "Who's your celebrity crush?", ["emma", "olivia"], []),
+        ("Truth or Dare", "Text your crush right now", ["james", "mary"], ["session1234c"]),
+        ("Truth or Dare", "What's your biggest fear?", ["lucas"], ["session1234d"]),
+        ("Truth or Dare", "Have you ever lied to your best friend?", ["james", "olivia"], []),
+        ("Truth or Dare", "What's your most embarrassing moment?", ["mary"], ["session1234e"]),
+        ("Truth or Dare", "Do 10 push-ups right now", ["noah", "james"], []),
+        ("Truth or Dare", "Sing a song loudly for 30 seconds", ["emma"], ["session1234f"]),
+        ("Truth or Dare", "What's a secret you've never told anyone?", ["lucas", "mary"], []),
+        ("Truth or Dare", "Dance with no music for 1 minute", ["noah"], ["session1234g"]),
+        ("Truth or Dare", "Let someone send a message from your phone", ["olivia"], []),
+
+        # Would You Rather
+        ("Would You Rather", "Shoot spaghetti out of your fingers | Sneeze meatballs", ["mary", "emma"], ["session2234a"]),
+        ("Would You Rather", "Eat only beans forever | Never eat beans again", ["james", "olivia"], []),
+        ("Would You Rather", "Always whisper | Always shout", ["emma"], ["session2234b"]),
+        ("Would You Rather", "Be invisible | Be able to fly", ["mary", "noah"], []),
+        ("Would You Rather", "Live without music | Live without movies", ["james"], ["session2234c"]),
+        ("Would You Rather", "Always be late | Always be early", ["lucas", "olivia"], []),
+        ("Would You Rather", "Have no internet | Have no phone", ["james", "emma"], ["session2234d"]),
+        ("Would You Rather", "Speak all languages | Talk to animals", ["mary"], []),
+        ("Would You Rather", "Be super strong | Be super smart", ["lucas", "noah"], ["session2234e"]),
+        ("Would You Rather", "Never sleep | Never eat", ["emma"], []),
+        ("Would You Rather", "Live in the past | Live in the future", ["james", "mary"], ["session2234f"]),
+        ("Would You Rather", "Win the lottery | Find true love", ["noah", "olivia"], []),
+
+        # Never Have I Ever
+        ("Never Have I Ever", "Never have I ever broken a bone", ["mary"], ["session3234a"]),
+        ("Never Have I Ever", "Never have I ever skipped a lecture", ["james", "emma"], []),
+        ("Never Have I Ever", "Never have I ever fainted", ["mary", "olivia"], ["session3234b"]),
+        ("Never Have I Ever", "Never have I ever lied to get out of plans", ["lucas"], []),
+        ("Never Have I Ever", "Never have I ever stayed up all night", ["james", "noah"], ["session3234c"]),
+        ("Never Have I Ever", "Never have I ever laughed at the wrong moment", ["emma"], []),
+        ("Never Have I Ever", "Never have I ever forgotten someone's name", ["mary", "lucas"], []),
+        ("Never Have I Ever", "Never have I ever looked through someone's phone", ["noah"], ["session3234d"]),
+        ("Never Have I Ever", "Never have I ever gotten lost", ["james"], []),
+        ("Never Have I Ever", "Never have I ever been on stage", ["olivia", "mary"], ["session3234e"]),
+        ("Never Have I Ever", "Never have I ever cried during a movie", ["lucas"], []),
+        ("Never Have I Ever", "Never have I ever cheated in a test", ["james", "emma"], ["session3234f"]),
     ]
 
     with transaction.atomic():
