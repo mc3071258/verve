@@ -1,5 +1,5 @@
 from django.db import transaction, IntegrityError
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate, get_user_model
@@ -203,32 +203,43 @@ def my_profile_edit(request):
 # Prompts
 @require_POST
 def upvote_prompt(request, prompt_id):
+    # Toggle vote on a prompt, return JSON for AJAX or redirect for forms.
     prompt = get_object_or_404(Prompt, id=prompt_id)
+    is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
-    # Prevent self-voting
     if request.user.is_authenticated and request.user == prompt.creator:
+        if is_ajax:
+            return JsonResponse({"error": "Cannot vote on own prompt"}, status=403)
         return redirect(request.META.get("HTTP_REFERER", "home"))
 
     if request.user.is_authenticated:
         voter = request.user
         session_id = None
-
     else:
         if not request.session.session_key:
-            # Create a session so they get key
             request.session.save()
-
         voter = None
         session_id = request.session.session_key
 
-    try:
-        Vote.objects.create(
-            prompt=prompt,
-            voter=voter,
-            guest_session_id=session_id
-        )
-    except IntegrityError:
-        pass
+    if voter:
+        existing = Vote.objects.filter(prompt=prompt, voter=voter)
+    else:
+        existing = Vote.objects.filter(prompt=prompt, guest_session_id=session_id)
+
+    if existing.exists():
+        existing.delete()
+        voted = False
+    else:
+        try:
+            Vote.objects.create(prompt=prompt, voter=voter, guest_session_id=session_id)
+            voted = True
+        except IntegrityError:
+            voted = True
+
+    vote_count = Vote.objects.filter(prompt=prompt).count()
+
+    if is_ajax:
+        return JsonResponse({"voted": voted, "vote_count": vote_count})
 
     return redirect(request.META.get("HTTP_REFERER", "home"))
 
