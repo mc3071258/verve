@@ -70,20 +70,28 @@
             <div class = "prompts-column">
                 <p class = "prompts-title">Your Prompts:</p>
                 <div class = "prompts-list">
-                {% for prompt in user_prompts %}
-                        {{ prompt.game.name }} - {{ prompt.created_at }}
-                        <br/>{{ prompt.display_text }} ({{ prompt.upvote_count }} votes)
-                        <br />
-                        <form action="{% url 'delete_prompt' prompt.id %}" method="post">
-                            {% csrf_token %}
-                            <a href="{% url 'edit_prompt' prompt.id %}" class="btn btn-primary"> Edit Prompt </a>
-                            <button class="btn btn-primary" type="submit"> Delete Prompt </button><br /><br />
-                        </form>
-                {% empty %}
-                    <div class = "prompt-item">
-                        <p>No prompts yet</p>
+                    <div class="prompts-header">
+                        <p class="prompts-title">Your Prompts:</p>
+                        <p class="votes-title">Votes:</p>
                     </div>
-                {% endfor %}
+
+                    <div class="prompts-list">
+                        {% for prompt in user_prompts %}
+                            <div class="prompt-row">
+                                <div class="prompt-text">
+                                    {{ prompt.display_text }}
+                                </div>
+                                <div class="prompt-votes">
+                                    {{ prompt.upvote_count }}
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="prompt-row">
+                                <div class="prompt-text">No prompts yet</div>
+                                <div class="prompt-votes">0</div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
 
