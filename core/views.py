@@ -1,4 +1,5 @@
 from django.db import transaction, IntegrityError
+from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate, get_user_model
@@ -11,6 +12,7 @@ from core.forms import UserForm, UserProfileForm, GameForm, TruthOrDareForm, Nev
 User = get_user_model()
 
 def home(request):
+    # Top 5 prompts by upvote count 
     prompt_list = (
         Prompt.objects.annotate(upvote_count=Count("votes")).order_by("-upvote_count")[:5]
     )
@@ -34,40 +36,6 @@ def home(request):
 
     return render(request, "home.html", context=context_dict)
 
-# Prompts
-@login_required
-def create_prompt(request, slug):
-    game = get_object_or_404(Game, slug=slug)
-
-
-    if game.slug == "truth-or-dare":
-        FormClass = TruthOrDareForm
-
-    elif game.slug == "would-you-rather":
-        FormClass = WouldYouRatherForm
-
-    else:
-        FormClass = NeverHaveIEverForm
-
-    if request.method == "POST":
-        form = FormClass(request.POST)
-    
-        if form.is_valid():
-            with transaction.atomic():
-                prompt = form.save(commit=False)
-                prompt.creator = request.user
-                prompt.game = game
-                prompt.save()
-                
-            return redirect("home")
-        else:
-            return render(request, "prompts/create.html", {"form": form, "game": game})
-
-    else:
-        form = FormClass()
-
-    return render(request, "prompts/create.html", {"form": form, "game": game})
-
 @login_required
 def choose_game(request):
     form = GameForm()
@@ -79,31 +47,6 @@ def choose_game(request):
             return redirect("create_prompt", slug=game.slug)
 
     return render(request, "prompts/choose_game.html", {"form": form})
-
-
-@require_POST
-def upvote_prompt(request, prompt_id):
-    prompt = get_object_or_404(Prompt, id=prompt_id)
-    if request.user.is_authenticated:
-        voter = request.user
-        session_id = None
-    else:
-        if not request.session.session_key:
-            request.session.save()
-
-        voter = None
-        session_id = request.session.session_key
-
-    try:
-        Vote.objects.create(
-            prompt=prompt,
-            voter=voter,
-            guest_session_id=session_id
-        )
-    except IntegrityError:
-        pass
-
-    return redirect("home")
 
 # Auth
 def login(request):
@@ -143,18 +86,18 @@ def register(request):
     
     return render(request, "auth/register.html", {"user_form": user_form, "profile_form": profile_form})
 
+@require_POST
 def logout(request):
     auth_logout(request)
     return redirect("home")
 
 # Games
+# Game page
 def game(request, slug):
-    context_dict = {}
-    context_dict["slug"] = slug
-    context_dict["game_title"] = slug.replace("-", " ")
-    
-    return render(request, "games/game.html", context = context_dict)
+    game = get_object_or_404(Game, slug=slug)
+    return render(request, "games/game.html", {"slug": game.slug, "game_title": game.name})
 
+# Game prompts page
 def game_prompts(request, slug):
     game = get_object_or_404(Game, slug=slug)
 
@@ -167,56 +110,27 @@ def game_prompts(request, slug):
 
     if game.slug == "would-you-rather":
         for prompt in prompt_list:
-            option_parts = prompt.text.split("|")
-            prompt.optionA = option_parts[0]
-            prompt.optionB = option_parts[1]
+            parts = prompt.text.split("|", 1)
+            prompt.optionA = parts[0]
+            prompt.optionB = parts[1] if len(parts) > 1 else ""
+
+    voted_prompts = set()
+    if request.user.is_authenticated:
+        voted_prompts = set(
+            Vote.objects.filter(voter=request.user).values_list("prompt_id", flat=True)
+        )
+    elif request.session.session_key:
+        voted_prompts = set(
+            Vote.objects.filter(guest_session_id=request.session.session_key)
+            .values_list("prompt_id", flat=True)
+        )
 
     context_dict = {}
     context_dict["game"] = game
     context_dict["prompt_list"] = prompt_list
+    context_dict["voted_prompts"] = voted_prompts
 
     return render(request, "games/prompts.html", context = context_dict)
-
-# Prompts
-
-@login_required
-def create_prompt(request, slug):
-    game = get_object_or_404(Game, slug=slug)
-
-
-    if game.slug == "truth-or-dare":
-        FormClass = TruthOrDareForm
-    else:
-        FormClass = NeverHaveIEverForm
-
-    if request.method == "POST":
-        form = FormClass(request.POST)
-    
-        if form.is_valid():
-            with transaction.atomic():
-                prompt = form.save(commit=False)
-                prompt.creator = request.user
-                prompt.game = game
-                prompt.save()
-                
-            return redirect("my_prompts")
-
-    else:
-        form = FormClass()
-
-    return render(request, "prompts/create.html", {"form": form, "game": game})
-
-@login_required
-def choose_game(request):
-    form = GameForm()
-
-    if request.method == "POST":
-        form = GameForm(request.POST)
-        if form.is_valid():
-            game = form.cleaned_data["game"]
-            return redirect("create_prompt", slug=game.slug)
-
-    return render(request, "prompts/choose_game.html", {"form": form})
 
 def game_play(request, slug):
     game = get_object_or_404(Game, slug=slug)
@@ -249,7 +163,7 @@ def game_play(request, slug):
     else:
         raise Http404("Game not found")
     
-    #f stands for for format, interpolates slug into path
+    # Use user supplied slug, safe as else block handles invalid slugs
     template_name = f"games/{slug}/play.html" 
 
     return render(request, template_name, context = context_dict)
@@ -260,19 +174,18 @@ def my_profile(request):
     profile = get_object_or_404(Profile, user=request.user)
     follower_count = Follow.objects.filter(following=request.user).count()
     following_count = Follow.objects.filter(follower=request.user).count()
-    prompt_list = Prompt.objects.filter(votes__voter=request.user).distinct()
-    current_user = request.user
-    user_prompts = Prompt.objects.annotate(upvote_count=Count("votes")).filter(creator=current_user)
+    following_users = User.objects.filter(followers__follower=request.user)
+    user_prompts = Prompt.objects.filter(creator=request.user).annotate(upvote_count=Count("votes"))
+    favourites = Prompt.objects.filter(votes__voter=request.user).distinct()
 
     return render(request, "profiles/my_profile.html", {
         "profile_user": request.user,
         "profile": profile,
-        "edit_mode": False,
         "follower_count": follower_count,
         "following_count": following_count,
-        "favourites" : prompt_list,
-        "prompts":user_prompts})
-
+        "following_users": following_users,
+        "user_prompts": user_prompts,
+        "favourites": favourites,})
 
 @login_required
 def my_profile_edit(request):
@@ -289,6 +202,70 @@ def my_profile_edit(request):
         "profile_form": profile_form
     })
 
+# Prompts
+@require_POST
+def upvote_prompt(request, prompt_id):
+    prompt = get_object_or_404(Prompt, id=prompt_id)
+
+    # Prevent self-voting
+    if request.user.is_authenticated and request.user == prompt.creator:
+        return redirect(request.META.get("HTTP_REFERER", "home"))
+
+    if request.user.is_authenticated:
+        voter = request.user
+        session_id = None
+
+    else:
+        if not request.session.session_key:
+            # Create a session so they get key
+            request.session.save()
+
+        voter = None
+        session_id = request.session.session_key
+
+    try:
+        Vote.objects.create(
+            prompt=prompt,
+            voter=voter,
+            guest_session_id=session_id
+        )
+    except IntegrityError:
+        pass
+
+    return redirect(request.META.get("HTTP_REFERER", "home"))
+
+@login_required
+def create_prompt(request, slug):
+    game = get_object_or_404(Game, slug=slug)
+
+    if game.slug == "truth-or-dare":
+        FormClass = TruthOrDareForm
+
+    elif game.slug == "would-you-rather":
+        FormClass = WouldYouRatherForm
+
+    else:
+        FormClass = NeverHaveIEverForm
+
+    if request.method == "POST":
+        form = FormClass(request.POST)
+    
+        if form.is_valid():
+            with transaction.atomic():
+                prompt = form.save(commit=False)
+                prompt.creator = request.user
+                prompt.game = game
+                prompt.save()
+                
+            return redirect("my_prompts")
+        else:
+            return render(request, "prompts/create.html", {"form": form, "game": game})
+
+    else:
+        form = FormClass()
+
+    return render(request, "prompts/create.html", {"form": form, "game": game})
+
 @login_required
 def my_prompts(request):
     context_dict = {}
@@ -296,41 +273,49 @@ def my_prompts(request):
     user_prompts = Prompt.objects.annotate(upvote_count=Count("votes")).filter(creator=current_user)
     
     context_dict["prompts"] = user_prompts
-    context_dict["del_auth_error"] = request.session.get("del_auth_error")
+    context_dict["del_auth_error"] = request.session.pop("del_auth_error", None)
     
     return render(request, "profiles/my_prompts.html", context_dict)
 
 @login_required
 def edit_prompt(request, prompt_id):
-    context_dict = {}
     prompt_inst = get_object_or_404(Prompt, id=prompt_id, creator=request.user)
+    game = prompt_inst.game
 
-    if prompt_inst.creator == request.user:
-        context_dict["prompt"] = prompt_inst
-        if request.method == "POST":
-                new_text = request.POST.get("text")
-                if len(new_text) > 0 and len(new_text) < 250:
-                    prompt_inst.text = request.POST.get("text")
-                    prompt_inst.save()
-                    return redirect("my_prompts")
-                else:
-                    context_dict["error"] = "Input of invalid length."
-    else:
-        context_dict["auth_error"] = "You are not the creator of this prompt."
+    if game.slug == "truth-or-dare":
+        FormClass = TruthOrDareForm
+
+    elif game.slug == "would-you-rather":
+        FormClass = WouldYouRatherForm
     
-    return render(request, "prompts/edit.html", context_dict)
+    else:
+        FormClass = NeverHaveIEverForm
 
+    if request.method == "POST":
+        form = FormClass(request.POST, instance=prompt_inst)
+    
+        if form.is_valid():
+            form.save()
+            return redirect("my_prompts")
+        
+    else:
+        if game.slug == "would-you-rather":
+            parts = prompt_inst.text.split("|", 1)
+            initial = {
+                "optionA": parts[0],
+                "optionB": parts[1] if len(parts) > 1 else "",
+            }
+            form = FormClass(initial=initial, instance=prompt_inst)
+        else:
+            form = FormClass(instance=prompt_inst)
+        
+    return render(request, "prompts/edit.html", {"form": form, "prompt": prompt_inst})
+
+@login_required
 @require_POST
 def del_prompt(request, prompt_id):
-    # A validation pop-up is still needed, no protection from misclicks
     prompt_inst = get_object_or_404(Prompt, id=prompt_id, creator=request.user)
-
-    if prompt_inst.creator == request.user and request.user.is_authenticated:
-        prompt_inst.delete()
-    
-    else:
-        request.session["del_auth_error"] = "You are not authorised to delete this prompt."
-    
+    prompt_inst.delete()
     return redirect("my_prompts")
 
 def profile(request, username):
@@ -340,11 +325,13 @@ def profile(request, username):
 
     if request.user.is_authenticated and request.user != user:
         is_following = Follow.objects.filter(
-            follower= request.user,
-            following= user).exists()
+            follower=request.user,
+            following=user).exists()
         
     follower_count = Follow.objects.filter(following=user).count()
-    following_count = Follow.objects.filter(follower=profile.user).count()
+    following_count = Follow.objects.filter(follower=user).count()
+    following_users = User.objects.filter(followers__follower=user)
+    user_prompts = Prompt.objects.filter(creator=user).annotate(upvote_count=Count("votes"))
 
     return render(request, "profiles/profile.html", {
         "profile_user": user,
@@ -352,8 +339,11 @@ def profile(request, username):
         "is_following": is_following,
         "follower_count": follower_count,
         "following_count": following_count,
+        "following_users": following_users,
+        "user_prompts": user_prompts,
         })
 
+# Follow
 @login_required
 def follow_user(request, username):
     if request.method == "POST":
