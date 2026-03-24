@@ -70,7 +70,7 @@
             <div class = prompts-column>
                 <p class = "prompts-title">Your Prompts:</p>
                 <div class = "prompts-list">
-                {% for prompt in prompts %}
+                {% for prompt in user_prompts %}
                         {{ prompt.game }} - {{ prompt.created_at }}
                         <br />{{ prompt.text }} ({{ prompt.upvote_count }} votes)
                         <br />
