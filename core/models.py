@@ -39,7 +39,7 @@ class Prompt(models.Model):
         """Return formatted text, splitting WYR pipe delimiter."""
         if self.game.slug == "would-you-rather" and "|" in self.text:
             parts = self.text.split("|", 1)
-            return f"{parts[0]} or {parts[1]}"
+            return f"Would you rather {parts[0].lower()} or {parts[1].lower()}"
         return self.text
     
 class Profile(models.Model):

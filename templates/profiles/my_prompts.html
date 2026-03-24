@@ -10,7 +10,7 @@
         {% if prompts %}
             {% for prompt in prompts %}
                 {{ prompt.game }} - {{ prompt.created_at }}
-                <br />{{ prompt.text }} ({{ prompt.upvote_count }} votes)
+                <br />{{ prompt.display_text }} ({{ prompt.upvote_count }} votes)
                 <br />
                 <form action="{% url 'delete_prompt' prompt.id %}" method="post">
                     {% csrf_token %}
