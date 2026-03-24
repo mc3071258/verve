@@ -1,9 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 
 <link rel="stylesheet" type="text/css" href ="{% static 'game_baseStyle.css' %}"/>
-<h1>{% block gameTitle %}Game{% endblock %}</h1>
+<h1>{% block gameTitle %}{{ game_title }}{% endblock %}</h1>
 {% block game_content %}
 
     <div class = "GameOptions">
