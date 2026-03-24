@@ -1,42 +1,131 @@
 {% extends "base.html" %}
+{% load static %}
+
 
 {% block title %}My Profile{% endblock %}
 
+
+
 {% block content %}
-    <div class="card p-4 shadow-sm">
-        <h1 class="mb-3">{{ profile_user.username }}</h1>
+<link rel="stylesheet" type="text/css" href ="{% static 'myProfileStyle.css' %}"/>
 
-        {% if profile.profile_picture %}
-            <img src="{{ profile.profile_picture.url }}" alt="Profile picture" class="img-thumbnail mb-3" style="max-width: 200px;">
-        {% endif %}
 
-        <p><strong>Bio:</strong> {{ profile.bio|default:"No bio yet." }}</p>
-        <p><strong>Followers:</strong> {{ follower_count }}</p>
-        <p><strong>Following:</strong> {{ following_count }}</p>
+<div id="main-profile">
+    
+    <div class="profile-grid">
+        <div class = "profile-left">
+            <div class = "avatar-section">
+                <div class = "profile-avatar">
+                    {% if profile.profile_picture %}
+                         <img src="{{ profile.profile_picture.url }}" alt="Profile picture" class="img-thumbnail mb-3" style="max-width: 200px;">
+                        {% else %}
+                            <svg width="230" height="223" viewBox="0 0 230 223" fill="none">
+                            <ellipse cx="115" cy="111.5" fill="#D9D9D9" rx="115" ry="111.5" />
+                        </svg>
+                    {% endif %}
+                </div>
 
-        <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
-        <a href="{% url 'my_prompts' %}" class="btn btn-primary">My Prompts</a>
+                <div class = "user-info">
+                    <div class = "info-row">
+                        <p>Username:</p>
+                        <p>{{ profile_user.username }}</p>
+                    </div>
+                    <div class = "info-row">
+                        <p>Following:</p>
+                        <p>{{ following_count }}</p>
+                    </div>
+                    <div class = "info-row">
+                        <p>Followers:</p>
+                        <p>{{ follower_count }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <p class = "bio-label">Bio:</p>
+                <div class = "bio-content">
+                    {{ profile.bio|default:"No bio yet." }}
+                </div>
+            </div>
+        </div>
+
+        <div class = "favourites-panel">
+            <p class = "favourites-title">Your favourites:</p>
+            <div class = "favourites-list">
+                {% for favourite in favourites %}
+                <div class = "favourite-item">
+                    <p>{{ favourite.display_text }} by <a href="{% url 'profile' favourite.creator.username %}">@{{ favourite.creator.username }}</a></p>
+                </div>
+                {% empty %}
+                <div class="favourite-item">
+                    <p>No favourites</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>    
+
+    <div class = "prompts-section">
+        <div class = "prompts-container">
+            <div class = "prompts-column">
+                <p class = "prompts-title">Your Prompts:</p>
+                <div class = "prompts-list">
+    
+                        {% for prompt in user_prompts %}               
+                                <div class="prompt-item">
+                                    <p>{{prompt.display_text}}</p>
+                                </div>
+                        {% empty %}
+                            <div class="prompt-item">
+                                <p>No prompts yet</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="game-column">
+                    <p class="prompts-title">Game:</p>
+                    <div class="prompts-list">
+                        {% for prompt in user_prompts %}
+                        <div class="game-item">
+                            <p>{{ prompt.game }}</p>
+                        </div>
+                        {% empty %}
+                        <div class="game-item">
+                            <p>n/a</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="votes-column">
+                    <p class="prompts-title">Votes:</p>
+                    <div class="prompts-list">
+                        {% for prompt in user_prompts %}
+                        <div class="vote-item">
+                            <p>{{ prompt.upvote_count }}</p>
+                        </div>
+                        {% empty %}
+                        <div class="vote-item">
+                            <p>0</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="edit-profile-section">
+        <a href="{% url 'my_prompts' %}" class="edit-profile-link">My Prompts</a>
+        <a href="{% url 'edit_profile' %}" class="edit-profile-link" id="edit">Edit Profile</a>
+        </div>
+
     </div>
 
-    <div class="card p-4 shadow-sm mt-3">
-        <h2>Following</h2>
-        {% if following_users %}
-            {% for followed in following_users %}
-                <p><a href="{% url 'profile' followed.username %}">@{{ followed.username }}</a></p>
-            {% endfor %}
-        {% else %}
-            <p>Not following anyone yet.</p>
-        {% endif %}
-    </div>
+    
 
-    <div class="card p-4 shadow-sm mt-3">
-        <h2>Your Prompts</h2>
-        {% if user_prompts %}
-            {% for prompt in user_prompts %}
-                <p>{{ prompt.game.name }} - {{ prompt.text }} ({{ prompt.upvote_count }} votes)</p>
-            {% endfor %}
-        {% else %}
-            <p>No prompts yet.</p>
-        {% endif %}
-    </div>
+
+
+
 {% endblock %}

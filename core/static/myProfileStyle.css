@@ -1,0 +1,209 @@
+
+#main-profile {
+    background: white;
+    position: relative;
+    width: 90%;
+    margin: 0 auto;
+    padding: 3vh;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2vw;
+    margin-bottom: 3vh;
+}
+
+@media (min-width: 1024px) {
+    .profile-grid {
+        grid-template-columns: 1fr 607px;
+    }
+}
+
+.profile-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5vh;
+}
+
+.avatar-section {
+    display: flex;
+    gap: 2vw;
+    align-items: flex-start;
+}
+
+.profile-avatar {
+    position: relative;
+    width: 230px;
+    height: 223px;
+    flex-shrink: 0;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5vh;
+    padding-top: 1.5vh;
+}
+
+.info-row {
+    display: flex;
+    gap: 0.8vw;
+    align-items: baseline;
+}
+
+.info-row p {
+    font-size: 20px;
+    font-weight: normal;
+    margin: 0;
+}
+
+.bio-section {
+    margin-bottom: 0.8vh;
+}
+
+.bio-label {
+    font-size: 20px;
+    font-weight: normal;
+    margin-bottom: 0.8vh;
+}
+
+.bio-content {
+    background: #d9d9d9;
+    min-height: 85px;
+    width: 100%;
+    max-width: 625px;
+    padding: 1.5vh 1.5vw;
+}
+
+.favourites-panel {
+    background: #d9d9d9;
+    padding: 2.5vh;
+    height: 356px;
+    overflow-y: auto;
+}
+
+.favourites-title {
+    font-size: 16px;
+    font-weight: normal;
+    margin-bottom: 2.5vh;
+}
+
+.favourites-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5vh;
+}
+
+.favourite-item {
+    background: #fffefe;
+    height: 67px;
+    display: flex;
+    align-items: center;
+    padding: 0 1.5vw;
+}
+
+.favourite-item p {
+    font-size: 14px;
+    margin: 0;
+}
+
+.prompts-section {
+    background: #d9d9d9;
+    padding: 2.5vh;
+}
+
+.prompts-container {
+    display: flex;
+    gap: 2vw;
+}
+
+.prompts-column {
+    flex: 1;
+}
+
+.prompts-title {
+    font-size: 20px;
+    font-weight: normal;
+    margin-bottom: 1.5vh;
+}
+
+.prompts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5vh;
+}
+
+.prompt-item {
+    background: #f9f6f6;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    padding: 0 1.5vw;
+}
+
+.prompt-item p {
+    font-size: 14px;
+    margin: 0;
+}
+
+.edit-profile-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5vh;
+}
+
+.edit-profile-link {
+    font-size: 20px;
+    font-weight: normal;
+    text-decoration: underline;
+}
+
+.votes-column {
+    width: 195px;
+}
+
+.vote-item {
+    background: #f9f6f6;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vote-item p {
+    font-size: 14px;
+    margin: 0;
+}
+
+.game-column {
+    width: 195px;
+}
+
+.game-item {
+    background: #f9f6f6;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-item p {
+    font-size: 14px;
+    margin: 0;
+}
+
+.edit-profile-link{
+    padding: 1%;
+}
+
+#edit{
+    color: #E55D5D;
+}

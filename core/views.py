@@ -176,6 +176,7 @@ def my_profile(request):
     following_count = Follow.objects.filter(follower=request.user).count()
     following_users = User.objects.filter(followers__follower=request.user)
     user_prompts = Prompt.objects.filter(creator=request.user).annotate(upvote_count=Count("votes"))
+    favourites = Prompt.objects.filter(votes__voter=request.user).distinct()
 
     return render(request, "profiles/my_profile.html", {
         "profile_user": request.user,
@@ -183,7 +184,8 @@ def my_profile(request):
         "follower_count": follower_count,
         "following_count": following_count,
         "following_users": following_users,
-        "user_prompts": user_prompts,})
+        "user_prompts": user_prompts,
+        "favourites": favourites,})
 
 @login_required
 def my_profile_edit(request):
