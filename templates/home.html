@@ -34,15 +34,12 @@
                                     {% if prompt.creator == request.user %}
                                         <button disabled class="btn">Your prompt</button>
                                     {% else %}
-                                        <button type="button"
-                                                class="btn vote-btn {% if prompt.id in voted_prompts %}voted{% endif %}"
-                                                data-url="{% url 'upvote_prompt' prompt.id %}"
-                                                data-voted="{% if prompt.id in voted_prompts %}true{% else %}false{% endif %}">
-                                            <span class="vote-count">{{ prompt.upvote_count }}</span>
-                                            <span class="vote-label">
-                                                {% if prompt.id in voted_prompts %}Voted{% else %}Upvote{% endif %}
-                                            </span>
-                                        </button>
+                                    <button type="button"
+                                            class="btn vote-btn {% if prompt.id in voted_prompts %}voted{% endif %}"
+                                            data-url="{% url 'upvote_prompt' prompt.id %}"
+                                            data-voted="{% if prompt.id in voted_prompts %}true{% else %}false{% endif %}">
+                                        <span class="vote-count">{{ prompt.upvote_count }}</span>
+                                    </button>
                                     {% endif %}
                                 </td>
                             </tr>
