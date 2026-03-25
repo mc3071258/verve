@@ -96,7 +96,7 @@ def logout(request):
 # Game page
 def game(request, slug):
     game = get_object_or_404(Game, slug=slug)
-    return render(request, "games/game.html", {"slug": game.slug, "game_title": game.name})
+    return render(request, "games/game.html", {"slug": game.slug, "game_title": game.name, "game_description":game.description,})
 
 # Game prompts page
 def game_prompts(request, slug):
