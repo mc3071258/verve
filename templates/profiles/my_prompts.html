@@ -1,25 +1,39 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}My Prompts{% endblock %}
 
 {% block content %}
-    <div>
-        {% if del_auth_error %}
-            {{ del_auth_error }}
-        {% endif %}
-        {% if prompts %}
-            {% for prompt in prompts %}
-                {{ prompt.game }} - {{ prompt.created_at }}
-                <br />{{ prompt.display_text }} ({{ prompt.upvote_count }} votes)
-                <br />
-                <form action="{% url 'delete_prompt' prompt.id %}" method="post">
-                    {% csrf_token %}
-                    <a href="{% url 'edit_prompt' prompt.id %}" class="btn btn-primary"> Edit Prompt </a>
-                    <button class="btn btn-primary" type="submit"> Delete Prompt </button><br /><br />
-                </form>
-            {% endfor %}
-        {% else %}
-            <strong>You have no prompts.</strong>
-        {% endif %}
+    <link rel="stylesheet" type="text/css" href="{% static 'my_promptsStyle.css' %}"/>
+    <div id="MainContent">
+        <div id="PromptBox">
+            {% if del_auth_error %}
+                {{ del_auth_error }}
+            {% endif %}
+            {% if prompts %}
+                {% for prompt in prompts %}
+                    <div id="PromptGame">
+                        <div>{{ prompt.game }}</div>
+                        <div>{{ prompt.created_at }}</div>
+                    </div>
+                    <div id="PromptBody">
+                        <div id="PromptInfo">
+                            {{ prompt.display_text }} ({{ prompt.upvote_count }} votes)
+                        </div>
+                        <div id="PromptButton">
+                            <a href="{% url 'edit_prompt' prompt.id %}" class="btn btn-primary"> Edit Prompt </a>
+                        </div>
+                        <div id="PromptButton">
+                            <form action="{% url 'delete_prompt' prompt.id %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-outline-danger" type="submit"> Delete Prompt </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <strong>You have no prompts.</strong>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
