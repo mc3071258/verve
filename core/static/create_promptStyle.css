@@ -1,0 +1,76 @@
+h1{
+    color: #57506C;
+    text-align: center;
+    font-family: "Konkhmer Sleokchher";
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-top: 1vh;
+    margin-bottom: 5vh;
+}
+#MainBody{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#ChooseGame{
+    align-items: center;
+    text-align: center;
+}
+#CreateBox{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    color: #57506C;
+    
+    width: 75.42vw;
+    background: #F6F0F0;
+    padding: 1vh;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.15);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+#CreateHead{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 3vh;
+    margin-left: 3vh;
+    margin-right: 3vh;
+    margin-bottom: 1vh;
+    padding: 1vh;
+    width: 72.66vw;
+    height: 4.7vh;
+    border-radius: 10px;
+    background: #cacaca;
+    color: #57506C;
+    text-align: left;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 1.2vw;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+#CreateBody{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-left: 3vh;
+    margin-right: 3vh;
+    margin-bottom: 1vh;
+}
+#CreateBody input{
+    width: 72.66vw;
+    height: 4vh;
+}
+
+#CreateBox button{
+    margin-left: 3vh;
+    margin-right: 3vh;
+    
+}

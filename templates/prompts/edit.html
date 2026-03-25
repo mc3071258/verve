@@ -1,20 +1,25 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Edit Prompt{% endblock %}
 
 {% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'create_promptStyle.css' %}"/>
     <h1>Edit Prompt for {{ prompt.game.name }}</h1>
-    <p><strong>Created:</strong> {{ prompt.created_at }}</p>
-
-    <div>
-        <form method="post" action="{% url 'edit_prompt' prompt.id %}">
-            {% csrf_token %}
-            {% for field in form.visible_fields %}
-                {{ field.errors }}
-                {{ field.label_tag }}<br/>
-                {{ field }}<br/><br/>
-            {% endfor %}
-            <button class="btn btn-primary" type="submit">Save Changes</button>
-        </form>
+    <div id="MainBody">
+        <div id="CreateBox">
+            <p><strong>Created:</strong> {{ prompt.created_at }}</p>
+            <div>
+                <form method="post" action="{% url 'edit_prompt' prompt.id %}">
+                    {% csrf_token %}
+                    {% for field in form.visible_fields %}
+                        {{ field.errors }}
+                        <div id="CreateHead">{{ field.label_tag }}</div>
+                        <div id="CreateBody">{{ field }}</div>
+                    {% endfor %}
+                    <button class="btn btn-primary" type="submit">Save Changes</button>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock %}
