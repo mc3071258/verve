@@ -1,3 +1,23 @@
+.NavLoggedIn {
+    background: #d9eaec;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    height: 10vh;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav.items {
+    display: flex;
+    align-items: center;
+    padding: 0 2vw;
+    height: 100%;
+    position: relative;
+    gap: 20px;
+}
+
+
 body{
     display: flex;
     flex-direction: column;
@@ -19,12 +39,12 @@ header{
 }
 
 
-.profilePicture{
-    width: 100px;
-    height: 100px;
+#profilePicture{
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     object-fit: cover;
-    margin-left: 10px;
+    margin-left: 5px;
 }
 
 .footer{
@@ -54,13 +74,23 @@ header{
     display: flex;
     flex-direction: column; 
     text-align: right;      
-    margin-right: 8px;      
+    margin-right: 8px; 
+    gap: -2px;     
 }
 
 .profileText .usernameText,
 .profileText .logOut {
     font-size: 0.2rem;
     line-height: 1;
+}
+
+.nav-link {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: black;
+    text-decoration: none;
+    white-space: nowrap;
 }
 
 .profileNavSection .profileText #usernameText,
@@ -106,4 +136,43 @@ header{
 
 #PromptList .vote-count {
     font-weight: 600;
+}
+
+.verve-logo {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.verve-logo-bg {
+    background: linear-gradient(to bottom, #c0dbb1, #dbf1cf);
+    border-radius: 40px;
+    width: 11vw;
+    height: 8vh;
+}
+
+.verve-logo-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(to bottom, #d7b1db 71.331%, #ffc8ee 130.15%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    font-weight: 800;
+    font-style: italic;
+    font-size: 20px;
+    line-height: normal;
+    width: 5vw;
+    height: 5vh;
+    text-align: center;
+}
+
+.profileNavSection {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
