@@ -1,6 +1,7 @@
 from django.db import transaction, IntegrityError
 from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.db.models import Count
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
@@ -357,6 +358,8 @@ def profile(request, username):
 # Follow
 @login_required
 def follow_user(request, username):
+    is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
+
     if request.method == "POST":
         target_user = get_object_or_404(User, username=username)
 
@@ -364,14 +367,34 @@ def follow_user(request, username):
             Follow.objects.get_or_create(
                 follower=request.user,
                 following=target_user)
+            
+        follower_count = Follow.objects.filter(following=target_user).count()
+
+        if is_ajax:
+            return JsonResponse({
+                "following": True,
+                "follower_count": follower_count,
+                "next_url": reverse("unfollow_user", args=[target_user.username]),})
+            
     return redirect("profile", username=username)
 
 @login_required
 def unfollow_user(request, username):
+    is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
+
     if request.method == "POST":
         target_user = get_object_or_404(User, username=username)
 
         Follow.objects.filter(
             follower=request.user,
             following=target_user).delete()
+        
+        follower_count = Follow.objects.filter(following=target_user).count()
+
+        if is_ajax:
+            return JsonResponse({
+                "following": False,
+                "follower_count": follower_count,
+                "next_url": reverse("follow_user", args=[target_user.username]),})
+    
     return redirect("profile", username=username)
