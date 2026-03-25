@@ -13,6 +13,11 @@
     <div id="optionB" class="option-card" onclick="nextPrompt()"><span>That</span></div>
     </div>
 
+    <div class = "button-container">
+        <a class='quit-button' href="{% url 'home' %}">Quit</a>
+    </div>
+    
+
     {{ prompts|json_script:"prompt-data" }}
 
     <script>
