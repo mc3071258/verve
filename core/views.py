@@ -51,7 +51,7 @@ def choose_game(request):
 
 # Auth
 def login(request):
-    if user.is_authenticated:
+    if request.user.is_authenticated:
         return redirect("home")
     
     if request.method == "POST":
@@ -70,7 +70,7 @@ def login(request):
     return render(request, "auth/login.html")
 
 def register(request):
-    if user.is_authenticated:
+    if request.user.is_authenticated:
         return redirect("home")
     
     if request.method == "POST":
