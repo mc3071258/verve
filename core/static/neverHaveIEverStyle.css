@@ -15,14 +15,19 @@
     line-height: normal;
     margin: 2vh auto;
 }
+.button-container {
+    display: flex;          
+    justify-content: center; 
+    gap: 2vw;                
+    margin: 2vh 0;          
+}
 
-#nextButton{
+#nextButton, .quit-button {
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     border-radius: 3.125vw;
-    background: #E9F2D3;
     box-shadow: 0 0.2vw 0.2vw 0 rgba(0, 0, 0, 0.25);
     color: #000;
     font-family: Inter;
@@ -30,9 +35,17 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    margin: 2vh auto;
     width: 16vw;
-    height: 6vh; 
+    height: 6vh;
+}
+
+#nextButton {
+    background: #E9F2D3;
+}
+
+.quit-button {
+    background: #d83e7c;
+    text-decoration: none;
 }
 
 #content{
