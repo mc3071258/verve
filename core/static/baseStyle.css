@@ -118,3 +118,43 @@ header{
 #PromptList .vote-count {
     font-weight: 600;
 }
+
+.verve-logo {
+    background-color: #ACC9AB;
+    color: #6A0DAD !important;
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-style: italic;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    text-decoration: none;
+}
+
+.nav-logout-btn {
+    background-color: #D9EAEC;
+    border: 1px solid #C6DCE5;
+    color: #57506C;
+    font-size: 0.75rem;
+}
+
+.nav-logout-btn:hover {
+    background-color: #C6DCE5;
+}
+
+.nav-username {
+    font-size: 0.85rem;
+    color: #57506C;
+    text-decoration: none;
+    line-height: 1.2;
+}
+
+.nav-pfp {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.navbar {
+    background-color: #D9EAEC !important;
+}
