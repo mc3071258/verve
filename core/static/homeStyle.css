@@ -57,7 +57,7 @@ h1{
     align-items: flex-start;
     gap:2%;
     width: 67.66vw;
-    height: 32.7vh;
+    height: 32.auto;
     border-radius: 10px;
     background: #ACC9AB;
     color: #5E547C;
@@ -84,10 +84,10 @@ h1{
 #PromptList{
     margin: 2.5%;   
     width: 55.42vw;
-    height: 27vh;
+    height: auto;
     background: #F6F0F0;
 
-    overflow-y: auto;
+    overflow-y: visible;
     overflow-x: hidden;
 }
 
