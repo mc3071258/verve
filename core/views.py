@@ -51,6 +51,9 @@ def choose_game(request):
 
 # Auth
 def login(request):
+    if user.is_authenticated:
+        return redirect("home")
+    
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -67,6 +70,9 @@ def login(request):
     return render(request, "auth/login.html")
 
 def register(request):
+    if user.is_authenticated:
+        return redirect("home")
+    
     if request.method == "POST":
         user_form = UserForm(request.POST)
         profile_form = UserProfileForm(request.POST, request.FILES)
