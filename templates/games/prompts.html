@@ -1,45 +1,58 @@
 {% extends "games/game_base.html" %}
+{% load static %}
 
 {% block title %}Prompts for {{ game.name }}{% endblock %}
 
 {% block game_title %}Prompts for {{ game.name }}{% endblock %}
 
 {% block game_content %}
-    {% if prompt_list %}
-        <table class="table">
-            {% for prompt in prompt_list %}
-                <tr>
-                    <td>{{ forloop.counter }}.</td>
-                    <td>
-                        {% if game.slug == "would-you-rather" %}
-                            {{ prompt.optionA }} or {{ prompt.optionB }}
-                        {% else %}
-                            {{ prompt.text }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if prompt.category == "truth" %}
-                            TRUTH
-                        {% elif prompt.category == "dare" %}
-                            DARE
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if prompt.creator == request.user %}
-                            <button disabled class="btn">Your prompt</button>
-                        {% else %}
-                        <button type="button"
-                                class="btn vote-btn {% if prompt.id in voted_prompts %}voted{% endif %}"
-                                data-url="{% url 'upvote_prompt' prompt.id %}"
-                                data-voted="{% if prompt.id in voted_prompts %}true{% else %}false{% endif %}">
-                            <span class="vote-count">{{ prompt.upvote_count }}</span>
-                        </button>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <strong>No prompts for {{ game.name }}</strong>
-    {% endif %}
+    <link rel="stylesheet" type="text/css" href="{% static 'game_promptsStyle.css' %}"/>
+    <div id="MainContent">
+        <div id="PromptBox">
+            {% if prompt_list %}
+                    {% for prompt in prompt_list %}
+                        <div id="PromptHead">
+                            <div>User: @{{ prompt.creator.username }}</div>
+                            <div>
+                                {% if prompt.creator.profile.profile_picture %}
+                                    <img src="{{ prompt.creator.profile.profile_picture.url }}" alt="Profile picture" class="rounded-circle" style="max-height: 3vh;max-width: 3vh;">
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div id="PromptBody">
+                            <div id="PromptInfo">
+                                <div>
+                                    {% if game.slug == "would-you-rather" %}
+                                        {{ prompt.optionA }} or {{ prompt.optionB }}
+                                    {% else %}
+                                        {{ prompt.text }}
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    {% if prompt.category == "truth" %}
+                                        TRUTH
+                                    {% elif prompt.category == "dare" %}
+                                        DARE
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div id="PromptUpvote">
+                                {% if prompt.creator == request.user %}
+                                    <button disabled class="btn">Your prompt</button>
+                                {% else %}
+                                <button type="button"
+                                        class="btn vote-btn {% if prompt.id in voted_prompts %}voted{% endif %}"
+                                        data-url="{% url 'upvote_prompt' prompt.id %}"
+                                        data-voted="{% if prompt.id in voted_prompts %}true{% else %}false{% endif %}">
+                                    <span class="vote-count">{{ prompt.upvote_count }}</span>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>                                   
+                    {% endfor %}
+            {% else %}
+                <strong>No prompts for {{ game.name }}</strong>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
