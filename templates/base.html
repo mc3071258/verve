@@ -14,12 +14,16 @@
 </head>
 
 <body>
+    <div style="display:none;">{% csrf_token %}</div>
     <header>
-        <nav class="navbar navbar-expand navbar-light bg-light px-3">
-            <a class="navbar-brand verve-logo" href="{% url 'home' %}">Verve</a>
+        <nav class="navbar navbar-expand navbar-light px-3">
+            <a class="verve-logo" href="{% url 'home' %}">
+                <div class="verve-logo-bg">
+                    <span class="verve-logo-text">Verve</span>
+                </div>
+            </a>
 
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='never-have-i-ever' %}">Never Have I Ever</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='truth-or-dare' %}">Truth Or Dare</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'game' slug='would-you-rather' %}">Would You Rather?</a></li>
@@ -37,7 +41,7 @@
                     </div>
                     {% if user.profile.profile_picture %}
                         <a href="{% url 'my_profile' %}">
-                            <img src="{{ user.profile.profile_picture.url }}" alt="Profile Photo" class="nav-pfp">
+                            <img src="{{ user.profile.profile_picture.url }}" alt="Profile Photo" id="profilePicture">
                         </a>
                     {% endif %}
                 {% else %}
@@ -45,8 +49,8 @@
                     <a href="{% url 'register' %}" class="btn btn-sm btn-primary">Register</a>
                 {% endif %}
             </div>
-            
         </nav>
+
     </header>
 
     <div id="container">

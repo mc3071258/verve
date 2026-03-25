@@ -1,21 +1,29 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Create a Prompt{% endblock %}
 
 {% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'create_promptStyle.css' %}"/>
     <h1>
         Create a Prompt for {{ game.name }}
     </h1>
 
-    <div>
-        <form method="post">
-            {% csrf_token %}
-            {% for field in form.visible_fields %}
-                {{ field.errors }}
-                {{ field.help_text }}<br />
-                {{ field }}<br /><br />
-            {% endfor %}
-            <input type="submit" name="submit" value="Create Prompt" />
-        </form>
+    <div id="MainBody">
+        <div id="CreateBox">
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form.visible_fields %}
+                    {{ field.errors }}
+                    <div id="CreateHead">
+                        {{ field.help_text }}
+                    </div>
+                    <div id="CreateBody">
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Create Prompt</button>
+            </form>
+        </div>
     </div>
 {% endblock %}
