@@ -165,6 +165,8 @@ def game_play(request, slug):
         prompt_list = list(
             Prompt.objects
                 .filter(game=game)
+                .annotate(upvote_count=Count("votes"))
+                .order_by("-upvote_count")
                 .values_list("text", flat=True)
         )
         context_dict["prompts"] = prompt_list
@@ -174,12 +176,16 @@ def game_play(request, slug):
         truth_list = list(
             Prompt.objects
                 .filter(game=game, category="truth")
+                .annotate(upvote_count=Count("votes"))
+                .order_by("-upvote_count")
                 .values_list("text", flat=True)
                 
         )
         dare_list = list(
             Prompt.objects
                 .filter(game=game, category="dare")
+                .annotate(upvote_count=Count("votes"))
+                .order_by("-upvote_count")
                 .values_list("text", flat=True)
         )
         context_dict["truth_prompts"] = truth_list
