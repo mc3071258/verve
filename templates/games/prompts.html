@@ -12,7 +12,7 @@
             {% if prompt_list %}
                     {% for prompt in prompt_list %}
                         <div id="PromptHead">
-                            <div>User: @{{ prompt.creator.username }}</div>
+                            <div>User: <a class = "user-text" href="{% url 'profile' prompt.creator.username %}">@{{ prompt.creator.username }}</a></div>
                             <div>
                                 {% if prompt.creator.profile.profile_picture %}
                                     <img src="{{ prompt.creator.profile.profile_picture.url }}" alt="Profile picture" class="rounded-circle" style="max-height: 3vh;max-width: 3vh;">
