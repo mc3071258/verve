@@ -1,12 +1,25 @@
-body{
+body {
     display: flex;
     flex-direction: column;
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
     background-color: #C6DCE5;
-    padding-top: 3vh;
-    padding-bottom: 3vh;
+    overflow-x: hidden;
+    scrollbar-width: none;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+html {
+    scrollbar-width: none;
+    overflow-y: scroll;
+}
+
+html::-webkit-scrollbar {
+    display: none;
 }
 
 header{
@@ -27,13 +40,11 @@ header{
     margin-left: 10px;
 }
 
-.footer{
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background-color: #D9EAEC;
-  text-align: center;
+.footer {
+    width: 100%;
+    background-color: #D9EAEC;
+    text-align: center;
+    margin-top: auto;
 }
 
 .footer-items{
