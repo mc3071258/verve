@@ -1,0 +1,88 @@
+h1{
+    color: #57506C;
+    text-align: center;
+    font-family: "Konkhmer Sleokchher";
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-top: 1vh;
+    margin-bottom: 5vh;
+}
+#MainContent{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#PromptBox{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    
+    width: 75.42vw;
+    background: #F6F0F0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+#PromptHead{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 3vh;
+    margin-left: 3vh;
+    margin-right: 3vh;
+    margin-bottom: 1vh;
+    padding: 1vh;
+    width: 72.66vw;
+    height: 4.7vh;
+    border-radius: 10px;
+    background: #ACC9AB;
+    color: #5E547C;
+    text-align: left;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 1.2vw;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+
+#PromptBody{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 4vh;
+    width: 72.66vw;
+    height: 8.7vh;
+    border-radius: 10px;
+    text-align: left;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 1.2vw;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    gap: 1vw;
+}
+
+#PromptInfo{
+    background: #cacaca;
+    color: #373149;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 1vh;
+    width: 72.66vw;
+    height: 8.7vh;
+    border-radius: 10px;
+}
+
+#PromptUpvote button{
+    height: 8.7vh;
+    aspect-ratio: 1;
+}
