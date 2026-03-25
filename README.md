@@ -74,7 +74,11 @@ python manage.py runserver
 - Django docs (Testing overview): https://docs.djangoproject.com/en/5.2/topics/testing/overview/
 - Django docs (Auth customization, AUTH_USER_MODEL + get_user_model): https://docs.djangoproject.com/en/5.2/topics/auth/customizing/
 - Django docs (Deprecation, CheckConstraint `check=` removal): https://docs.djangoproject.com/en/5.2/internals/deprecation/
+<<<<<<< HEAD
 - Django docs (Http control): https://docs.djangoproject.com/en/5.2/ref/request-response/
+=======
+
+>>>>>>> 39f1a2a (Added my sources to README)
 
 - Django docs (User authentication): https://docs.djangoproject.com/en/6.0/topics/auth/
 - MDN Web docs (User authentication + permissions): https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/Authentication
