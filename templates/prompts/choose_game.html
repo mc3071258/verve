@@ -1,18 +1,20 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Choose a Game{% endblock %}
 
 {% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'create_promptStyle.css' %}"/>
     <h1>
         Choose a Game
     </h1>
-
-    <div>
+    <div id="MainBody">
+    <div id="ChooseGame">
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Continue</button>
+            <button type="submit" class="btn btn-primary">Continue</button>
         </form>
-
+    </div>
     </div>
 {% endblock %}

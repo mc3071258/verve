@@ -17,7 +17,7 @@ class NeverHaveIEverForm(BasePromptForm):
     pass
 
 class TruthOrDareForm(BasePromptForm):
-    category = forms.ChoiceField(choices=Prompt.CATEGORY_CHOICES)
+    category = forms.ChoiceField(choices=Prompt.CATEGORY_CHOICES, help_text="Is it a truth or a dare")
 
     class Meta(BasePromptForm.Meta):
         fields = ["text", "category"]
