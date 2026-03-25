@@ -51,6 +51,9 @@ def choose_game(request):
 
 # Auth
 def login(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+    
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -67,6 +70,9 @@ def login(request):
     return render(request, "auth/login.html")
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+    
     if request.method == "POST":
         user_form = UserForm(request.POST)
         profile_form = UserProfileForm(request.POST, request.FILES)
@@ -96,7 +102,7 @@ def logout(request):
 # Game page
 def game(request, slug):
     game = get_object_or_404(Game, slug=slug)
-    return render(request, "games/game.html", {"slug": game.slug, "game_title": game.name})
+    return render(request, "games/game.html", {"slug": game.slug, "game_title": game.name, "game_description":game.description,})
 
 # Game prompts page
 def game_prompts(request, slug):
