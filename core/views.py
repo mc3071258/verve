@@ -183,7 +183,7 @@ def my_profile(request):
     following_count = Follow.objects.filter(follower=request.user).count()
     following_users = User.objects.filter(followers__follower=request.user)
     user_prompts = Prompt.objects.filter(creator=request.user).annotate(upvote_count=Count("votes"))
-    favourites = Prompt.objects.filter(votes__voter=request.user).distinct()
+    favourites = Prompt.objects.filter(votes__voter=request.user).annotate(upvote_count=Count("votes")).order_by("game__name","-upvote_count").distinct()
 
     return render(request, "profiles/my_profile.html", {
         "profile_user": request.user,
@@ -349,7 +349,7 @@ def profile(request, username):
     follower_count = Follow.objects.filter(following=user).count()
     following_count = Follow.objects.filter(follower=user).count()
     following_users = User.objects.filter(followers__follower=user)
-    user_prompts = Prompt.objects.filter(creator=user).annotate(upvote_count=Count("votes"))
+    user_prompts = Prompt.objects.filter(creator=user).annotate(upvote_count=Count("votes")).order_by("game__name","-upvote_count").distinct()
 
     return render(request, "profiles/profile.html", {
         "profile_user": user,
