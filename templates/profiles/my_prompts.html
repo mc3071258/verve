@@ -12,18 +12,18 @@
             {% endif %}
             {% if prompts %}
                 {% for prompt in prompts %}
-                    <div id="PromptGame">
+                    <div class="PromptGame">
                         <div>{{ prompt.game }}</div>
                         <div>{{ prompt.created_at }}</div>
                     </div>
-                    <div id="PromptBody">
-                        <div id="PromptInfo">
+                    <div class="PromptBody">
+                        <div class="PromptInfo">
                             {{ prompt.display_text }} ({{ prompt.upvote_count }} votes)
                         </div>
-                        <div id="PromptButton">
+                        <div class="PromptButton">
                             <a href="{% url 'edit_prompt' prompt.id %}" class="btn btn-primary"> Edit Prompt </a>
                         </div>
-                        <div id="PromptButton">
+                        <div class="PromptButton">
                             <form action="{% url 'delete_prompt' prompt.id %}" method="post">
                                 {% csrf_token %}
                                 <button class="btn btn-outline-danger" type="submit"> Delete Prompt </button>
