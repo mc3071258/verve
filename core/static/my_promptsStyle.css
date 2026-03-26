@@ -17,7 +17,7 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
-#PromptGame{
+.PromptGame{
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -39,7 +39,7 @@
     font-weight: 400;
     line-height: normal;
 }
-#PromptBody{
+.PromptBody{
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -56,7 +56,7 @@
     line-height: normal;
     gap: 1vw;
 }
-#PromptInfo{
+.PromptInfo{
     background: #cacaca;
     color: #373149;
 
@@ -69,11 +69,11 @@
     height: 8.7vh;
     border-radius: 10px;
 }
-#PromptButton button{
+.PromptButton button{
     height: 8.7vh;
     aspect-ratio: 1;
 }
-#PromptButton a{
+.PromptButton a{
     height: 8.7vh;
     aspect-ratio: 1;
 }

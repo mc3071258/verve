@@ -126,8 +126,8 @@ def game_prompts(request, slug):
     if game.slug == "would-you-rather":
         for prompt in prompt_list:
             parts = prompt.text.split("|", 1)
-            prompt.optionA = parts[0]
-            prompt.optionB = parts[1] if len(parts) > 1 else ""
+            prompt.optionA = parts[0].strip()
+            prompt.optionB = parts[1].strip() if len(parts) > 1 else ""
 
     #track which prompts the user has already voted on
     voted_prompts = set()
@@ -326,7 +326,6 @@ def my_prompts(request):
     user_prompts = Prompt.objects.annotate(upvote_count=Count("votes")).filter(creator=current_user)
     
     context_dict["prompts"] = user_prompts
-    context_dict["del_auth_error"] = request.session.pop("del_auth_error", None)
     
     return render(request, "profiles/my_prompts.html", context_dict)
 
@@ -355,8 +354,8 @@ def edit_prompt(request, prompt_id):
         if game.slug == "would-you-rather":
             parts = prompt_inst.text.split("|", 1)
             initial = {
-                "optionA": parts[0],
-                "optionB": parts[1] if len(parts) > 1 else "",
+                "optionA": parts[0].strip(),
+                "optionB": parts[1].strip() if len(parts) > 1 else "",
             }
             form = FormClass(initial=initial, instance=prompt_inst)
         else:
@@ -398,16 +397,21 @@ def profile(request, username):
 
 # Follow
 @login_required
+@require_POST
 def follow_user(request, username):
     is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
     if request.method == "POST":
         target_user = get_object_or_404(User, username=username)
 
-        if request.user != target_user:
-            Follow.objects.get_or_create(
-                follower=request.user,
-                following=target_user)
+        if request.user == target_user:
+            if is_ajax:
+                return JsonResponse({"error": "Cannot follow yourself"}, status=403)
+            return redirect("profile", username=username)
+
+        Follow.objects.get_or_create(
+            follower=request.user,
+            following=target_user)
             
         follower_count = Follow.objects.filter(following=target_user).count()
 
@@ -419,6 +423,7 @@ def follow_user(request, username):
             
     return redirect("profile", username=username)
 
+@require_POST
 @login_required
 def unfollow_user(request, username):
     is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"

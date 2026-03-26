@@ -20,7 +20,7 @@
                 
             {% if prompts %}
                     {% for prompt in prompts %}
-                        <div id="PromptHead">
+                        <div class="PromptHead">
                             <div>User: <a class = "user-text" href="{% url 'profile' prompt.creator.username %}">@{{ prompt.creator.username }}</a></div>
                             <div>
                                 {% if prompt.creator.profile.profile_picture %}
@@ -28,14 +28,10 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div id="PromptBody">
-                            <div id="PromptInfo">
+                        <div class="PromptBody">
+                            <div class="PromptInfo">
                                 <div>
-                                    {% if game.slug == "would-you-rather" %}
-                                        {{ prompt.optionA }} or {{ prompt.optionB }}
-                                    {% else %}
-                                        {{ prompt.display_text }}
-                                    {% endif %}
+                                    {{ prompt.display_text }}
                                 </div>
                                 <div>
                                     {% if prompt.category == "truth" %}
@@ -46,7 +42,7 @@
 
                                 </div>
                             </div>
-                            <div id="PromptUpvote">
+                            <div class="PromptUpvote">
                                 {% if prompt.creator == request.user %}
                                     <button disabled class="btn">Your prompt</button>
                                 {% else %}
@@ -62,7 +58,7 @@
                         </div>                                   
                     {% endfor %}
             {% else %}
-                <strong>No prompts for {{ game.name }}</strong>
+                <strong>No prompts yet</strong>
             {% endif %}
         
             </div>
