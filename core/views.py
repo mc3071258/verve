@@ -397,6 +397,7 @@ def profile(request, username):
 
 # Follow
 @login_required
+@require_POST
 def follow_user(request, username):
     is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
@@ -422,6 +423,7 @@ def follow_user(request, username):
             
     return redirect("profile", username=username)
 
+@require_POST
 @login_required
 def unfollow_user(request, username):
     is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
