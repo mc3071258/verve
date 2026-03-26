@@ -152,6 +152,7 @@ def game_play(request, slug):
                 .order_by("-upvote_count")
                 .values_list("text", flat=True)
         )
+
         context_dict["prompts"] = prompt_list
 
     elif slug == "truth-or-dare":
@@ -163,6 +164,7 @@ def game_play(request, slug):
                 .values_list("text", flat=True)
                 
         )
+
         dare_list = list(
             Prompt.objects
                 .filter(game=game, category="dare")
@@ -170,6 +172,7 @@ def game_play(request, slug):
                 .order_by("-upvote_count")
                 .values_list("text", flat=True)
         )
+
         context_dict["truth_prompts"] = truth_list
         context_dict["dare_prompts"] =  dare_list
 
