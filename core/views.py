@@ -51,6 +51,9 @@ def choose_game(request):
 
 # Auth
 def login(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+    
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -67,6 +70,9 @@ def login(request):
     return render(request, "auth/login.html")
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+    
     if request.method == "POST":
         user_form = UserForm(request.POST)
         profile_form = UserProfileForm(request.POST, request.FILES)
@@ -95,13 +101,18 @@ def logout(request):
 # Games
 # Game page
 def game(request, slug):
+    #fetch the game object by slug, or return 404 if it doesn't exist.
     game = get_object_or_404(Game, slug=slug)
-    return render(request, "games/game.html", {"slug": game.slug, "game_title": game.name})
+    return render(request, "games/game.html", {"slug": game.slug, "game_title": game.name, "game_description":game.description,})
 
 # Game prompts page
 def game_prompts(request, slug):
+    #get the game or return 404
     game = get_object_or_404(Game, slug=slug)
 
+    # Query prompts for this game
+    # Annotate each prompt with its vote count
+    # Order prompts by most upvoted first
     prompt_list = (
         Prompt.objects
             .filter(game=game)
@@ -109,17 +120,25 @@ def game_prompts(request, slug):
             .order_by("-upvote_count")
     )
 
+    # Special handling for "would-you-rather" prompts
+    # These prompts are stored as "optionA|optionB"
+    # Split them into two separate attributes for template use
     if game.slug == "would-you-rather":
         for prompt in prompt_list:
             parts = prompt.text.split("|", 1)
             prompt.optionA = parts[0]
             prompt.optionB = parts[1] if len(parts) > 1 else ""
 
+    #track which prompts the user has already voted on
     voted_prompts = set()
+
+    #Logged in user: tracks votes by user account
     if request.user.is_authenticated:
         voted_prompts = set(
             Vote.objects.filter(voter=request.user).values_list("prompt_id", flat=True)
         )
+
+    #Guest user: tracks votes by session id
     elif request.session.session_key:
         voted_prompts = set(
             Vote.objects.filter(guest_session_id=request.session.session_key)
@@ -134,34 +153,48 @@ def game_prompts(request, slug):
     return render(request, "games/prompts.html", context = context_dict)
 
 def game_play(request, slug):
+    #get game or return 404.
     game = get_object_or_404(Game, slug=slug)
     context_dict = {}
+
+    #games that share same logic (just a list of prompts)
     games_with_same_logic = ["would-you-rather", "never-have-i-ever"]
 
     if slug in games_with_same_logic:
+        #get all prompts as a simple list of text strings
         prompt_list = list(
             Prompt.objects
                 .filter(game=game)
+                .annotate(upvote_count=Count("votes"))
+                .order_by("-upvote_count")
                 .values_list("text", flat=True)
         )
+
         context_dict["prompts"] = prompt_list
 
     elif slug == "truth-or-dare":
+        #Seperate prompts into truth list and dare list.
         truth_list = list(
             Prompt.objects
                 .filter(game=game, category="truth")
-                .values_list("text", flat=True)
-                
+                .annotate(upvote_count=Count("votes"))
+                .order_by("-upvote_count")
+                .values_list("text", flat=True)       
         )
+
         dare_list = list(
             Prompt.objects
                 .filter(game=game, category="dare")
+                .annotate(upvote_count=Count("votes"))
+                .order_by("-upvote_count")
                 .values_list("text", flat=True)
         )
+
         context_dict["truth_prompts"] = truth_list
         context_dict["dare_prompts"] =  dare_list
 
     else:
+        # If slug doesn't match any known game logic, return 404
         raise Http404("Game not found")
     
     # Use user supplied slug, safe as else block handles invalid slugs
@@ -177,7 +210,7 @@ def my_profile(request):
     following_count = Follow.objects.filter(follower=request.user).count()
     following_users = User.objects.filter(followers__follower=request.user)
     user_prompts = Prompt.objects.filter(creator=request.user).annotate(upvote_count=Count("votes"))
-    favourites = Prompt.objects.filter(votes__voter=request.user).distinct()
+    favourites = Prompt.objects.filter(votes__voter=request.user).annotate(upvote_count=Count("votes")).order_by("game__name","-upvote_count").distinct()
 
     return render(request, "profiles/my_profile.html", {
         "profile_user": request.user,
@@ -248,8 +281,10 @@ def upvote_prompt(request, prompt_id):
 
 @login_required
 def create_prompt(request, slug):
+    #get game object by slug or return 404 if not found
     game = get_object_or_404(Game, slug=slug)
 
+    #Choose the correct game form based on the game type
     if game.slug == "truth-or-dare":
         FormClass = TruthOrDareForm
 
@@ -264,9 +299,14 @@ def create_prompt(request, slug):
     
         if form.is_valid():
             with transaction.atomic():
+                #create prompts object but dont save to the DB yet.
                 prompt = form.save(commit=False)
+
+                #add additional fields not included in the form.
                 prompt.creator = request.user
                 prompt.game = game
+
+                #save completed prompt to the database.
                 prompt.save()
                 
             return redirect("my_prompts")
@@ -274,6 +314,7 @@ def create_prompt(request, slug):
             return render(request, "prompts/create.html", {"form": form, "game": game})
 
     else:
+        #if GET request, initialise an empty form
         form = FormClass()
 
     return render(request, "prompts/create.html", {"form": form, "game": game})
@@ -343,7 +384,7 @@ def profile(request, username):
     follower_count = Follow.objects.filter(following=user).count()
     following_count = Follow.objects.filter(follower=user).count()
     following_users = User.objects.filter(followers__follower=user)
-    user_prompts = Prompt.objects.filter(creator=user).annotate(upvote_count=Count("votes"))
+    user_prompts = Prompt.objects.filter(creator=user).annotate(upvote_count=Count("votes")).order_by("game__name","-upvote_count").distinct()
 
     return render(request, "profiles/profile.html", {
         "profile_user": user,

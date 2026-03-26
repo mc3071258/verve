@@ -15,6 +15,7 @@ h1{
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    margin-top: 2vh;
 }
 
 #GameButtons{
@@ -57,7 +58,7 @@ h1{
     align-items: flex-start;
     gap:2%;
     width: 67.66vw;
-    height: 32.7vh;
+    height: 32.auto;
     border-radius: 10px;
     background: #ACC9AB;
     color: #5E547C;
@@ -84,29 +85,11 @@ h1{
 #PromptList{
     margin: 2.5%;   
     width: 55.42vw;
-    height: 27vh;
+    height: auto;
     background: #F6F0F0;
 
-    overflow-y: auto;
+    overflow-y: visible;
     overflow-x: hidden;
-}
-
-#PromptBox #PromptList .table{
-    width: 100%;
-    border-collapse: collapse;
-}
-
-#PromptBox #PromptList .table td{
-    padding: 0.5vh;
-    font-size: 1vw;
-}
-
-#PromptList .btn{
-    width: 5vw;
-    font-size: 1.2vw;
-    background: #E0D9F2;
-    color: #746895;
-    text-align: center;
 }
 
 #MainContent #create .btn{
@@ -116,6 +99,77 @@ h1{
     color: #746895;
     text-align: center;
 }
+
+#PromptHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin: 1vh 0;          
+    padding: 1vh;              
+    width: 100%;               
+    height: auto;              
+    min-height: 4.7vh;        
+
+    border-radius: 10px;
+    background: #D7EECB;
+    color: #5E547C;
+    text-align: left;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 1.2vw;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    box-sizing: border-box;
+}
+
+#PromptBody {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin: 0 0 4vh 0;     
+    width: 100%;          
+    height: auto;         
+    min-height: 8.7vh;     
+    border-radius: 10px;
+    text-align: left;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 1.2vw;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    gap: 1vw;
+
+    box-sizing: border-box;  
+}
+
+#PromptInfo {
+    background: #cacaca;
+    color: #373149;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 1vh;
+    width: 100%;         
+    height: auto;        
+    min-height: 8.7vh;    
+    border-radius: 10px;
+
+    box-sizing: border-box;
+}
+
+#PromptUpvote button {
+    height: 100%;        
+    aspect-ratio: 1;      
+    box-sizing: border-box;
+}
+
+
+
 
 
 

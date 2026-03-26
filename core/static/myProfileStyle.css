@@ -9,9 +9,9 @@
 
 .profile-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 2vw;
-    margin-bottom: 3vh;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    align-items: stretch;
 }
 
 @media (min-width: 1024px) {
@@ -24,6 +24,7 @@
     display: flex;
     flex-direction: column;
     gap: 2.5vh;
+    min-height: 0;
 }
 
 .avatar-section {
@@ -66,7 +67,7 @@
 }
 
 .bio-section {
-    margin-bottom: 0.8vh;
+    margin-bottom: 2vh;
 }
 
 .bio-label {
@@ -77,17 +78,23 @@
 
 .bio-content {
     background: #d9d9d9;
-    min-height: 85px;
     width: 100%;
     max-width: 625px;
-    padding: 1.5vh 1.5vw;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .favourites-panel {
     background: #d9d9d9;
-    padding: 2.5vh;
-    height: 356px;
+    max-height: 500px;
     overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-bottom: 2vh;
 }
 
 .favourites-title {
@@ -118,6 +125,8 @@
 .prompts-section {
     background: #d9d9d9;
     padding: 2.5vh;
+    margin-top: 2vh;
+
 }
 
 .prompts-container {

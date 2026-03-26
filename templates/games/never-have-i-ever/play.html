@@ -10,26 +10,18 @@
     <div id = "content">
 
     <div id='prompt'></div>
+
+    <div class="button-container">
     <button class="btn btn-primary" id = "nextButton" onclick="nextPrompt()">Next Prompt</button>
+    <a class='quit-button' href="{% url 'home' %}">Quit</a>
+    </div>
 
     {{ prompts|json_script:"prompt-data" }}
 
-    <script>
-        const prompts = JSON.parse(document.getElementById("prompt-data").textContent);
-        
-        let index = 0;
+    {% block scripts %}
+     <script src="{% static 'neverHaveIEver.js' %}"></script>
+    {% endblock %}
 
-        function showPrompt(){
-            document.getElementById("prompt").innerText = prompts[index] || "There are no prompts created";
-        }
-
-        function nextPrompt(){
-            index = (index + 1) % prompts.length;
-            showPrompt();
-        }
-
-        showPrompt();
-    </script>
     </div>
 
 {% endblock %}
