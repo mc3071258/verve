@@ -7,9 +7,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'my_promptsStyle.css' %}"/>
     <div id="MainContent">
         <div id="PromptBox">
-            {% if del_auth_error %}
-                {{ del_auth_error }}
-            {% endif %}
             {% if prompts %}
                 {% for prompt in prompts %}
                     <div class="PromptGame">
