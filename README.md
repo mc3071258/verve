@@ -74,8 +74,12 @@ python manage.py runserver
 - Django docs (Testing overview): https://docs.djangoproject.com/en/5.2/topics/testing/overview/
 - Django docs (Auth customization, AUTH_USER_MODEL + get_user_model): https://docs.djangoproject.com/en/5.2/topics/auth/customizing/
 - Django docs (Deprecation, CheckConstraint `check=` removal): https://docs.djangoproject.com/en/5.2/internals/deprecation/
-
 - Django docs (User authentication): https://docs.djangoproject.com/en/6.0/topics/auth/
+- Django docs (Http request handling): https://docs.djangoproject.com/en/5.2/ref/request-response/
+- Django docs (Http control and handling): https://docs.djangoproject.com/en/5.2/topics/http/shortcuts/
+- Django docs (Model object creation and modification): https://docs.djangoproject.com/en/5.2/topics/db/aggregation/
+- Django docs (Form field http rendering and handling): https://docs.djangoproject.com/en/5.2/ref/forms/widgets/
+
 - MDN Web docs (User authentication + permissions): https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/Authentication
 - Geeks for Geeks (Ajax): https://www.geeksforgeeks.org/python/handling-ajax-request-in-django/
 - DEV community (User Profiles): https://dev.to/earthcomfy/django-user-profile-3hik
