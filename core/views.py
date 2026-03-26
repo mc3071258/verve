@@ -126,8 +126,8 @@ def game_prompts(request, slug):
     if game.slug == "would-you-rather":
         for prompt in prompt_list:
             parts = prompt.text.split("|", 1)
-            prompt.optionA = parts[0]
-            prompt.optionB = parts[1] if len(parts) > 1 else ""
+            prompt.optionA = parts[0].strip()
+            prompt.optionB = parts[1].strip() if len(parts) > 1 else ""
 
     #track which prompts the user has already voted on
     voted_prompts = set()
@@ -355,8 +355,8 @@ def edit_prompt(request, prompt_id):
         if game.slug == "would-you-rather":
             parts = prompt_inst.text.split("|", 1)
             initial = {
-                "optionA": parts[0],
-                "optionB": parts[1] if len(parts) > 1 else "",
+                "optionA": parts[0].strip(),
+                "optionB": parts[1].strip() if len(parts) > 1 else "",
             }
             form = FormClass(initial=initial, instance=prompt_inst)
         else:

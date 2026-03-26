@@ -19,8 +19,8 @@ function showPrompt() {
     const [optionA, optionB] = prompts[index].split("|");
 
     //Update the DOM elements with the two options
-    document.getElementById("optionA").innerText = optionA;
-    document.getElementById("optionB").innerText = optionB;
+    document.getElementById("optionA").innerText = optionA.trim();
+    document.getElementById("optionB").innerText = optionB.trim();
 }
 
 // Move to the next prompt in the list
