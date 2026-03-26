@@ -23,7 +23,7 @@
                             <div id="PromptInfo">
                                 <div>
                                     {% if game.slug == "would-you-rather" %}
-                                        {{ prompt.optionA }} or {{ prompt.optionB }}
+                                        {{ prompt.display_text|linebreaksbr }}
                                     {% else %}
                                         {{ prompt.display_text }}
                                     {% endif %}
