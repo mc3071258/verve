@@ -11,4 +11,5 @@
         <a id="playGameButton" class="btn" href="{% url 'game_play' slug=slug %}">Play {{ game_title }}</a>
         <a id="viewPromptsButton" class="btn" href="{% url 'game_prompts' slug=slug %}">View Prompts</a>
     </div>
+    <div class = "description">{{game_description}}</div>
 {% endblock %}

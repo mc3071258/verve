@@ -4,7 +4,7 @@
 
 {% block game_title %}<a id="title">Would You Rather</a>{% endblock %}
 {% block game_content %}
-
+   
     <link rel="stylesheet" type="text/css" href ="{% static 'wouldYouRatherStyle.css' %}"/>
 
     <div id ="main">
@@ -12,6 +12,11 @@
     <div id="or">OR</div>
     <div id="optionB" class="option-card" onclick="nextPrompt()"><span>That</span></div>
     </div>
+
+    <div class = "button-container">
+        <a class='quit-button' href="{% url 'home' %}">Quit</a>
+    </div>
+    
 
     {{ prompts|json_script:"prompt-data" }}
 

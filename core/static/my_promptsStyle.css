@@ -1,0 +1,79 @@
+
+#MainContent{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#PromptBox{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    
+    width: 75.42vw;
+    background: #F6F0F0;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+#PromptGame{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 3vh;
+    margin-left: 3vh;
+    margin-right: 3vh;
+    margin-bottom: 1vh;
+    padding: 1vh;
+    width: 72.66vw;
+    height: 4.7vh;
+    border-radius: 10px;
+    background: #ACC9AB;
+    color: #5E547C;
+    text-align: left;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 1.2vw;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+#PromptBody{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 4vh;
+    padding-right: 1vh;
+    width: 72.66vw;
+    height: 8.7vh;
+    text-align: left;
+    font-family: "Konkhmer Sleokchher";
+    font-size: 1.2vw;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    gap: 1vw;
+}
+#PromptInfo{
+    background: #cacaca;
+    color: #373149;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 1vh;
+    width: 72.66vw;
+    height: 8.7vh;
+    border-radius: 10px;
+}
+#PromptButton button{
+    height: 8.7vh;
+    aspect-ratio: 1;
+}
+#PromptButton a{
+    height: 8.7vh;
+    aspect-ratio: 1;
+}
