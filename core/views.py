@@ -404,10 +404,14 @@ def follow_user(request, username):
     if request.method == "POST":
         target_user = get_object_or_404(User, username=username)
 
-        if request.user != target_user:
-            Follow.objects.get_or_create(
-                follower=request.user,
-                following=target_user)
+        if request.user == target_user:
+            if is_ajax:
+                return JsonResponse({"error": "Cannot follow yourself"}, status=403)
+            return redirect("profile", username=username)
+
+        Follow.objects.get_or_create(
+            follower=request.user,
+            following=target_user)
             
         follower_count = Follow.objects.filter(following=target_user).count()
 
