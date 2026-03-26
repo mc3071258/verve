@@ -45,7 +45,7 @@ class Prompt(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     # Allow empty bio and profile pic
-    bio = models.TextField(blank=True)
+    bio = models.TextField(blank=True, max_length=200)
     profile_picture = models.ImageField(upload_to="profile_pics/", blank=True, null=True)
 
     def __str__(self):

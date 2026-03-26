@@ -72,3 +72,4 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ["bio", "profile_picture"]
+        bio = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": 3}), max_length=200, help_text="Tell us about yourself (max 200 characters)")
