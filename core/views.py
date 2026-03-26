@@ -169,6 +169,7 @@ def game_play(request, slug):
                 .order_by("-upvote_count")
                 .values_list("text", flat=True)
         )
+
         context_dict["prompts"] = prompt_list
 
     elif slug == "truth-or-dare":
@@ -178,9 +179,14 @@ def game_play(request, slug):
                 .filter(game=game, category="truth")
                 .annotate(upvote_count=Count("votes"))
                 .order_by("-upvote_count")
+<<<<<<< HEAD
                 .values_list("text", flat=True)
                 
+=======
+                .values_list("text", flat=True)       
+>>>>>>> main
         )
+
         dare_list = list(
             Prompt.objects
                 .filter(game=game, category="dare")
@@ -188,6 +194,7 @@ def game_play(request, slug):
                 .order_by("-upvote_count")
                 .values_list("text", flat=True)
         )
+
         context_dict["truth_prompts"] = truth_list
         context_dict["dare_prompts"] =  dare_list
 
@@ -208,7 +215,7 @@ def my_profile(request):
     following_count = Follow.objects.filter(follower=request.user).count()
     following_users = User.objects.filter(followers__follower=request.user)
     user_prompts = Prompt.objects.filter(creator=request.user).annotate(upvote_count=Count("votes"))
-    favourites = Prompt.objects.filter(votes__voter=request.user).distinct()
+    favourites = Prompt.objects.filter(votes__voter=request.user).annotate(upvote_count=Count("votes")).order_by("game__name","-upvote_count").distinct()
 
     return render(request, "profiles/my_profile.html", {
         "profile_user": request.user,
@@ -382,7 +389,7 @@ def profile(request, username):
     follower_count = Follow.objects.filter(following=user).count()
     following_count = Follow.objects.filter(follower=user).count()
     following_users = User.objects.filter(followers__follower=user)
-    user_prompts = Prompt.objects.filter(creator=user).annotate(upvote_count=Count("votes"))
+    user_prompts = Prompt.objects.filter(creator=user).annotate(upvote_count=Count("votes")).order_by("game__name","-upvote_count").distinct()
 
     return render(request, "profiles/profile.html", {
         "profile_user": user,
