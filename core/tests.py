@@ -322,17 +322,15 @@ class FollowViewTests(TestCase):
         self.assertFalse(Follow.objects.filter(follower=self.u1, following=self.u2).exists())
 
     def test_follow_user_ajax_does_not_allow_self_follow(self):
-        """ Tests AJAX self-follow does not create a follow """
+        """ Tests AJAX self-follow returns 403 """
         self.client.login(username="testuser1", password="TestPass1234!")
         response = self.client.post(
             reverse("follow_user", args=[self.u1.username]),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest")
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
         data = response.json()
-        self.assertTrue(data["following"])
-        self.assertEqual(data["follower_count"], 0)
-        self.assertEqual(data["next_url"], reverse("unfollow_user", args=[self.u1.username]))
+        self.assertIn("error", data)
         self.assertFalse(Follow.objects.filter(follower=self.u1, following=self.u1).exists())
     
     def test_follow_user_ajax_does_not_duplicate_follow(self):
@@ -615,3 +613,4 @@ class ProfileViewTests(TestCase):
         """ Test GET /profiles/<str:username>/ uses correct profile. """
         response = self.client.get(reverse("profile", args=[self.user.username]))
         self.assertEqual(response.context["profile"].user, self.user)
+        
