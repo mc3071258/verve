@@ -563,7 +563,7 @@ class ProfileViewTests(TestCase):
         self.client.login(username="test_profile", password="TestPass1234!")
         response = self.client.get(reverse("my_profile"))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response="profiles/my_profile.html")
+        self.assertTemplateUsed(response, "profiles/my_profile.html")
 
     def test_get_my_profile_logged_out(self):
         """ Test GET /profiles/ as guest. """
@@ -583,7 +583,7 @@ class ProfileViewTests(TestCase):
         self.client.login(username="test_profile", password="TestPass1234!")
         response = self.client.get(reverse("edit_profile"))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response="profiles/edit_profile.html")
+        self.assertTemplateUsed(response, "profiles/edit_profile.html")
 
     def test_get_edit_profile_logged_out(self):
         """ Test GET /profiles/edit/ as guest. """
@@ -607,7 +607,7 @@ class ProfileViewTests(TestCase):
         """ Test GET /profiles/<str:username>/. """
         response = self.client.get(reverse("profile", args=[self.user.username]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response="profiles/profile.html")
+        self.assertTemplateUsed(response, "profiles/profile.html")
 
     def test_correct_other_profile(self):
         """ Test GET /profiles/<str:username>/ uses correct profile. """
