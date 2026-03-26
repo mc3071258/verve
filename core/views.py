@@ -179,12 +179,7 @@ def game_play(request, slug):
                 .filter(game=game, category="truth")
                 .annotate(upvote_count=Count("votes"))
                 .order_by("-upvote_count")
-<<<<<<< HEAD
-                .values_list("text", flat=True)
-                
-=======
                 .values_list("text", flat=True)       
->>>>>>> main
         )
 
         dare_list = list(
