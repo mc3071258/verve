@@ -74,11 +74,6 @@ python manage.py runserver
 - Django docs (Testing overview): https://docs.djangoproject.com/en/5.2/topics/testing/overview/
 - Django docs (Auth customization, AUTH_USER_MODEL + get_user_model): https://docs.djangoproject.com/en/5.2/topics/auth/customizing/
 - Django docs (Deprecation, CheckConstraint `check=` removal): https://docs.djangoproject.com/en/5.2/internals/deprecation/
-<<<<<<< HEAD
-- Django docs (Http control): https://docs.djangoproject.com/en/5.2/ref/request-response/
-=======
-
->>>>>>> 39f1a2a (Added my sources to README)
 
 - Django docs (User authentication): https://docs.djangoproject.com/en/6.0/topics/auth/
 - MDN Web docs (User authentication + permissions): https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/Authentication
@@ -87,3 +82,7 @@ python manage.py runserver
 - DEV community (Update User Profile): https://dev.to/earthcomfy/django-update-user-profile-33ho
 - John Elder (Users, Profiles + Follows) - https://www.youtube.com/watch?v=KNvSWubOaQY
 - Tech With Tim (Authentication + User Management) - https://www.youtube.com/watch?v=WuyKxdLcw3w
+- W 3 Schools CSS tutorial (CSS) - https://www.w3schools.com/css/
+- W 3 schools bootstrap tutorial - https://www.w3schools.com/bootstrap5/
+- Liz Rowe (bootstrap) - https://www.youtube.com/watch?v=MyCvTSjkD74
+- W 3 schools, creating footers and nav - https://www.w3schools.com/howto/howto_css_fixed_footer.asp
