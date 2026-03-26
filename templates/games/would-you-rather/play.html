@@ -20,30 +20,7 @@
 
     {{ prompts|json_script:"prompt-data" }}
 
-    <script>
-        const prompts = JSON.parse(document.getElementById("prompt-data").textContent);
-
-        let index = 0;
-
-        function showPrompt(){
-
-            if(prompts.length == 0){
-                document.getElementById("optionA").innerText = "No prompts";
-                document.getElementById("optionB").innerText = "";
-                return;
-            }
-
-            const [optionA, optionB] = prompts[index].split("|");
-
-            document.getElementById("optionA").innerText = optionA;
-            document.getElementById("optionB").innerText = optionB;
-        }
-
-        function nextPrompt(){
-            index = (index + 1) % prompts.length;
-            showPrompt();
-        }
-
-        showPrompt();
-    </script>
+    {% block scripts %}
+     <script src="{% static 'wouldYouRather.js' %}"></script>
+    {% endblock %}
 {% endblock %}
