@@ -68,9 +68,9 @@ class UserForm(UserCreationForm):
         model = User
         fields = ["username", "email", "password1", "password2"]
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.fields["username"].help_text = "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["username"].help_text = "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
