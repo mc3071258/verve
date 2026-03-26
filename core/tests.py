@@ -553,3 +553,65 @@ class UpvoteViewTests(TestCase):
         """Test GET request returns 405."""
         response = self.client.get(reverse("upvote_prompt", args=[self.prompt.id]))
         self.assertEqual(response.status_code, 405)
+
+# Test profiles/ views
+class ProfileViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="test_profile", password="TestPass1234!")
+        Profile.objects.create(user=self.user)
+    
+    def test_get_my_profile_logged_in(self):
+        """ Test GET /profiles/. """
+        self.client.login(username="test_profile", password="TestPass1234!")
+        response = self.client.get(reverse("my_profile"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response="profiles/my_profile.html")
+
+    def test_get_my_profile_logged_out(self):
+        """ Test GET /profiles/ as guest. """
+        response = self.client.get(reverse("my_profile"))
+        login_url = reverse("login")
+        follow_url = reverse("my_profile")
+        self.assertRedirects(response, f"{login_url}?next={follow_url}")
+
+    def test_correct_profile(self):
+        """ Test GET /profiles/ uses logged in user's profile """
+        self.client.login(username="test_profile", password="TestPass1234!")
+        response = self.client.get(reverse("my_profile"))
+        self.assertEqual(response.context["profile"].user, self.user)
+
+    def test_get_edit_profile_logged_in(self):
+        """ Test GET /profiles/edit/. """
+        self.client.login(username="test_profile", password="TestPass1234!")
+        response = self.client.get(reverse("edit_profile"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response="profiles/edit_profile.html")
+
+    def test_get_edit_profile_logged_out(self):
+        """ Test GET /profiles/edit/ as guest. """
+        response = self.client.get(reverse("edit_profile"))
+        login_url = reverse("login")
+        follow_url = reverse("edit_profile")
+        self.assertRedirects(response, f"{login_url}?next={follow_url}")
+
+    def test_post_edit_profile(self):
+        """ Test POST /profiles/edit/. """
+        self.client.login(username="test_profile", password="TestPass1234!")
+        test_profile = Profile.objects.get(user=self.user)
+        test_bio = "Test Bio"
+        response = self.client.post(reverse("edit_profile"), 
+                                    {"bio":test_bio})
+        test_profile = Profile.objects.get(user=self.user)
+        self.assertRedirects(response, reverse("my_profile"))
+        self.assertEqual(test_profile.bio, test_bio)
+    
+    def test_get_other_profile(self):
+        """ Test GET /profiles/<str:username>/. """
+        response = self.client.get(reverse("profile", args=[self.user.username]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response="profiles/profile.html")
+
+    def test_correct_other_profile(self):
+        """ Test GET /profiles/<str:username>/ uses correct profile. """
+        response = self.client.get(reverse("profile", args=[self.user.username]))
+        self.assertEqual(response.context["profile"].user, self.user)

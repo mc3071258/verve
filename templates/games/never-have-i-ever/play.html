@@ -10,7 +10,11 @@
     <div id = "content">
 
     <div id='prompt'></div>
+
+    <div class="button-container">
     <button class="btn btn-primary" id = "nextButton" onclick="nextPrompt()">Next Prompt</button>
+    <a class='quit-button' href="{% url 'home' %}">Quit</a>
+    </div>
 
     {{ prompts|json_script:"prompt-data" }}
 

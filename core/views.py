@@ -51,6 +51,9 @@ def choose_game(request):
 
 # Auth
 def login(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+    
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -67,6 +70,9 @@ def login(request):
     return render(request, "auth/login.html")
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+    
     if request.method == "POST":
         user_form = UserForm(request.POST)
         profile_form = UserProfileForm(request.POST, request.FILES)
@@ -96,7 +102,7 @@ def logout(request):
 # Game page
 def game(request, slug):
     game = get_object_or_404(Game, slug=slug)
-    return render(request, "games/game.html", {"slug": game.slug, "game_title": game.name})
+    return render(request, "games/game.html", {"slug": game.slug, "game_title": game.name, "game_description":game.description,})
 
 # Game prompts page
 def game_prompts(request, slug):
@@ -183,7 +189,7 @@ def my_profile(request):
     following_count = Follow.objects.filter(follower=request.user).count()
     following_users = User.objects.filter(followers__follower=request.user)
     user_prompts = Prompt.objects.filter(creator=request.user).annotate(upvote_count=Count("votes"))
-    favourites = Prompt.objects.filter(votes__voter=request.user).distinct()
+    favourites = Prompt.objects.filter(votes__voter=request.user).annotate(upvote_count=Count("votes")).order_by("game__name","-upvote_count").distinct()
 
     return render(request, "profiles/my_profile.html", {
         "profile_user": request.user,
@@ -349,7 +355,7 @@ def profile(request, username):
     follower_count = Follow.objects.filter(following=user).count()
     following_count = Follow.objects.filter(follower=user).count()
     following_users = User.objects.filter(followers__follower=user)
-    user_prompts = Prompt.objects.filter(creator=user).annotate(upvote_count=Count("votes"))
+    user_prompts = Prompt.objects.filter(creator=user).annotate(upvote_count=Count("votes")).order_by("game__name","-upvote_count").distinct()
 
     return render(request, "profiles/profile.html", {
         "profile_user": user,
