@@ -73,7 +73,8 @@ class UserForm(UserCreationForm):
         self.fields["username"].help_text = "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 
 class UserProfileForm(forms.ModelForm):
+    bio = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": 3}), max_length=200, help_text="Tell us about yourself (max 200 characters)")
+
     class Meta:
         model = Profile
         fields = ["bio", "profile_picture"]
-        bio = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": 3}), max_length=200, help_text="Tell us about yourself (max 200 characters)")

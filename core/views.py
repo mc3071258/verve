@@ -42,7 +42,6 @@ def _get_profile_context(user):
         "profile_user": user,
         "follower_count": Follow.objects.filter(following=user).count(),
         "following_count": Follow.objects.filter(follower=user).count(),
-        "following_users": User.objects.filter(followers__follower=user),
         "user_prompts": (
             Prompt.objects.filter(creator=user)
             .annotate(upvote_count=Count("votes"))
@@ -177,7 +176,7 @@ def game_play(request, slug):
         context_dict["prompts"] = prompt_list
 
     elif slug == "truth-or-dare":
-        #Seperate prompts into truth list and dare list.
+        #Separate prompts into truth list and dare list.
         truth_list = list(
             Prompt.objects
                 .filter(game=game, category="truth")
@@ -369,46 +368,44 @@ def del_prompt(request, prompt_id):
 def follow_user(request, username):
     is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
-    if request.method == "POST":
-        target_user = get_object_or_404(User, username=username)
+    target_user = get_object_or_404(User, username=username)
 
-        if request.user == target_user:
-            if is_ajax:
-                return JsonResponse({"error": "Cannot follow yourself"}, status=403)
-            return redirect("profile", username=username)
-
-        Follow.objects.get_or_create(
-            follower=request.user,
-            following=target_user)
-            
-        follower_count = Follow.objects.filter(following=target_user).count()
-
+    if request.user == target_user:
         if is_ajax:
-            return JsonResponse({
-                "following": True,
-                "follower_count": follower_count,
-                "next_url": reverse("unfollow_user", args=[target_user.username]),})
-            
+            return JsonResponse({"error": "Cannot follow yourself"}, status=403)
+        return redirect("profile", username=username)
+
+    Follow.objects.get_or_create(
+        follower=request.user,
+        following=target_user)
+        
+    follower_count = Follow.objects.filter(following=target_user).count()
+
+    if is_ajax:
+        return JsonResponse({
+            "following": True,
+            "follower_count": follower_count,
+            "next_url": reverse("unfollow_user", args=[target_user.username]),})
+        
     return redirect("profile", username=username)
 
-@require_POST
 @login_required
+@require_POST
 def unfollow_user(request, username):
     is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
-    if request.method == "POST":
-        target_user = get_object_or_404(User, username=username)
+    target_user = get_object_or_404(User, username=username)
 
-        Follow.objects.filter(
-            follower=request.user,
-            following=target_user).delete()
-        
-        follower_count = Follow.objects.filter(following=target_user).count()
+    Follow.objects.filter(
+        follower=request.user,
+        following=target_user).delete()
+    
+    follower_count = Follow.objects.filter(following=target_user).count()
 
-        if is_ajax:
-            return JsonResponse({
-                "following": False,
-                "follower_count": follower_count,
-                "next_url": reverse("follow_user", args=[target_user.username]),})
+    if is_ajax:
+        return JsonResponse({
+            "following": False,
+            "follower_count": follower_count,
+            "next_url": reverse("follow_user", args=[target_user.username]),})
     
     return redirect("profile", username=username)
