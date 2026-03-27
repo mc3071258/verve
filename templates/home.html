@@ -20,7 +20,7 @@
                 
             {% if prompts %}
                     {% for prompt in prompts %}
-                        <div class="PromptHead">
+                        <div id="PromptHead">
                             <div>User: <a class = "user-text" href="{% url 'profile' prompt.creator.username %}">@{{ prompt.creator.username }}</a></div>
                             <div>
                                 {% if prompt.creator.profile.profile_picture %}
@@ -28,10 +28,10 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="PromptBody">
-                            <div class="PromptInfo">
+                        <div id="PromptBody">
+                            <div id="PromptInfo">
                                 <div>
-                                    {{ prompt.display_text }}
+                                        {{ prompt.display_text }}
                                 </div>
                                 <div>
                                     {% if prompt.category == "truth" %}
@@ -42,7 +42,7 @@
 
                                 </div>
                             </div>
-                            <div class="PromptUpvote">
+                            <div id="PromptUpvote">
                                 {% if prompt.creator == request.user %}
                                     <button disabled class="btn">Your prompt</button>
                                 {% else %}

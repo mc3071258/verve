@@ -11,7 +11,7 @@
         <div id="PromptBox">
             {% if prompt_list %}
                     {% for prompt in prompt_list %}
-                        <div class="PromptHead">
+                        <div id="PromptHead">
                             <div>User: <a class = "user-text" href="{% url 'profile' prompt.creator.username %}">@{{ prompt.creator.username }}</a></div>
                             <div>
                                 {% if prompt.creator.profile.profile_picture %}
@@ -19,8 +19,8 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="PromptBody">
-                            <div class="PromptInfo">
+                        <div id="PromptBody">
+                            <div id="PromptInfo">
                                 <div>
                                     {% if game.slug == "would-you-rather" %}
                                         {{ prompt.optionA }} or {{ prompt.optionB }}
@@ -36,7 +36,7 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="PromptUpvote">
+                            <div id="PromptUpvote">
                                 {% if prompt.creator == request.user %}
                                     <button disabled class="btn">Your prompt</button>
                                 {% else %}
