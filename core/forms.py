@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 class BasePromptForm(forms.ModelForm):
-    text = forms.CharField(required=True, max_length=250, help_text="Please enter the prompt") 
+    text = forms.CharField(required=True, max_length=100, help_text="Please enter the prompt") 
 
     class Meta:
         model = Prompt
@@ -23,8 +23,8 @@ class TruthOrDareForm(BasePromptForm):
         fields = ["text", "category"]
 
 class WouldYouRatherForm(forms.ModelForm):
-    optionA = forms.CharField(required=True, max_length=250, help_text="Please enter option 1")
-    optionB = forms.CharField(required=True, max_length=250, help_text="Please enter option 2")
+    optionA = forms.CharField(required=True, max_length=50, help_text="Please enter option 1")
+    optionB = forms.CharField(required=True, max_length=50, help_text="Please enter option 2")
 
     class Meta:
         model = Prompt
