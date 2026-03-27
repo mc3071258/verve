@@ -12,28 +12,54 @@ from core.forms import UserForm, UserProfileForm, GameForm, TruthOrDareForm, Nev
 
 User = get_user_model()
 
+# Helper function
+def _get_voted_prompts(request):
+    """Return set of prompt IDs the current user/guest has voted on."""
+    if request.user.is_authenticated:
+        return set(
+            Vote.objects.filter(voter=request.user)
+            .values_list("prompt_id", flat=True)
+        )
+    if request.session.session_key:
+        return set(
+            Vote.objects.filter(guest_session_id=request.session.session_key)
+            .values_list("prompt_id", flat=True)
+        )
+    return set()
+
+def _get_prompt_form(slug):
+    """Return the correct form class for a game slug."""
+    if slug == "truth-or-dare":
+        return TruthOrDareForm
+    elif slug == "would-you-rather":
+        return WouldYouRatherForm
+    return NeverHaveIEverForm
+
+def _get_profile_context(user):
+    """Return common profile context for a given user."""
+    return {
+        "profile": get_object_or_404(Profile, user=user),
+        "profile_user": user,
+        "follower_count": Follow.objects.filter(following=user).count(),
+        "following_count": Follow.objects.filter(follower=user).count(),
+        "user_prompts": (
+            Prompt.objects.filter(creator=user)
+            .annotate(upvote_count=Count("votes"))
+            .order_by("game__name", "-upvote_count")
+            .distinct()
+        ),
+    }
+
+# Home page
 def home(request):
     # Top 5 prompts by upvote count 
     prompt_list = (
         Prompt.objects.annotate(upvote_count=Count("votes")).order_by("-upvote_count")[:5]
     )
-    voted_prompts_list = set()
-
-    if request.user.is_authenticated:
-        voted_prompts_list = set(
-            Vote.objects.filter(voter=request.user).values_list("prompt_id", flat=True)
-        )
-
-    else:
-        if request.session.session_key:
-            voted_prompts_list = set(
-                Vote.objects.filter(guest_session_id=request.session.session_key)
-                .values_list("prompt_id", flat=True)
-            )
 
     context_dict = {}
     context_dict["prompts"] = prompt_list
-    context_dict["voted_prompts"] = voted_prompts_list
+    context_dict["voted_prompts"] = _get_voted_prompts(request)
 
     return render(request, "home.html", context=context_dict)
 
@@ -120,30 +146,7 @@ def game_prompts(request, slug):
             .order_by("-upvote_count")
     )
 
-    # Special handling for "would-you-rather" prompts
-    # These prompts are stored as "optionA|optionB"
-    # Split them into two separate attributes for template use
-    if game.slug == "would-you-rather":
-        for prompt in prompt_list:
-            parts = prompt.text.split("|", 1)
-            prompt.optionA = parts[0].strip()
-            prompt.optionB = parts[1].strip() if len(parts) > 1 else ""
-
-    #track which prompts the user has already voted on
-    voted_prompts = set()
-
-    #Logged in user: tracks votes by user account
-    if request.user.is_authenticated:
-        voted_prompts = set(
-            Vote.objects.filter(voter=request.user).values_list("prompt_id", flat=True)
-        )
-
-    #Guest user: tracks votes by session id
-    elif request.session.session_key:
-        voted_prompts = set(
-            Vote.objects.filter(guest_session_id=request.session.session_key)
-            .values_list("prompt_id", flat=True)
-        )
+    voted_prompts = _get_voted_prompts(request)
 
     context_dict = {}
     context_dict["game"] = game
@@ -173,7 +176,7 @@ def game_play(request, slug):
         context_dict["prompts"] = prompt_list
 
     elif slug == "truth-or-dare":
-        #Seperate prompts into truth list and dare list.
+        #Separate prompts into truth list and dare list.
         truth_list = list(
             Prompt.objects
                 .filter(game=game, category="truth")
@@ -205,21 +208,14 @@ def game_play(request, slug):
 # Profiles
 @login_required
 def my_profile(request):
-    profile = get_object_or_404(Profile, user=request.user)
-    follower_count = Follow.objects.filter(following=request.user).count()
-    following_count = Follow.objects.filter(follower=request.user).count()
-    following_users = User.objects.filter(followers__follower=request.user)
-    user_prompts = Prompt.objects.filter(creator=request.user).annotate(upvote_count=Count("votes"))
-    favourites = Prompt.objects.filter(votes__voter=request.user).annotate(upvote_count=Count("votes")).order_by("game__name","-upvote_count").distinct()
-
-    return render(request, "profiles/my_profile.html", {
-        "profile_user": request.user,
-        "profile": profile,
-        "follower_count": follower_count,
-        "following_count": following_count,
-        "following_users": following_users,
-        "user_prompts": user_prompts,
-        "favourites": favourites,})
+    context = _get_profile_context(request.user)
+    context["favourites"] = (
+        Prompt.objects.filter(votes__voter=request.user)
+        .annotate(upvote_count=Count("votes"))
+        .order_by("game__name", "-upvote_count")
+        .distinct()
+    )
+    return render(request, "profiles/my_profile.html", context)
 
 @login_required
 def my_profile_edit(request):
@@ -235,6 +231,16 @@ def my_profile_edit(request):
     return render(request, "profiles/edit_profile.html", {
         "profile_form": profile_form
     })
+
+def profile(request, username):
+    user = get_object_or_404(User, username=username)
+    context = _get_profile_context(user)
+    context["is_following"] = (
+        request.user.is_authenticated
+        and request.user != user
+        and Follow.objects.filter(follower=request.user, following=user).exists()
+    )
+    return render(request, "profiles/profile.html", context)
 
 # Prompts
 @require_POST
@@ -285,14 +291,7 @@ def create_prompt(request, slug):
     game = get_object_or_404(Game, slug=slug)
 
     #Choose the correct game form based on the game type
-    if game.slug == "truth-or-dare":
-        FormClass = TruthOrDareForm
-
-    elif game.slug == "would-you-rather":
-        FormClass = WouldYouRatherForm
-
-    else:
-        FormClass = NeverHaveIEverForm
+    FormClass = _get_prompt_form(game.slug)
 
     if request.method == "POST":
         form = FormClass(request.POST)
@@ -334,14 +333,7 @@ def edit_prompt(request, prompt_id):
     prompt_inst = get_object_or_404(Prompt, id=prompt_id, creator=request.user)
     game = prompt_inst.game
 
-    if game.slug == "truth-or-dare":
-        FormClass = TruthOrDareForm
-
-    elif game.slug == "would-you-rather":
-        FormClass = WouldYouRatherForm
-    
-    else:
-        FormClass = NeverHaveIEverForm
+    FormClass = _get_prompt_form(game.slug)
 
     if request.method == "POST":
         form = FormClass(request.POST, instance=prompt_inst)
@@ -370,77 +362,50 @@ def del_prompt(request, prompt_id):
     prompt_inst.delete()
     return redirect("my_prompts")
 
-def profile(request, username):
-    user = get_object_or_404(User, username=username)
-    profile = get_object_or_404(Profile, user=user)
-    is_following = False
-
-    if request.user.is_authenticated and request.user != user:
-        is_following = Follow.objects.filter(
-            follower=request.user,
-            following=user).exists()
-        
-    follower_count = Follow.objects.filter(following=user).count()
-    following_count = Follow.objects.filter(follower=user).count()
-    following_users = User.objects.filter(followers__follower=user)
-    user_prompts = Prompt.objects.filter(creator=user).annotate(upvote_count=Count("votes")).order_by("game__name","-upvote_count").distinct()
-
-    return render(request, "profiles/profile.html", {
-        "profile_user": user,
-        "profile": profile,
-        "is_following": is_following,
-        "follower_count": follower_count,
-        "following_count": following_count,
-        "following_users": following_users,
-        "user_prompts": user_prompts,
-        })
-
 # Follow
 @login_required
 @require_POST
 def follow_user(request, username):
     is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
-    if request.method == "POST":
-        target_user = get_object_or_404(User, username=username)
+    target_user = get_object_or_404(User, username=username)
 
-        if request.user == target_user:
-            if is_ajax:
-                return JsonResponse({"error": "Cannot follow yourself"}, status=403)
-            return redirect("profile", username=username)
-
-        Follow.objects.get_or_create(
-            follower=request.user,
-            following=target_user)
-            
-        follower_count = Follow.objects.filter(following=target_user).count()
-
+    if request.user == target_user:
         if is_ajax:
-            return JsonResponse({
-                "following": True,
-                "follower_count": follower_count,
-                "next_url": reverse("unfollow_user", args=[target_user.username]),})
-            
+            return JsonResponse({"error": "Cannot follow yourself"}, status=403)
+        return redirect("profile", username=username)
+
+    Follow.objects.get_or_create(
+        follower=request.user,
+        following=target_user)
+        
+    follower_count = Follow.objects.filter(following=target_user).count()
+
+    if is_ajax:
+        return JsonResponse({
+            "following": True,
+            "follower_count": follower_count,
+            "next_url": reverse("unfollow_user", args=[target_user.username]),})
+        
     return redirect("profile", username=username)
 
-@require_POST
 @login_required
+@require_POST
 def unfollow_user(request, username):
     is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
-    if request.method == "POST":
-        target_user = get_object_or_404(User, username=username)
+    target_user = get_object_or_404(User, username=username)
 
-        Follow.objects.filter(
-            follower=request.user,
-            following=target_user).delete()
-        
-        follower_count = Follow.objects.filter(following=target_user).count()
+    Follow.objects.filter(
+        follower=request.user,
+        following=target_user).delete()
+    
+    follower_count = Follow.objects.filter(following=target_user).count()
 
-        if is_ajax:
-            return JsonResponse({
-                "following": False,
-                "follower_count": follower_count,
-                "next_url": reverse("follow_user", args=[target_user.username]),})
+    if is_ajax:
+        return JsonResponse({
+            "following": False,
+            "follower_count": follower_count,
+            "next_url": reverse("follow_user", args=[target_user.username]),})
     
     return redirect("profile", username=username)
