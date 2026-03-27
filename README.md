@@ -74,3 +74,24 @@ python manage.py runserver
 - Django docs (Testing overview): https://docs.djangoproject.com/en/5.2/topics/testing/overview/
 - Django docs (Auth customization, AUTH_USER_MODEL + get_user_model): https://docs.djangoproject.com/en/5.2/topics/auth/customizing/
 - Django docs (Deprecation, CheckConstraint `check=` removal): https://docs.djangoproject.com/en/5.2/internals/deprecation/
+- Django docs (User authentication): https://docs.djangoproject.com/en/6.0/topics/auth/
+- Django docs (Http request handling): https://docs.djangoproject.com/en/5.2/ref/request-response/
+- Django docs (Http control and handling): https://docs.djangoproject.com/en/5.2/topics/http/shortcuts/
+- Django docs (Model object creation and modification): https://docs.djangoproject.com/en/5.2/topics/db/aggregation/
+- Django docs (Form field http rendering and handling): https://docs.djangoproject.com/en/5.2/ref/forms/widgets/
+- Django docs (JsonResponse): https://docs.djangoproject.com/en/5.2/ref/request-response/#jsonresponse-objects
+- Django docs (CSRF with AJAX): https://docs.djangoproject.com/en/5.2/howto/csrf/#using-csrf-protection-with-ajax
+- Django docs (Sessions): https://docs.djangoproject.com/en/5.2/topics/http/sessions/
+- Django docs (json_script template filter): https://docs.djangoproject.com/en/5.2/ref/templates/builtins/#json-script
+- MDN Web docs (User authentication + permissions): https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/Authentication
+- MDN Web docs (Fetch API): https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+- Geeks for Geeks (Ajax): https://www.geeksforgeeks.org/python/handling-ajax-request-in-django/
+- DEV community (User Profiles): https://dev.to/earthcomfy/django-user-profile-3hik
+- DEV community (Update User Profile): https://dev.to/earthcomfy/django-update-user-profile-33ho
+- John Elder (Users, Profiles + Follows) - https://www.youtube.com/watch?v=KNvSWubOaQY
+- Tech With Tim (Authentication + User Management) - https://www.youtube.com/watch?v=WuyKxdLcw3w
+- W 3 Schools CSS tutorial (CSS) - https://www.w3schools.com/css/
+- W 3 schools bootstrap tutorial - https://www.w3schools.com/bootstrap5/
+- W 3 schools, creating footers and nav - https://www.w3schools.com/howto/howto_css_fixed_footer.asp
+- Liz Rowe (bootstrap) - https://www.youtube.com/watch?v=MyCvTSjkD74
+- Lucide Icons (thumbs-up SVG): https://lucide.dev/icons/thumbs-up
