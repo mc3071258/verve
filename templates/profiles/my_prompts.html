@@ -7,20 +7,23 @@
     <link rel="stylesheet" type="text/css" href="{% static 'my_promptsStyle.css' %}"/>
     <div id="MainContent">
         <div id="PromptBox">
+            {% if del_auth_error %}
+                {{ del_auth_error }}
+            {% endif %}
             {% if prompts %}
                 {% for prompt in prompts %}
-                    <div class="PromptGame">
+                    <div id="PromptGame">
                         <div>{{ prompt.game }}</div>
                         <div>{{ prompt.created_at }}</div>
                     </div>
-                    <div class="PromptBody">
-                        <div class="PromptInfo">
+                    <div id="PromptBody">
+                        <div id="PromptInfo">
                             {{ prompt.display_text }} ({{ prompt.upvote_count }} votes)
                         </div>
-                        <div class="PromptButton">
+                        <div id="PromptButton">
                             <a href="{% url 'edit_prompt' prompt.id %}" class="btn btn-primary"> Edit Prompt </a>
                         </div>
-                        <div class="PromptButton">
+                        <div id="PromptButton">
                             <form action="{% url 'delete_prompt' prompt.id %}" method="post">
                                 {% csrf_token %}
                                 <button class="btn btn-outline-danger" type="submit"> Delete Prompt </button>
