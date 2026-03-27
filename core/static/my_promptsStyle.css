@@ -65,9 +65,24 @@
     justify-content: space-between;
 
     padding: 1vh;
-    width: 72.66vw;
-    height: 8.7vh;
+    width: 100%;
+    height: auto;
+    min-height: 8.7vh;
     border-radius: 10px;
+    box-sizing: border-box;
+
+    min-width: 0;
+}
+#PromptInfo > div:first-child{
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+#PromptInfo > div:last-child{
+    flex-shrink: 0;
+    margin-left: 1vw;
 }
 #PromptButton button{
     height: 8.7vh;
