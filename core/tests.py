@@ -377,16 +377,19 @@ class HomeViewTest(TestCase):
         self.client = Client()
 
     def test_home_view_status(self):
+        """Ensure home view returns HTTP 200."""
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
 
     def test_top_prompts_order_and_length(self):
+        """Ensure top prompts are ordered correctly and limited to 5."""
         response = self.client.get(reverse('home'))
         prompts_in_context = list(response.context["prompts"])
         self.assertEqual(prompts_in_context[0], self.prompts[0])
         self.assertEqual(len(prompts_in_context), 5)
 
     def test_home_authenticated_voted_prompts(self):
+        """Ensure authenticated user's voted prompts are included in context."""
         self.client.login(username="testuser", password="password")
         response = self.client.get(reverse("home"))
         voted_prompts = response.context["voted_prompts"]
@@ -394,6 +397,7 @@ class HomeViewTest(TestCase):
         self.assertIn(self.prompts[1].id, voted_prompts)
 
     def test_home_guest_voted_prompts(self):
+        """Ensure guest user's voted prompts are tracked via session."""
         session = self.client.session
         session["foo"] = "bar"  # just here to ensure session exists
         session.save()
@@ -415,6 +419,7 @@ class CreatePromptViewTest(TestCase):
         self.game2 = Game.objects.create(name="Truth Or Dare", slug="truth-or-dare")
 
     def test_redirect_guest_user(self):
+        """Ensure unauthenticated users are redirected to login page."""
         url = reverse("create_prompt", args=[self.game1.slug])
         response = self.client.get(url)
 
@@ -422,6 +427,7 @@ class CreatePromptViewTest(TestCase):
         self.assertIn("/login", response.url) #redirected to log in page
 
     def test_get_request_returns_form(self):
+        """Ensure GET request returns a form for authenticated users."""
         self.client.login(username="tester", password="pass")
         url = reverse("create_prompt", args=[self.game1.slug])
         response = self.client.get(url)
@@ -430,6 +436,7 @@ class CreatePromptViewTest(TestCase):
         self.assertIn("form", response.context)
 
     def test_correct_form_for_truth_or_dare(self):
+        """Ensure correct form class is used for Truth or Dare game."""
         self.client.login(username="tester", password="pass")
         url = reverse("create_prompt", args=[self.game2.slug])
         response = self.client.get(url)
@@ -439,6 +446,7 @@ class CreatePromptViewTest(TestCase):
         self.assertEqual(form.__class__.__name__, "TruthOrDareForm")
 
     def test_post_creates_prompt(self):
+        """Ensure valid POST request creates a new prompt."""
         self.client.login(username="tester", password="pass")
         url = reverse("create_prompt", args=[self.game1.slug])
         data = {"text": "Test Prompt"}
@@ -454,6 +462,7 @@ class CreatePromptViewTest(TestCase):
         self.assertEqual(prompt.text, "Test Prompt")
 
     def test_post_invalid_prompt(self):
+        """Ensure invalid POST does not create a prompt and re-renders form."""
         self.client.login(username="tester", password="pass")
         url = reverse("create_prompt", args=[self.game1.slug])
         data = {}#{"text":""} #should be invalid, empty text
@@ -471,6 +480,7 @@ class GamePageTest(TestCase):
         self.truth_or_dare = Game.objects.create(name="Truth or Dare", slug="truth-or-dare")
 
     def test_game_play_never_have_i_ever(self):
+        """Ensure game page loads with prompts for valid game slug."""
         Prompt.objects.create(text="Be invisible?", game=self.never_have_i_ever, creator=self.user)
         Prompt.objects.create(text="Fly forever?", game=self.never_have_i_ever, creator=self.user)
 
@@ -481,6 +491,7 @@ class GamePageTest(TestCase):
         self.assertIn("prompts", response.context)
 
     def test_game_invalid_slug(self):
+        """Ensure invalid game slug returns 404."""
         url = reverse("game_play", args=["invalid-game"])
         response = self.client.get(url)
 
