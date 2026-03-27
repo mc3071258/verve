@@ -22,7 +22,7 @@ class Game(models.Model):
 class Prompt(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="prompts")
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="prompts")
-    text = models.TextField()
+    text = models.TextField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
     # Truth or dare needs extra field (DB, display)

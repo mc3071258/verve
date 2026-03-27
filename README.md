@@ -62,6 +62,39 @@ Run server
 python manage.py runserver
 ~~~
 
+## Diagrams
+
+### ERD
+![ERD](docs/Diagrams/ERD-github.svg)
+
+### System Architecture
+![System Architecture Diagram](docs/Diagrams/System%20Architecture%20Diagram.svg)
+
+## Wireframes
+
+### Homepage
+![Homepage wireframe](docs/wireframes/homepage.png)
+
+### Play or View
+![Play or View wireframe](docs/wireframes/play%20or%20view.png)
+
+### Create Prompt
+![Create Prompt wireframe](docs/wireframes/create-prompt.png)
+
+### View Prompt
+![View Prompt wireframe](docs/wireframes/view%20prompt.png)
+
+### Profile Page
+![Profile Page wireframe](docs/wireframes/profile%20page.png)
+
+### Never Have I Ever
+![Never Have I Ever wireframe](docs/wireframes/never%20have%20i%20ever.png)
+
+### Truth or Dare
+![Truth or Dare wireframe](docs/wireframes/truth%20or%20dare.png)
+
+### Would You Rather
+![Would You Rather wireframe](docs/wireframes/would%20you%20rather.png)
 
 
 ## External sources
