@@ -19,44 +19,9 @@
             <div id="PromptList">
                 
             {% if prompts %}
-                    {% for prompt in prompts %}
-                        <div id="PromptHead">
-                            <div>User: <a class = "user-text" href="{% url 'profile' prompt.creator.username %}">@{{ prompt.creator.username }}</a></div>
-                            <div>
-                                {% if prompt.creator.profile.profile_picture %}
-                                    <img src="{{ prompt.creator.profile.profile_picture.url }}" alt="Profile picture" class="rounded-circle" style="max-height: 3vh;max-width: 3vh;">
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div id="PromptBody">
-                            <div id="PromptInfo">
-                                <div>
-                                        {{ prompt.display_text }}
-                                </div>
-                                <div>
-                                    {% if prompt.category == "truth" %}
-                                        TRUTH
-                                    {% elif prompt.category == "dare" %}
-                                        DARE
-                                    {% endif %}
-
-                                </div>
-                            </div>
-                            <div id="PromptUpvote">
-                                {% if prompt.creator == request.user %}
-                                    <button disabled class="btn">Your prompt</button>
-                                {% else %}
-                                <button type="button"
-                                        class="btn vote-btn {% if prompt.id in voted_prompts %}voted{% endif %}"
-                                        data-url="{% url 'upvote_prompt' prompt.id %}"
-                                        data-voted="{% if prompt.id in voted_prompts %}true{% else %}false{% endif %}">
-                                    <span class="vote-count">{{ prompt.upvote_count }}</span>
-                                    <svg class="vote-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>
-                                </button>
-                                {% endif %}
-                            </div>
-                        </div>                                   
-                    {% endfor %}
+                {% for prompt in prompts %}
+                    {% include "includes/prompt_card.html" %}
+                {% endfor %}
             {% else %}
                 <strong>No prompts yet</strong>
             {% endif %}
